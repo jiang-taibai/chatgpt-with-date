@@ -254,5 +254,3 @@ function loadScript() {
 }
 ```
 
-#### (2) 
-
