@@ -1,11 +1,10 @@
 // ==UserScript==
 // @name            ChatGPT with Date
-// @namespace       http://tampermonkey.net/
+// @namespace       https://github.com/jiang-taibai/chatgpt-with-date
 // @version         1.0.0
-// @description     TODO
+// @description     Tampermonkey plugin for displaying ChatGPT historical and real-time conversation time. 显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @author          CoderJiang
 // @match           https://chat.openai.com/*
-// @match           https://tools.coderjiang.com/apps/blank/*
 // @icon            https://cdn.coderjiang.com/project/chatgpt-with-date/logo.svg
 // @grant           GM_xmlhttpRequest
 // @grant           GM_registerMenuCommand
