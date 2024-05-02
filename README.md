@@ -49,9 +49,9 @@
 
 ## 3. 配置
 
-<a name="time-format" style="display:none"></a>
-
 ### 3.1 时间格式
+
+<a name="time-format"></a>
 
 默认支持的时间格式有：
 
