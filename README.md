@@ -38,7 +38,7 @@
 
 ### 2.2 安装脚本
 
-访问链接: [Greasy Fork - ChatGPT with Date](https://greasyfork.org/en/scripts/xxxxxxx-chatgpt-with-date)
+访问链接: [Greasy Fork - ChatGPT with Date](https://greasyfork.org/en/scripts/493949-chatgpt-with-date)
 ，点击 `安装此脚本` 安装脚本。
 
 ### 2.3 使用
@@ -55,13 +55,14 @@
 
 默认支持的时间格式有：
 
-| 模板                                     | 样例                      |
-|----------------------------------------|-------------------------|
-| `{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}`      | 2000-12-31 00:00:00     |
-| `{MM}/{dd}/{yyyy} {HH}:{mm}:{ss}`      | 12/31/2000 00:00:00     |
-| `{MM}-{dd} {HH}:{mm}:{ss}`             | 12-31 00:00:00          |
-| `{MM}-{dd} {HH}:{mm}`                  | 12-31 00:00             |
-| `{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}` | 2000-12-31 00:00:00.000 |
+| 模板                                                                                                                              | 样例                                                                                                                |
+|---------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| `<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`                                                                                  | <span>2000-12-31 00:00:00</span>                                                                                  |
+| `<span>{MM}/{dd}/{yyyy} {HH}:{mm}:{ss}</span>`                                                                                  | <span>12/31/2000 00:00:00</span>                                                                                  |
+| `<span>{MM}-{dd} {HH}:{mm}:{ss}</span>`                                                                                         | <span>12-31 00:00:00</span>                                                                                       |
+| `<span>{MM}-{dd} {HH}:{mm}</span>`                                                                                              | <span>12-31 00:00</span>                                                                                          |
+| `<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}</span>`                                                                             | <span>2000-12-31 00:00:00.000</span>                                                                              |
+| `<span style="background: #2B2B2B;border-radius: 8px;padding: 1px 10px;color: #717171;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>` | <span style="background: #2B2B2B;border-radius: 8px;padding: 1px 10px;color: #717171;">2000-12-31 00:00:00</span> |
 
 支持的时间元素有：
 
@@ -93,7 +94,7 @@
 ## 4. 反馈
 
 如果你有任何问题或建议，欢迎在 [GitHub Issues](https://github.com/jiang-taibai/chatgpt-with-date/issues)
-或 [脚本反馈区](https://greasyfork.org/zh-CN/scripts/xxxxxxx-chatgpt-with-date/feedback) 中提出。
+或 [脚本反馈区](https://greasyfork.org/en/scripts/493949-chatgpt-with-date/feedback) 中提出。
 
 ## 5. 未来计划
 
