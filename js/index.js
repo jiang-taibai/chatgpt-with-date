@@ -20,11 +20,16 @@
 
     class SystemConfig {
         static TimeRender = {
-            Interval: 1000, TimeClassName: 'chatgpt-time', Selectors: [{
+            Interval: 1000,
+            TimeClassName: 'chatgpt-time',
+            Selectors: [{
                 Selector: '.chatgpt-time', Style: {
                     'font-size': '14px', 'color': '#666', 'margin-left': '5px', 'font-weight': 'normal',
                 }
-            }], RenderRetryCount: 3, RenderModes: ['AfterRoleLeft', 'AfterRoleRight', 'BelowRole'], RenderModeStyles: {
+            }],
+            RenderRetryCount: 3,
+            RenderModes: ['AfterRoleLeft', 'AfterRoleRight', 'BelowRole'],
+            RenderModeStyles: {
                 'AfterRoleLeft': {
                     'font-size': '14px', 'color': '#666', 'margin-left': '5px', 'font-weight': 'normal',
                 }, 'AfterRoleRight': {
@@ -32,7 +37,16 @@
                 }, 'BelowRole': {
                     'font-size': '14px', 'color': '#666', 'font-weight': 'normal', 'display': 'block',
                 },
-            }
+            },
+            TimeTagTemplates: [
+                `<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
+                `<span>{MM}/{dd}/{yyyy} {HH}:{mm}:{ss}</span>`,
+                `<span>{MM}-{dd} {HH}:{mm}:{ss}</span>`,
+                `<span>{MM}-{dd} {HH}:{mm}</span>`,
+                `<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}</span>`,
+                `<span style="background: #2B2B2b;border-radius: 8px;padding: 1px 10px;color: #717171;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
+                `<span style="border-radius: 8px; color: #E0E0E0; font-size: 0.9em; overflow: hidden; display: inline-block;"><span style="background: #333; padding: 2px 4px 2px 10px; display: inline-block;">{yyyy}-{MM}-{dd}</span><span style="background: #606060; padding: 2px 10px 2px 4px; display: inline-block;">{HH}:{mm}:{ss}</span></span>`,
+            ],
         }
         static ConfigPanel = {
             AppID: 'CWD-Configuration-Panel', Icon: {
@@ -304,7 +318,7 @@
 
         init() {
             this.timeRender = {
-                mode: 'AfterRoleLeft', format: '<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>',
+                mode: 'AfterRoleLeft', format: SystemConfig.TimeRender.TimeTagTemplates[0],
             }
             const userConfig = this.load()
             if (userConfig) {
@@ -842,29 +856,21 @@
                     return {
                         timestamp: new Date().getTime(),
                         title: "ChatGPTWithDate",
-                        formatOptions: [{
-                            label: '<span>2000-12-31 00:00:00</span>',
-                            value: '<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>'
-                        }, {
-                            label: '<span>12/31/2000 00:00:00</span>',
-                            value: '<span>{MM}/{dd}/{yyyy} {HH}:{mm}:{ss}</span>'
-                        }, {
-                            label: '<span>12-31 00:00:00</span>', value: '<span>{MM}-{dd} {HH}:{mm}:{ss}</span>'
-                        }, {
-                            label: '<span>12-31 00:00</span>', value: '<span><span>{MM}-{dd} {HH}:{mm}</span>'
-                        }, {
-                            label: '<span>2000-12-31 00:00:00.000</span>',
-                            value: '<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}</span>'
-                        }, {
-                            label: '<span style="background: #2B2B2b;border-radius: 8px;padding: 1px 10px;color: #717171;">2000-12-31 00:00:00</span>',
-                            value: '<span style="background: #2B2B2b;border-radius: 8px;padding: 1px 10px;color: #717171;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>'
-                        }], modeOptions: [{label: '角色之后（靠左）', value: 'AfterRoleLeft'}, {
+                        formatOptions: SystemConfig.TimeRender.TimeTagTemplates.map(item => {
+                            return {label: item, value: item}
+                        }),
+                        modeOptions: [{label: '角色之后（靠左）', value: 'AfterRoleLeft'}, {
                             label: '角色之后（居右）', value: 'AfterRoleRight'
-                        }, {label: '角色之下', value: 'BelowRole'},], configForm: {
-                            format: that.userConfig.timeRender.format, mode: that.userConfig.timeRender.mode,
-                        }, config: {
-                            format: that.userConfig.timeRender.format, mode: that.userConfig.timeRender.mode,
-                        }, configDirty: false, configPanel: {
+                        }, {label: '角色之下', value: 'BelowRole'},],
+                        configForm: {
+                            format: that.userConfig.timeRender.format,
+                            mode: that.userConfig.timeRender.mode,
+                        },
+                        config: {
+                            format: that.userConfig.timeRender.format,
+                            mode: that.userConfig.timeRender.mode,
+                        }, configDirty: false,
+                        configPanel: {
                             display: true,
                         },
                     };
@@ -897,11 +903,14 @@
                         } = Utils.calculateTime(this.timestamp)
                         return Utils.formatDateTime(year, month, day, hours, minutes, seconds, milliseconds, html)
                     },
-                }, mounted() {
+                },
+                created() {
                     this.timestamp = new Date().getTime()
                     this.formatOptions.forEach(item => {
                         item.label = this.reFormatTimeHTML(item.value)
                     })
+                },
+                mounted() {
                     this.timestampInterval = setInterval(() => {
                         this.timestamp = new Date().getTime()
                         this.formatOptions.forEach(item => {

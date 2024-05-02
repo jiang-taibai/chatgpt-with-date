@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-1.0.0-%231081C1" alt="Version-1.0.0"/>
+  <img src="https://img.shields.io/badge/Version-1.1.0-%231081C1" alt="Version-1.1.0"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -55,14 +55,15 @@
 
 默认支持的时间格式有：
 
-| 模板                                                                                                                              | 样例                                                                                                                |
-|---------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-| `<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`                                                                                  | <span>2000-12-31 00:00:00</span>                                                                                  |
-| `<span>{MM}/{dd}/{yyyy} {HH}:{mm}:{ss}</span>`                                                                                  | <span>12/31/2000 00:00:00</span>                                                                                  |
-| `<span>{MM}-{dd} {HH}:{mm}:{ss}</span>`                                                                                         | <span>12-31 00:00:00</span>                                                                                       |
-| `<span>{MM}-{dd} {HH}:{mm}</span>`                                                                                              | <span>12-31 00:00</span>                                                                                          |
-| `<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}</span>`                                                                             | <span>2000-12-31 00:00:00.000</span>                                                                              |
-| `<span style="background: #2B2B2B;border-radius: 8px;padding: 1px 10px;color: #717171;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>` | <span style="background: #2B2B2B;border-radius: 8px;padding: 1px 10px;color: #717171;">2000-12-31 00:00:00</span> |
+| 模板                                                                                                                                                                                                                                                                                                                                        | 样例                                                                                                                                                                                                                                                                                                                          |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`                                                                                                                                                                                                                                                                                            | <span>2000-12-31 00:00:00</span>                                                                                                                                                                                                                                                                                            |
+| `<span>{MM}/{dd}/{yyyy} {HH}:{mm}:{ss}</span>`                                                                                                                                                                                                                                                                                            | <span>12/31/2000 00:00:00</span>                                                                                                                                                                                                                                                                                            |
+| `<span>{MM}-{dd} {HH}:{mm}:{ss}</span>`                                                                                                                                                                                                                                                                                                   | <span>12-31 00:00:00</span>                                                                                                                                                                                                                                                                                                 |
+| `<span>{MM}-{dd} {HH}:{mm}</span>`                                                                                                                                                                                                                                                                                                        | <span>12-31 00:00</span>                                                                                                                                                                                                                                                                                                    |
+| `<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}</span>`                                                                                                                                                                                                                                                                                       | <span>2000-12-31 00:00:00.000</span>                                                                                                                                                                                                                                                                                        |
+| `<span style="background: #2B2B2B;border-radius: 8px;padding: 1px 10px;color: #717171;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`                                                                                                                                                                                                           | <span style="background: #2B2B2B;border-radius: 8px;padding: 1px 10px;color: #717171;">2000-12-31 00:00:00</span>                                                                                                                                                                                                           |
+| `<span style="border-radius: 8px; color: #E0E0E0; font-size: 0.9em; overflow: hidden; display: inline-block;"><span style="background: #333; padding: 2px 4px 2px 10px; display: inline-block;">{yyyy}-{MM}-{dd}</span><span style="background: #606060; padding: 2px 10px 2px 4px; display: inline-block;">{HH}:{mm}:{ss}</span></span>` | <span style="border-radius: 8px; color: #E0E0E0; font-size: 0.9em; overflow: hidden; display: inline-block;"><span style="background: #333; padding: 2px 4px 2px 10px; display: inline-block;">2000-12-13</span><span style="background: #606060; padding: 2px 10px 2px 4px; display: inline-block;">00:00:00</span></span> |
 
 支持的时间元素有：
 
@@ -258,3 +259,9 @@ function loadScript() {
 }
 ```
 
+## X. Changelog
+
+```markdown
+- v1.1.0 - 2024-05-02 17:50:04
+    - 添加更多时间格式的模板
+```
