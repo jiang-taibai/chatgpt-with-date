@@ -304,7 +304,7 @@
 
         init() {
             this.timeRender = {
-                mode: 'AfterRoleLeft', format: 'yyyy-MM-dd HH:mm:ss',
+                mode: 'AfterRoleLeft', format: '<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>',
             }
             const userConfig = this.load()
             if (userConfig) {
