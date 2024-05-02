@@ -43,6 +43,10 @@
 
 ### 2.3 使用
 
+首次使用请允许跨源资源共享（CORS）请求，本项目将请求 Vue.js 和 NaiveUI 的资源，以便生成配置面板。
+
+![](https://cdn.coderjiang.com/project/chatgpt-with-date/cross-domain-resource-request.jpg)
+
 打开 ChatGPT 页面，即可看到消息时间。你可以在此处打开配置面板。
 
 ![配置面板打开引导](https://cdn.coderjiang.com/project/chatgpt-with-date/how-to-open-the-configuration-panel.png)
