@@ -21,7 +21,7 @@
 
 ![配置面板示意图](https://cdn.coderjiang.com/project/chatgpt-with-date/introduction-to-configuration-panel.gif)
 
-除此之外，时间样式高度自定义，你可以输入以下 html 代码来实现上图的效果。具体的时间格式化规则请参考 [#](#)
+除此之外，时间样式高度自定义，你可以输入以下 html 代码来实现上图的效果。具体的时间格式化规则请参考 [3.1 时间格式](#3.1 时间格式)
 
 ```html
 <span style="border-radius: 8px; color: #E0E0E0; font-size: 0.9em; overflow: hidden; display: inline-block;"><span
