@@ -15,11 +15,11 @@
 
 该插件不但可以获取以往的消息时间，还可以实时获取新消息的时间。
 
-![](/res/添加时间的交互.gif)
+![在交互时添加时间标签](https://cdn.coderjiang.com/project/chatgpt-with-date/add-time-tag-during-interaction.gif)
 
 提供多种配置选项，例如时间显示格式、时间显示位置等。
 
-![](/res/配置面板示意图.gif)
+![配置面板示意图](https://cdn.coderjiang.com/project/chatgpt-with-date/introduction-to-configuration-panel.gif)
 
 除此之外，时间样式高度自定义，你可以输入以下 html 代码来实现上图的效果。具体的时间格式化规则请参考 [#](#)
 
@@ -44,7 +44,7 @@
 
 打开 ChatGPT 页面，即可看到消息时间。你可以在此处打开配置面板。
 
-![](/res/配置面板启动引导.png)
+![配置面板打开引导](https://cdn.coderjiang.com/project/chatgpt-with-date/how-to-open-the-configuration-panel.png)
 
 ## 3. 配置
 
