@@ -4,6 +4,7 @@
 // @version         1.0.0
 // @description     Tampermonkey plugin for displaying ChatGPT historical and real-time conversation time. 显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @author          CoderJiang
+// @license         MIT
 // @match           https://chat.openai.com/*
 // @icon            https://cdn.coderjiang.com/project/chatgpt-with-date/logo.svg
 // @grant           GM_xmlhttpRequest
