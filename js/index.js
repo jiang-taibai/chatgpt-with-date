@@ -440,9 +440,88 @@
                 format: SystemConfig.TimeRender.TimeTagTemplates[0],
                 advanced: {
                     enable: false,
-                    htmlTextContent: '',
-                    styleTextContent: '',
-                    scriptTextContent: '',
+                    htmlTextContent: `
+                    <div class="text-tag-box">
+                        <span class="date">{yyyy}-{MM}-{dd}</span>
+                        <span class="time">{HH}:{mm}:{ss}</span>
+                    </div>`,
+                    styleTextContent: `
+                    .text-tag-box {
+                        border-radius: 8px;
+                        color: #E0E0E0;
+                        font-size: 0.9em;
+                        overflow: hidden;
+                        display: inline-block;
+                    }
+                    
+                    .text-tag-box .date {
+                        background: #333;
+                        float: left;
+                        padding: 2px 8px 2px 10px;
+                        display: inline-block;
+                        transition: width 0.5s ease-out;
+                        white-space: nowrap;
+                    }
+                    
+                    .text-tag-box .time {
+                        background: #606060;
+                        float: left;
+                        padding: 2px 10px 2px 8px;
+                        display: inline-block;
+                    }`,
+                    scriptTextContent: `
+                    (() => {
+                        const getNewWidth = (targetNode, text) => {
+                            // 创建一个临时元素来测量文本宽度
+                            const temp = targetNode.cloneNode();
+                            temp.style.width = 'auto'; // 自动宽度
+                            temp.style.visibility = 'hidden'; // 隐藏元素，不影响布局
+                            temp.style.position = 'absolute'; // 避免影响其他元素
+                            temp.style.whiteSpace = 'nowrap'; // 无换行
+                            temp.innerText = text;
+                            document.body.appendChild(temp);
+                            const newWidth = temp.offsetWidth;
+                            document.body.removeChild(temp);
+                            return newWidth;
+                        }
+                    
+                        window.afterCreateTimeTag = (messageId, timeTagNode) => {
+                            const dateNode = timeTagNode.querySelector('.date');
+                            const date = dateNode.innerText;
+                            const originalWidth = getNewWidth(dateNode, date);
+                            const paddingWidth = 18;
+                            dateNode.style.width = (originalWidth  + paddingWidth) + 'px';
+                    
+                            timeTagNode.addEventListener('mouseover', () => {
+                                const now = new Date();
+                                const offset = now - new Date(date);
+                                const days = Math.floor(offset / (24 * 60 * 60 * 1000));
+                                let text = '';
+                                if (days < 1)
+                                    text = '今天';
+                                else if (days < 2)
+                                    text = '昨天';
+                                else if (days < 3)
+                                    text = '前天';
+                                else if (days < 7)
+                                    text = days + '天前';
+                                else if (days < 30)
+                                    text = Math.floor(days / 7) + '周前';
+                                else if (days < 365)
+                                    text = Math.floor(days / 30) + '个月前';
+                                else
+                                    text = Math.floor(days / 365) + '年前';
+                                dateNode.innerText = text;
+                                dateNode.style.width = (getNewWidth(dateNode, text)  + paddingWidth) + 'px';
+                            });
+                    
+                            // 鼠标移出 timeTagNode 时恢复 dateNode 的内容为原来的日期
+                            timeTagNode.addEventListener('mouseout', () => {
+                                dateNode.innerText = date;
+                                dateNode.style.width = (originalWidth  + paddingWidth) + 'px';
+                            });
+                        }
+                    })()`,
                 }
             }
             const userConfig = this.load()
