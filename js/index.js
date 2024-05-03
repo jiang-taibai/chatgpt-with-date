@@ -6,6 +6,7 @@
 // @author          CoderJiang
 // @license         MIT
 // @match           https://chat.openai.com/*
+// @match           https://tools.coderjiang.com/apps/blank/*
 // @icon            https://cdn.coderjiang.com/project/chatgpt-with-date/logo.svg
 // @grant           GM_xmlhttpRequest
 // @grant           GM_registerMenuCommand
@@ -19,136 +20,204 @@
     'use strict';
 
     class SystemConfig {
+        static Common = {
+            ApplicationName: 'ChatGPT with Date',
+        }
+        static Logger = {
+            TimeFormatTemplate: "{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}",
+        }
         static TimeRender = {
             Interval: 1000,
             TimeClassName: 'chatgpt-time',
-            Selectors: [{
-                Selector: '.chatgpt-time', Style: {
-                    'font-size': '14px', 'color': '#666', 'margin-left': '5px', 'font-weight': 'normal',
-                }
-            }],
+            BatchSize: 100,
+            BatchTimeout: 200,
             RenderRetryCount: 3,
             RenderModes: ['AfterRoleLeft', 'AfterRoleRight', 'BelowRole'],
             RenderModeStyles: {
-                'AfterRoleLeft': {
-                    'font-size': '14px', 'color': '#666', 'margin-left': '5px', 'font-weight': 'normal',
-                }, 'AfterRoleRight': {
-                    'font-size': '14px', 'color': '#666', 'font-weight': 'normal', 'float': 'right'
-                }, 'BelowRole': {
-                    'font-size': '14px', 'color': '#666', 'font-weight': 'normal', 'display': 'block',
-                },
+                AfterRoleLeft: `
+                    .chatgpt-time {
+                        font-weight: normal;
+                    }
+                `,
+                AfterRoleRight: `
+                    .chatgpt-time {
+                        font-weight: normal;
+                        float: right;
+                    }
+                `,
+                BelowRole: `
+                    .chatgpt-time {
+                        font-weight: normal;
+                        display: block;
+                    }
+                `,
             },
             TimeTagTemplates: [
-                `<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
-                `<span>{MM}/{dd}/{yyyy} {HH}:{mm}:{ss}</span>`,
-                `<span>{MM}-{dd} {HH}:{mm}:{ss}</span>`,
-                `<span>{MM}-{dd} {HH}:{mm}</span>`,
-                `<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}</span>`,
-                `<span style="background: #2B2B2b;border-radius: 8px;padding: 1px 10px;color: #717171;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
-                `<span style="border-radius: 8px; color: #E0E0E0; font-size: 0.9em; overflow: hidden; display: inline-block;"><span style="background: #333; padding: 2px 4px 2px 10px; display: inline-block;">{yyyy}-{MM}-{dd}</span><span style="background: #606060; padding: 2px 10px 2px 4px; display: inline-block;">{HH}:{mm}:{ss}</span></span>`,
+                // 默认：2023-10-15 12:01:00
+                `<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
+                // 美国：Oct 15, 2023 12:01 PM
+                `<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{MM#shortname@en} {dd}, {yyyy} {HH#12}:{mm} {HH#tag}</span>`,
+                // 英国：01/01/2024 12:01
+                `<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{dd}/{MM}/{yyyy} {HH}:{mm}</span>`,
+                // 日本：2023年10月15日 12:01
+                `<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{yyyy}年{MM}月{dd}日 {HH}:{mm}</span>`,
+                // 显示毫秒数：2023-10-15 12:01:00.000
+                `<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}</span>`,
+                // 复杂模板
+                `<span style="margin-left: 4px; background: #2B2B2b; border-radius: 8px; padding: 1px 10px; color: #717171; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
+                `<span style="margin-left: 4px; background: #d7d7d7; border-radius: 8px; padding: 1px 10px; color: #2b2b2b; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
+                `<span style="margin-left: 4px; color: #E0E0E0; font-size: 0.9em;"><span style="background: #333; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">{yyyy}-{MM}-{dd}</span><span style="background: #606060; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">{HH}:{mm}:{ss}</span></span>`,
+                `<span style="margin-left: 4px; color: #E0E0E0; font-size: 0.9em;"><span style="background: #848484; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">{yyyy}-{MM}-{dd}</span><span style="background: #a6a6a6; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">{HH}:{mm}:{ss}</span></span>`,
             ],
+            BasicStyleKey: 'time-render',
+            AdditionalStyleKey: 'time-render-advanced',
+            AdditionalScriptKey: 'time-render-advanced',
         }
         static ConfigPanel = {
-            AppID: 'CWD-Configuration-Panel', Icon: {
+            AppID: 'CWD-Configuration-Panel',
+            Icon: {
                 Close: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path d="M649.179 512l212.839-212.84c37.881-37.881 37.881-99.298 0-137.179s-99.298-37.881-137.179 0L512 374.821l-212.839-212.84c-37.881-37.881-99.298-37.881-137.179 0s-37.881 99.298 0 137.179L374.821 512 161.982 724.84c-37.881 37.881-37.881 99.297 0 137.179 18.94 18.94 43.765 28.41 68.589 28.41 24.825 0 49.649-9.47 68.589-28.41L512 649.179l212.839 212.84c18.94 18.94 43.765 28.41 68.589 28.41s49.649-9.47 68.59-28.41c37.881-37.882 37.881-99.298 0-137.179L649.179 512z"></path></svg>',
-            }
+            },
+            StyleKey: 'config-panel',
         }
         // GM 存储的键
         static GMStorageKey = {
-            UserConfig: 'ChatGPTWithDate-UserConfig', ConfigPanel: {
+            UserConfig: 'ChatGPTWithDate-UserConfig',
+            ConfigPanel: {
                 Position: 'ChatGPTWithDate-ConfigPanel-Position', Size: 'ChatGPTWithDate-ConfigPanel-Size',
             },
-        }
-    }
-
-    class Logger {
-        static EnableLog = true
-        static EnableDebug = true
-        static EnableInfo = true
-        static EnableWarn = true
-        static EnableError = true
-        static EnableTable = true
-
-        static log(...args) {
-            if (Logger.EnableLog) {
-                console.log(...args);
-            }
-        }
-
-        static debug(...args) {
-            if (Logger.EnableDebug) {
-                console.debug(...args);
-            }
-        }
-
-        static info(...args) {
-            if (Logger.EnableInfo) {
-                console.info(...args);
-            }
-        }
-
-        static warn(...args) {
-            if (Logger.EnableWarn) {
-                console.warn(...args);
-            }
-        }
-
-        static error(...args) {
-            if (Logger.EnableError) {
-                console.error(...args);
-            }
-        }
-
-        static table(...args) {
-            if (Logger.EnableTable) {
-                console.table(...args);
-            }
         }
     }
 
     class Utils {
 
         /**
-         * 计算时间
+         * 按照模板格式化日期时间
          *
-         * @param timestamp 时间戳，浮点数或整数类型，单位毫秒，例如 1714398759.26881、1714398759
-         * @returns {{milliseconds: number, hours: number, seconds: number, month: number, year: number, minutes: number, day: number}}
+         * @param date      Date 对象
+         * @param template  模板，例如 '{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}'
+         * @returns string  格式化后的日期时间字符串
          */
-        static calculateTime(timestamp) {
-            const date = new Date(timestamp);
+        static formatDateTimeByDate(date, template) {
             const year = date.getFullYear();
             const month = date.getMonth() + 1;
             const day = date.getDate();
+            const week = date.getDay();
             const hours = date.getHours();
             const minutes = date.getMinutes();
             const seconds = date.getSeconds();
             const milliseconds = date.getMilliseconds();
-            return {
-                year, month, day, hours, minutes, seconds, milliseconds
-            };
+            const week2zh = ['', '一', '二', '三', '四', '五', '六', '日']
+            const week2enFullName = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+            const week2enShortName = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            const month2zh = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二']
+            const month2enFullName = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            const month2enShortName = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+            const getValueByKey = (key) => {
+                switch (key) {
+                    case '{yyyy}':
+                        return year.toString();
+                    case '{yy}':
+                        return (year % 100).toString().padStart(2, '0');
+
+                    case '{MM}':
+                    case '{MM:02}':
+                        return month.toString().padStart(2, '0');
+                    case '{MM:01}':
+                        return month.toString();
+                    case '{MM#name@zh}':
+                        return month2zh[month];
+                    case '{MM#name@en}':
+                    case '{MM#fullname@en}':
+                        return month2enFullName[month];
+                    case '{MM#shortname@en}':
+                        return month2enShortName[month];
+
+                    case '{dd}':
+                    case '{dd:02}':
+                        return day.toString().padStart(2, '0');
+                    case '{dd:01}':
+                        return day.toString();
+
+                    case '{HH}':
+                    case '{HH:02}':
+                    case '{HH#24}':
+                    case '{HH#24:02}':
+                        return hours.toString().padStart(2, '0');
+                    case '{HH:01}':
+                    case '{HH#24:01}':
+                        return hours.toString();
+                    case '{HH#12}':
+                    case '{HH#12:02}':
+                        return (hours % 12 || 12).toString().padStart(2, '0');
+                    case '{HH#12:01}':
+                        return (hours % 12 || 12).toString();
+                    case '{HH#tag}':
+                    case '{HH#tag@en}':
+                        return hours >= 12 ? 'PM' : 'AM';
+                    case '{HH#tag@zh}':
+                        return hours >= 12 ? '下午' : '上午';
+
+                    case '{mm}':
+                    case '{mm:02}':
+                        return minutes.toString().padStart(2, '0');
+                    case '{mm:01}':
+                        return minutes.toString();
+
+                    case '{ss}':
+                    case '{ss:02}':
+                        return seconds.toString().padStart(2, '0');
+                    case '{ss:01}':
+                        return seconds.toString();
+
+                    case '{ms}':
+                        return milliseconds.toString().padStart(3, '0');
+
+
+                    case '{week}':
+                    case '{week:02}':
+                        return week.toString().padStart(2, '0');
+                    case '{week:01}':
+                        return week.toString();
+                    case '{week#name@zh}':
+                        return week2zh[week];
+                    case '{week#name@en}':
+                    case '{week#fullname@en}':
+                        return week2enFullName[week];
+                    case '{week#shortname@en}':
+                        return week2enShortName[week];
+                    default:
+                        return key;
+                }
+            }
+            return template.replace(/\{[^}]+\}/g, match => getValueByKey(match));
         }
 
         /**
-         * 格式化日期时间
-         * @param year      年份
-         * @param month     月份
-         * @param day       日期
-         * @param hour      小时
-         * @param minute    分钟
-         * @param second    秒
-         * @param milliseconds  毫秒
-         * @param template  模板，例如 'yyyy-MM-dd HH:mm:ss'
-         * @returns string  格式化后的日期时间字符串
+         * 深度合并两个对象，将源对象的属性合并到目标对象中，如果属性值为对象则递归合并。
+         *
+         * @param target    目标对象
+         * @param source    源对象
+         * @returns {*}
          */
-        static formatDateTime(year, month, day, hour, minute, second, milliseconds, template) {
-            return template
-                .replace('{yyyy}', year)
-                .replace('{MM}', month.toString().padStart(2, '0'))
-                .replace('{dd}', day.toString().padStart(2, '0'))
-                .replace('{HH}', hour.toString().padStart(2, '0'))
-                .replace('{mm}', minute.toString().padStart(2, '0'))
-                .replace('{ss}', second.toString().padStart(2, '0'))
-                .replace('{ms}', milliseconds.toString().padStart(3, '0'));
+        static deepMerge(target, source) {
+            // 遍历源对象的所有属性
+            Object.keys(source).forEach(key => {
+                if (source[key] && typeof source[key] === 'object') {
+                    // 如果源属性是一个对象且目标中也存在同名属性且为对象，则递归合并
+                    if (target[key] && typeof target[key] === 'object') {
+                        Utils.deepMerge(target[key], source[key]);
+                    } else {
+                        // 否则直接复制（对于源中的对象，需要进行深拷贝）
+                        target[key] = JSON.parse(JSON.stringify(source[key]));
+                    }
+                } else {
+                    // 非对象属性直接复制
+                    target[key] = source[key];
+                }
+            });
+            return target;
         }
 
         /**
@@ -214,6 +283,56 @@
             return order;
         }
 
+    }
+
+    class Logger {
+        static EnableLog = true
+        static EnableDebug = false
+        static EnableInfo = true
+        static EnableWarn = true
+        static EnableError = true
+        static EnableTable = true
+
+        static prefix(type = 'INFO') {
+            const timeFormat = Utils.formatDateTimeByDate(new Date(), SystemConfig.Logger.TimeFormatTemplate);
+            return `[${timeFormat}] - [${SystemConfig.Common.ApplicationName}] - [${type}]`
+        }
+
+        static log(...args) {
+            if (Logger.EnableLog) {
+                console.log(Logger.prefix('INFO'), ...args);
+            }
+        }
+
+        static debug(...args) {
+            if (Logger.EnableDebug) {
+                console.debug(Logger.prefix('DEBUG'), ...args);
+            }
+        }
+
+        static info(...args) {
+            if (Logger.EnableInfo) {
+                console.info(Logger.prefix('INFO'), ...args);
+            }
+        }
+
+        static warn(...args) {
+            if (Logger.EnableWarn) {
+                console.warn(Logger.prefix('WARN'), ...args);
+            }
+        }
+
+        static error(...args) {
+            if (Logger.EnableError) {
+                console.error(Logger.prefix('ERROR'), ...args);
+            }
+        }
+
+        static table(...args) {
+            if (Logger.EnableTable) {
+                console.table(...args);
+            }
+        }
     }
 
     class MessageBO {
@@ -318,11 +437,18 @@
 
         init() {
             this.timeRender = {
-                mode: 'AfterRoleLeft', format: SystemConfig.TimeRender.TimeTagTemplates[0],
+                mode: 'AfterRoleLeft',
+                format: SystemConfig.TimeRender.TimeTagTemplates[0],
+                advanced: {
+                    enable: false,
+                    htmlTextContent: '',
+                    styleTextContent: '',
+                    scriptTextContent: '',
+                }
             }
             const userConfig = this.load()
             if (userConfig) {
-                Object.assign(this.timeRender, userConfig.timeRender)
+                Utils.deepMerge(this.timeRender, userConfig.timeRender)
             }
         }
 
@@ -341,7 +467,7 @@
          * @param newConfig 新的配置
          */
         update(newConfig) {
-            Object.assign(this.timeRender, newConfig.timeRender)
+            Utils.deepMerge(this.timeRender, newConfig.timeRender)
             this.save()
         }
     }
@@ -349,72 +475,56 @@
     class StyleService extends Component {
         init() {
             this.styles = new Map()
-            this._initStyleElement()
-            this._reRenderStyle()
         }
 
         /**
-         * 初始化样式元素，该元素用于存放动态生成的样式
-         * @private
-         */
-        _initStyleElement() {
-            const styleElement = document.createElement('style');
-            styleElement.type = 'text/css';
-            document.head.appendChild(styleElement);
-            this.styleEle = styleElement;
-        }
-
-        /**
-         * 更新样式选择器的样式，合并原有样式和新样式
+         * 更新样式
          *
-         * @param selector  选择器，例如 '.chatgpt-time' 表示选择 class 为 chatgpt-time 的元素
-         * @param style     样式，字典对象，例如 {'font-size': '14px', 'color': '#666'}
+         * @param key           样式的 key，字符串对象
+         * @param styleContent  样式，字符串对象
          */
-        updateStyle(selector, style) {
-            const newStyle = Object.assign({}, this.styles.get(selector), style)
-            this.styles.set(selector, newStyle)
-            this._reRenderStyle()
+        updateStyle(key, styleContent) {
+            this.removeStyle(key)
+            const styleNode = document.createElement('style')
+            styleNode.textContent = styleContent
+            document.head.appendChild(styleNode)
+            this.styles.set(key, styleNode)
         }
 
         /**
-         * 重置一个样式选择器的样式，覆盖原有样式
+         * 移除样式
          *
-         * @param selector  选择器，例如 '.chatgpt-time' 表示选择 class 为 chatgpt-time 的元素
-         * @param style     样式，字典对象，例如 {'font-size': '14px', 'color': '#666'}
+         * @param key   样式的 key，字符串对象
          */
-        resetOneSelector(selector, style) {
-            this.styles.set(selector, style)
-            this._reRenderStyle()
-        }
-
-        /**
-         * 重置多个样式选择器的样式，覆盖原有样式
-         *
-         * @param selectors 选择器数组，例如 ['.chatgpt-time', '.chatgpt-time2']
-         * @param styles    样式数组，例如 [{'font-size': '14px', 'color': '#666'}, {'font-size': '16px', 'color': '#666'}]
-         */
-        resetBatchSelectors(selectors, styles) {
-            for (let i = 0; i < selectors.length; i++) {
-                this.styles.set(selectors[i], styles[i])
+        removeStyle(key) {
+            let styleNode = this.styles.get(key)
+            if (styleNode) {
+                document.head.removeChild(styleNode)
+                this.styles.delete(key)
             }
-            this._reRenderStyle()
+        }
+    }
+
+    class JavaScriptService extends Component {
+        init() {
+            this.javaScriptNodes = new Map()
         }
 
-        /**
-         * 重新渲染样式，即把 this.styles 中的样式同步到 style 元素中。
-         * 该方法会清空原有的样式，然后重新生成。
-         * @private
-         */
-        _reRenderStyle() {
-            let styleText = ''
-            for (let [selector, style] of this.styles) {
-                let styleStr = ''
-                for (let [key, value] of Object.entries(style)) {
-                    styleStr += `${key}: ${value};`
-                }
-                styleText += `${selector} {${styleStr}}`
+        updateJavaScript(key, textContent) {
+            this.removeJavaScript(key)
+            const scriptNode = document.createElement('script')
+            scriptNode.type = 'text/javascript'
+            scriptNode.textContent = textContent
+            document.body.appendChild(scriptNode)
+            this.javaScriptNodes.set(key, scriptNode)
+        }
+
+        removeJavaScript(key) {
+            let scriptNode = this.javaScriptNodes.get(key)
+            if (scriptNode) {
+                document.body.removeChild(scriptNode)
+                this.javaScriptNodes.delete(key)
             }
-            this.styleEle.innerHTML = styleText
         }
     }
 
@@ -522,12 +632,13 @@
          */
         _initMonitorFetch() {
             const that = this;
+            const urlRegex = new RegExp("^https://chat\\.openai\\.com/backend-api/conversation/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
             unsafeWindow.fetch = (...args) => {
                 return that.originalFetch.apply(this, args)
                     .then(response => {
-                        // 克隆响应对象以便独立处理响应体
-                        const clonedResponse = response.clone();
-                        if (response.url.includes('https://chat.openai.com/backend-api/conversation/')) {
+                        if (urlRegex.test(response.url)) {
+                            // 克隆响应对象以便独立处理响应体
+                            const clonedResponse = response.clone();
                             clonedResponse.json().then(data => {
                                 that._parseConversationJsonData(data);
                             }).catch(error => Logger.error('解析响应体失败:', error));
@@ -612,30 +723,50 @@
     }
 
     class TimeRendererService extends Component {
+
         constructor() {
             super();
             this.messageService = null
             this.userConfig = null
             this.styleService = null
-            this.dependencies = [{field: 'messageService', clazz: MessageService}, {
-                field: 'userConfig', clazz: UserConfig
-            }, {field: 'styleService', clazz: StyleService},]
+            this.javaScriptService = null
+            this.dependencies = [
+                {field: 'messageService', clazz: MessageService},
+                {field: 'userConfig', clazz: UserConfig},
+                {field: 'styleService', clazz: StyleService},
+                {field: 'javaScriptService', clazz: JavaScriptService},
+            ]
         }
 
         init() {
+            unsafeWindow.beforeCreateTimeTag = (messageId, timeTagHTML) => {
+            }
+            unsafeWindow.afterCreateTimeTag = (messageId, timeTagNode) => {
+            }
             this.messageToBeRendered = []
             this.messageCountOfFailedToRender = new Map()
-            this._initStyle()
+            this._setStyleAndJavaScript()
             this._initRender()
         }
 
         /**
-         * 初始化与时间有关的样式
+         * 若为高级模式则设置用户自定义的样式和脚本，否则设置默认样式
+         *
          * @private
          */
-        _initStyle() {
-            this.styleService.resetBatchSelectors(SystemConfig.TimeRender.Selectors.map(item => item.Selector), SystemConfig.TimeRender.Selectors.map(item => item.Style))
-            this.styleService.resetOneSelector(`.${SystemConfig.TimeRender.TimeClassName}`, SystemConfig.TimeRender.RenderModeStyles[this.userConfig.timeRender.mode])
+        _setStyleAndJavaScript() {
+            this.styleService.updateStyle(SystemConfig.TimeRender.BasicStyleKey, SystemConfig.TimeRender.RenderModeStyles[this.userConfig.timeRender.mode])
+            if (this.userConfig.timeRender.advanced.enable) {
+                this.styleService.updateStyle(SystemConfig.TimeRender.AdditionalStyleKey, this.userConfig.timeRender.advanced.styleTextContent)
+                this.javaScriptService.updateJavaScript(SystemConfig.TimeRender.AdditionalScriptKey, this.userConfig.timeRender.advanced.scriptTextContent)
+            } else {
+                this.styleService.removeStyle(SystemConfig.TimeRender.AdditionalStyleKey)
+                unsafeWindow.beforeCreateTimeTag = (messageId, timeTagHTML) => {
+                }
+                unsafeWindow.afterCreateTimeTag = (messageId, timeTagNode) => {
+                }
+                this.javaScriptService.removeJavaScript(SystemConfig.TimeRender.AdditionalScriptKey)
+            }
         }
 
         /**
@@ -658,7 +789,8 @@
             if (!messageIdArray || !(messageIdArray instanceof Array)) {
                 return
             }
-            messageIdArray.forEach(messageId => this.addMessageToBeRendered(messageId))
+            this.messageToBeRendered.push(...messageIdArray)
+            Logger.debug(`添加ID ${messageIdArray} 到待渲染队列，当前队列 ${this.messageToBeRendered}`)
         }
 
         /**
@@ -676,85 +808,105 @@
         _initRender() {
             const that = this
 
-            function processTimeRender() {
+            async function processTimeRender() {
                 const start = new Date().getTime();
                 let completeCount = 0;
                 let totalCount = that.messageToBeRendered.length;
                 const messageToBeRenderedClone = that.messageToBeRendered.slice()
                 that.messageToBeRendered = []
+                let count = 0;
                 for (let messageId of messageToBeRenderedClone) {
-                    new Promise(resolve => {
-                        resolve(that._renderTime(messageId))
-                    }).then((result) => {
+                    count++;
+                    if (count <= SystemConfig.TimeRender.BatchSize && new Date().getTime() - start <= SystemConfig.TimeRender.BatchTimeout) {
+                        const result = await that._renderTime(messageId)
                         if (!result) {
-                            Logger.debug(`ID ${messageId} 渲染失败，当前渲染进度 ${completeCount}/${totalCount}`)
-                            let count = that.messageCountOfFailedToRender.get(messageId)
-                            if (count && count >= SystemConfig.TimeRender.RenderRetryCount) {
+                            let countOfFailed = that.messageCountOfFailedToRender.get(messageId)
+                            if (countOfFailed && countOfFailed >= SystemConfig.TimeRender.RenderRetryCount) {
                                 Logger.debug(`ID ${messageId} 渲染失败次数超过 ${SystemConfig.TimeRender.RenderRetryCount} 次，将不再尝试。`)
                                 that.messageCountOfFailedToRender.delete(messageId)
                             } else {
                                 that.messageToBeRendered.push(messageId);
-                                if (count) {
-                                    that.messageCountOfFailedToRender.set(messageId, count + 1)
+                                if (countOfFailed) {
+                                    that.messageCountOfFailedToRender.set(messageId, countOfFailed + 1)
                                 } else {
                                     that.messageCountOfFailedToRender.set(messageId, 1)
                                 }
                             }
                         } else {
                             completeCount++
-                            Logger.debug(`ID ${messageId} 渲染完成，当前渲染进度 ${completeCount}/${totalCount}`)
                             that.messageCountOfFailedToRender.delete(messageId)
                         }
-                    })
+                        Logger.debug(`ID ${messageId} 渲染${result ? '成功' : '失败'}，当前渲染进度 ${completeCount}/${totalCount}，该批次耗时 ${new Date().getTime() - start}ms`)
+                    } else {
+                        for (let i = count; i < messageToBeRenderedClone.length; i++) {
+                            that.messageToBeRendered.push(messageToBeRenderedClone[i])
+                        }
+                        if (count > SystemConfig.TimeRender.BatchSize) {
+                            Logger.debug(`本批次渲染数量超过 ${SystemConfig.TimeRender.BatchSize}，将继续下一批次渲染。`)
+                            break;
+                        }
+                        if (new Date().getTime() - start > SystemConfig.TimeRender.BatchTimeout) {
+                            Logger.debug(`本批次渲染超时，将继续下一批次渲染。`)
+                            break;
+                        }
+                    }
                 }
                 const end = new Date().getTime();
                 Logger.debug(`处理当前ID队列渲染 ${messageToBeRenderedClone} 耗时 ${end - start}ms`)
                 setTimeout(processTimeRender, SystemConfig.TimeRender.Interval);
             }
 
-            processTimeRender()
+            processTimeRender().then(r => Logger.debug('初始化渲染时间定时器完成'))
         }
 
         /**
          * 将时间渲染到目标位置，如果检测到目标位置已经存在时间元素则更新时间，否则创建时间元素并插入到目标位置。
          *
          * @param messageId     消息 ID
-         * @returns {boolean}   返回是否渲染成功
+         * @returns {Promise}   返回是否渲染成功的 Promise 对象
          * @private
          */
         _renderTime(messageId) {
-            const messageElementBo = this.messageService.getMessageElement(messageId);
-            const messageBo = this.messageService.getMessage(messageId);
-            if (!messageElementBo || !messageBo) return false;
-            const timeElement = messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`);
-            const element = this._createTimeElement(messageBo.timestamp);
-            if (!timeElement) {
-                switch (this.userConfig.timeRender.mode) {
-                    case 'AfterRoleLeft':
-                    case 'AfterRoleRight':
-                    case 'BelowRole':
-                        messageElementBo.roleEle.innerHTML += element.timeElementHTML
-                        break;
+            return new Promise(resolve => {
+                const messageElementBo = this.messageService.getMessageElement(messageId);
+                const messageBo = this.messageService.getMessage(messageId);
+                if (!messageElementBo || !messageBo) resolve(false)
+                const timeElement = messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`);
+                const element = this._createTimeElement(messageBo.timestamp);
+                if (!timeElement) {
+                    unsafeWindow.beforeCreateTimeTag(messageId, element.timeTagContainer)
+                    switch (this.userConfig.timeRender.mode) {
+                        case 'AfterRoleLeft':
+                        case 'AfterRoleRight':
+                        case 'BelowRole':
+                            messageElementBo.roleEle.innerHTML += element.timeTagContainer
+                            break;
+                    }
+                    unsafeWindow.afterCreateTimeTag(messageId, messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`))
+                } else {
+                    timeElement.innerHTML = element.timeTagFormated
                 }
-            } else {
-                timeElement.innerHTML = element.timeString
-            }
-            return true;
+                resolve(true)
+            })
         }
 
         /**
-         * 创建时间元素
+         * 创建时间元素，如果开启高级模式则使用用户自定义的时间格式，否则使用默认时间格式。
          *
          * @param timestamp 时间戳，浮点数或整数类型，单位毫秒，例如 1714398759.26881、1714398759
-         * @returns {{timeString, timeElementHTML: string}} 返回时间字符串和时间元素的 HTML
+         * @returns {{timeTagFormated, timeTagContainer: string}} 返回格式化后的时间标签 和 包含时间标签的容器的 HTML 字符串
          * @private
          */
         _createTimeElement(timestamp) {
-            const time = Utils.calculateTime(timestamp);
-            const timeString = Utils.formatDateTime(time.year, time.month, time.day, time.hours, time.minutes, time.seconds, time.milliseconds, this.userConfig.timeRender.format);
-            let timeElementHTML = `<span class="${SystemConfig.TimeRender.TimeClassName}">${timeString}</span>`;
+            let timeTagFormated = ''
+            if (this.userConfig.timeRender.advanced.enable) {
+                timeTagFormated = Utils.formatDateTimeByDate(new Date(timestamp), this.userConfig.timeRender.advanced.htmlTextContent)
+            } else {
+                timeTagFormated = Utils.formatDateTimeByDate(new Date(timestamp), this.userConfig.timeRender.format);
+            }
+            const timeTagContainer = `<span class="${SystemConfig.TimeRender.TimeClassName}">${timeTagFormated}</span>`;
             return {
-                timeString, timeElementHTML,
+                timeTagFormated, timeTagContainer,
             };
         }
 
@@ -773,7 +925,7 @@
          * 重新渲染时间元素，强制拉取所有消息 ID 重新渲染
          */
         reRender() {
-            this.styleService.resetOneSelector(`.${SystemConfig.TimeRender.TimeClassName}`, SystemConfig.TimeRender.RenderModeStyles[this.userConfig.timeRender.mode])
+            this._setStyleAndJavaScript()
             this._cleanAllTimeElements()
             this.addMessageArrayToBeRendered(Array.from(this.messageService.messages.keys()))
         }
@@ -784,11 +936,17 @@
         constructor() {
             super();
             this.userConfig = null
+            this.styleService = null
             this.timeRendererService = null
             this.messageService = null
-            this.dependencies = [{field: 'userConfig', clazz: UserConfig}, {
-                field: 'timeRendererService', clazz: TimeRendererService
-            }, {field: 'messageService', clazz: MessageService},]
+            this.javascriptService = null
+            this.dependencies = [
+                {field: 'userConfig', clazz: UserConfig},
+                {field: 'styleService', clazz: StyleService},
+                {field: 'timeRendererService', clazz: TimeRendererService},
+                {field: 'messageService', clazz: MessageService},
+                {field: 'javascriptService', clazz: JavaScriptService},
+            ]
         }
 
         /**
@@ -801,7 +959,7 @@
             Logger.debug('开始初始化配置面板')
             await this._initStyle()
             Logger.debug('初始化样式完成')
-            await this._initScript()
+            await this._initExternalResources()
             Logger.debug('初始化脚本完成')
             await this._initPanel()
             Logger.debug('初始化面板完成')
@@ -820,125 +978,17 @@
          */
         _initVariables() {
             const that = this
-            this.panelHTML = `
-                <div id="${that.appID}" style="visibility: hidden">
-                    <div class="status-bar">
-                        <div class="title" id="${that.appID}-DraggableArea">{{title}}</div>
-                        <n-button class="close" @click="onClose" text>
-                            <n-icon size="20">
-                                ${SystemConfig.ConfigPanel.Icon.Close}
-                            </n-icon>
-                        </n-button>
-                    </div>
-                    <div class="container">
-                        <n-form :label-width="40" :model="configForm" label-placement="left">
-                            <n-form-item label="样式" path="format">
-                                <n-select v-model:value="configForm.format" filterable tag
-                                          :options="formatOptions" @update:value="onConfigUpdate"></n-select>
-                            </n-form-item>
-                            <n-form-item label="预览" path="format">
-                                <div v-html="reFormatTimeHTML(configForm.format)"></div>
-                            </n-form-item>
-                            <n-form-item label="位置" path="mode">
-                                <n-select v-model:value="configForm.mode" 
-                                          :options="modeOptions" @update:value="onConfigUpdate"></n-select>
-                            </n-form-item>
-                        </n-form>
-                        <div class="button-group">
-                            <n-button @click="onReset" :disabled="!configDirty">重置</n-button>
-                            <n-button @click="onApply">应用</n-button>
-                            <n-button @click="onConfirm">保存</n-button>
-                        </div>
-                    </div>
-                </div>`
-            this.appConfig = {
-                el: `#${that.appID}`, data() {
-                    return {
-                        timestamp: new Date().getTime(),
-                        title: "ChatGPTWithDate",
-                        formatOptions: SystemConfig.TimeRender.TimeTagTemplates.map(item => {
-                            return {label: item, value: item}
-                        }),
-                        modeOptions: [{label: '角色之后（靠左）', value: 'AfterRoleLeft'}, {
-                            label: '角色之后（居右）', value: 'AfterRoleRight'
-                        }, {label: '角色之下', value: 'BelowRole'},],
-                        configForm: {
-                            format: that.userConfig.timeRender.format,
-                            mode: that.userConfig.timeRender.mode,
-                        },
-                        config: {
-                            format: that.userConfig.timeRender.format,
-                            mode: that.userConfig.timeRender.mode,
-                        }, configDirty: false,
-                        configPanel: {
-                            display: true,
-                        },
-                    };
-                }, methods: {
-                    onApply() {
-                        this.config = Object.assign({}, this.configForm);
-                        that.updateConfig(this.config)
-                        this.configDirty = false
-                    }, onConfirm() {
-                        this.onApply()
-                        this.onClose()
-                    }, onReset() {
-                        this.configForm = Object.assign({}, this.config);
-                        this.configDirty = false
-                    }, onClose() {
-                        that.hide()
-                    }, onConfigUpdate() {
-                        this.configDirty = true
-                    }, renderTag({option, handleClose}) {
-                        return Vue.h('div', {
-                            innerHTML: this.reFormatTimeHTML(option.value)
-                        });
-                    }, renderLabel(option) {
-                        return Vue.h('div', {
-                            innerHTML: this.reFormatTimeHTML(option.value)
-                        });
-                    }, reFormatTimeHTML(html) {
-                        const {
-                            year, month, day, hours, minutes, seconds, milliseconds
-                        } = Utils.calculateTime(this.timestamp)
-                        return Utils.formatDateTime(year, month, day, hours, minutes, seconds, milliseconds, html)
-                    },
-                },
-                created() {
-                    this.timestamp = new Date().getTime()
-                    this.formatOptions.forEach(item => {
-                        item.label = this.reFormatTimeHTML(item.value)
-                    })
-                },
-                mounted() {
-                    this.timestampInterval = setInterval(() => {
-                        this.timestamp = new Date().getTime()
-                        this.formatOptions.forEach(item => {
-                            item.label = this.reFormatTimeHTML(item.value)
-                        })
-                    }, 50)
+            const TimeTagComponent = {
+                props: ['html'],
+                render() {
+                    return Vue.h('div', {innerHTML: this.html});
                 },
             }
-        }
-
-        /**
-         * 初始化样式。
-         * 同时为了避免样式冲突，在 head 元素中加入一个 <meta name="naive-ui-style" /> 元素，
-         * naive-ui 会把所有的样式刚好插入这个元素的前面。
-         * 参考 https://www.naiveui.com/zh-CN/os-theme/docs/style-conflict
-         *
-         * @returns {Promise}
-         * @private
-         */
-        _initStyle() {
-            return new Promise(resolve => {
-                const meta = document.createElement('meta');
-                meta.name = 'naive-ui-style'
-                document.head.appendChild(meta);
-                const style = `
+            this.panelStyle = `
                     .v-binder-follower-container {
                         position: fixed;
                     }
+                    
                     #CWD-Configuration-Panel {
                         position: absolute;
                         top: 50px;
@@ -951,7 +1001,7 @@
                         min-width: 200px;
                         overflow: auto;
                         color: black;
-                        opacity: 0.9;
+                        opacity: 0.95;
                     }
             
                     #CWD-Configuration-Panel .status-bar {
@@ -985,18 +1035,210 @@
                     #CWD-Configuration-Panel .container {
                         padding: 20px;
                     }
+                    
+                    #CWD-Configuration-Panel .container .code-block {
+                        padding: 10px;
+                        border: 1px solid #d9d9d9;
+                        border-radius: 4px;
+                    }
+                    
                     #CWD-Configuration-Panel .container .button-group {
                         display: flex;
                         justify-content: center;
                         gap: 10px;
                     }
+                    
                     #CWD-Configuration-Panel .container .button-group > button {
                         width: 30%;
                     }`
-                const styleEle = document.createElement('style');
-                styleEle.type = 'text/css'
-                styleEle.innerHTML = style;
-                document.head.appendChild(styleEle);
+            this.panelHTML = `
+                <div id="${that.appID}" style="visibility: visible">
+                    <div class="status-bar">
+                        <div class="title" id="${that.appID}-DraggableArea">{{title}}</div>
+                        <n-button class="close" @click="onClose" text>
+                            <n-icon size="20">
+                                ${SystemConfig.ConfigPanel.Icon.Close}
+                            </n-icon>
+                        </n-button>
+                    </div>
+                    <n-scrollbar style="max-height: 80vh">
+                        <div class="container">
+                            <n-form :label-width="40" :model="configForm" label-placement="left">
+                                <n-form-item v-show="!configForm.advanced.enable" label="模板" path="format">
+                                    <n-select v-model:value="configForm.format"
+                                              :disabled="configForm.advanced.enable" :render-label="renderLabel"
+                                              :options="formatOptions" @update:value="onConfigUpdate"></n-select>
+                                </n-form-item>
+                                <n-form-item v-show="!configForm.advanced.enable" label="预览" path="format">
+                                    <div v-html="reFormatTimeHTML(configForm.format)"></div>
+                                </n-form-item>
+                                <n-form-item v-show="!configForm.advanced.enable" label="代码" path="format">
+                                    <n-config-provider :hljs="hljs">
+                                        <div class="code-block">
+                                            <n-scrollbar style="max-height: 4em">
+                                                <n-code :code="configForm.format" language="html" word-wrap/>
+                                            </n-scrollbar>
+                                        </div>
+                                    </n-config-provider>
+                                </n-form-item>
+                                <n-form-item label="位置" path="mode">
+                                    <n-select v-model:value="configForm.mode" 
+                                              :options="modeOptions" @update:value="onConfigUpdate"></n-select>
+                                </n-form-item>
+                                <n-form-item label="高级" path="advanced.enable">
+                                    <n-switch v-model:value="configForm.advanced.enable" @update:value="onConfigUpdate" />
+                                </n-form-item>
+                                <div v-show="configForm.advanced.enable">
+                                    <n-form-item label="HTML" path="advanced.htmlTextContent">
+                                        <n-input type="textarea" placeholder="请输入 HTML 代码" :autosize="{ minRows: 1, maxRows: 5 }" 
+                                                    @keydown.tab="insertTab" @update:value="onConfigUpdate"
+                                                    v-model:value="configForm.advanced.htmlTextContent"/>
+                                    </n-form-item>
+                                    <n-form-item label="CSS" path="advanced.styleTextContent">
+                                        <n-input type="textarea" placeholder="请输入 CSS 代码" :autosize="{ minRows: 1, maxRows: 5 }"
+                                                    @keydown.tab="insertTab" @update:value="onConfigUpdate"
+                                                    v-model:value="configForm.advanced.styleTextContent"/>
+                                    </n-form-item>
+                                    <n-form-item label="JS" path="advanced.scriptTextContent">
+                                        <n-input type="textarea" placeholder="请输入 JavaScript 代码" :autosize="{ minRows: 1, maxRows: 5 }"
+                                                    @keydown.tab="insertTab" @update:value="onConfigUpdate"
+                                                    v-model:value="configForm.advanced.scriptTextContent"/>
+                                    </n-form-item>
+                                </div>
+                            </n-form>
+                            <div class="button-group">
+                                <n-button @click="onReset" :disabled="!configDirty">重置</n-button>
+                                <n-button @click="onApply">应用</n-button>
+                                <n-button @click="onConfirm">保存</n-button>
+                            </div>
+                        </div>
+                    </n-scrollbar>
+                </div>`
+            this.appConfig = {
+                el: `#${that.appID}`,
+                data() {
+                    return {
+                        hljs: hljs,
+                        date: new Date(),
+                        title: "ChatGPTWithDate",
+                        formatOptions: SystemConfig.TimeRender.TimeTagTemplates.map(item => {
+                            return {label: item, value: item}
+                        }),
+                        modeOptions: [
+                            {label: '角色之后（靠左）', value: 'AfterRoleLeft'},
+                            {label: '角色之后（居右）', value: 'AfterRoleRight'},
+                            {label: '角色之下', value: 'BelowRole'},
+                        ],
+                        configForm: {
+                            format: that.userConfig.timeRender.format,
+                            mode: that.userConfig.timeRender.mode,
+                            advanced: {
+                                enable: that.userConfig.timeRender.advanced.enable,
+                                htmlTextContent: that.userConfig.timeRender.advanced.htmlTextContent,
+                                styleTextContent: that.userConfig.timeRender.advanced.styleTextContent,
+                                scriptTextContent: that.userConfig.timeRender.advanced.scriptTextContent,
+                            },
+                        },
+                        config: {
+                            format: that.userConfig.timeRender.format,
+                            mode: that.userConfig.timeRender.mode,
+                            advanced: {
+                                enable: that.userConfig.timeRender.advanced.enable,
+                                htmlTextContent: that.userConfig.timeRender.advanced.htmlTextContent,
+                                styleTextContent: that.userConfig.timeRender.advanced.styleTextContent,
+                                scriptTextContent: that.userConfig.timeRender.advanced.scriptTextContent,
+                            },
+                        },
+                        configDirty: false,
+                        configPanel: {
+                            display: true,
+                        },
+                    };
+                },
+                methods: {
+                    onApply() {
+                        this.config = JSON.parse(JSON.stringify(this.configForm));
+                        that.updateConfig(this.config)
+                        this.configDirty = false
+                    },
+                    onConfirm() {
+                        this.onApply()
+                        this.onClose()
+                    },
+                    onReset() {
+                        this.configForm = JSON.parse(JSON.stringify(this.config));
+                        this.configDirty = false
+                    },
+                    onClose() {
+                        that.hide()
+                    },
+                    onConfigUpdate() {
+                        this.configDirty = true
+                    },
+                    renderLabel(option) {
+                        return Vue.h(TimeTagComponent, {
+                            html: option.label,
+                        })
+                    },
+                    reFormatTimeHTML(html) {
+                        return Utils.formatDateTimeByDate(this.date, html)
+                    },
+                    insertTab(event) {
+                        if (!event.shiftKey) {  // 确保不是 Shift + Tab 组合
+                            event.preventDefault();  // 阻止 Tab 键的默认行为
+                            // 尝试使用 execCommand 插入四个空格
+                            if (document.queryCommandSupported('insertText')) {
+                                document.execCommand('insertText', false, '    ');
+                            } else { // 如果浏览器不支持 execCommand，回退到原始方法（不支持撤销）
+                                const start = event.target.selectionStart;
+                                const end = event.target.selectionEnd;
+                                const value = event.target.value;
+                                event.target.value = value.substring(0, start) + "    " + value.substring(end);
+                                // 移动光标位置到插入的空格后
+                                event.target.selectionStart = event.target.selectionEnd = start + 4;
+                                // 触发 input 事件更新 v-model
+                                this.$nextTick(() => {
+                                    event.target.dispatchEvent(new Event('input'));
+                                });
+                            }
+                        }
+                    }
+                },
+                created() {
+                    this.date = new Date()
+                    this.formatOptions.forEach(item => {
+                        item.label = this.reFormatTimeHTML(item.value)
+                    })
+                },
+                mounted() {
+                    this.timestampInterval = setInterval(() => {
+                        this.date = new Date()
+                        this.formatOptions.forEach(item => {
+                            item.label = this.reFormatTimeHTML(item.value)
+                        })
+                    }, 50)
+                },
+                beforeUnmount() {
+                    clearInterval(this.timestampInterval)
+                },
+            }
+        }
+
+        /**
+         * 初始化样式。
+         * 同时为了避免样式冲突，在 head 元素中加入一个 <meta name="naive-ui-style" /> 元素，
+         * naive-ui 会把所有的样式刚好插入这个元素的前面。
+         * 参考 https://www.naiveui.com/zh-CN/os-theme/docs/style-conflict
+         *
+         * @returns {Promise}
+         * @private
+         */
+        _initStyle() {
+            return new Promise(resolve => {
+                const meta = document.createElement('meta');
+                meta.name = 'naive-ui-style'
+                document.head.appendChild(meta);
+                this.styleService.updateStyle(SystemConfig.ConfigPanel.StyleKey, this.panelStyle)
                 resolve()
             })
         }
@@ -1008,28 +1250,44 @@
          * @returns {Promise}
          * @private
          */
-        _initScript() {
+        _initExternalResources() {
             return new Promise(resolve => {
                 let completeCount = 0;
+                const resources = [
+                    {type: 'js', url: 'https://unpkg.com/vue@3.4.26/dist/vue.global.js'},
+                    {type: 'js', url: 'https://unpkg.com/naive-ui@2.38.1/dist/index.js'},
+                    {type: 'css', url: 'https://unpkg.com/@highlightjs/cdn-assets@11.9.0/styles/default.min.css'},
+                    {type: 'js', url: 'https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js'},
+                ]
                 const addScript = (content) => {
                     let script = document.createElement('script');
                     script.textContent = content;
                     document.body.appendChild(script);
                     completeCount++;
-                    if (completeCount === 2) {
+                    if (completeCount === resources.length) {
                         resolve()
                     }
                 }
-                GM_xmlhttpRequest({
-                    method: "GET", url: "https://unpkg.com/vue@3.4.26/dist/vue.global.js", onload: function (response) {
-                        addScript(response.responseText);
+                const addStyle = (content) => {
+                    let style = document.createElement('style');
+                    style.textContent = content;
+                    document.head.appendChild(style);
+                    completeCount++;
+                    if (completeCount === resources.length) {
+                        resolve()
                     }
-                });
-                GM_xmlhttpRequest({
-                    method: "GET", url: "https://unpkg.com/naive-ui@2.38.1/dist/index.js", onload: function (response) {
-                        addScript(response.responseText);
-                    }
-                });
+                }
+                resources.forEach(resource => {
+                    GM_xmlhttpRequest({
+                        method: "GET", url: resource.url, onload: function (response) {
+                            if (resource.type === 'js') {
+                                addScript(response.responseText);
+                            } else if (resource.type === 'css') {
+                                addStyle(response.responseText);
+                            }
+                        }
+                    });
+                })
                 // 以下方法有 CSP 限制
                 // const naiveScript = document.createElement('script');
                 // naiveScript.setAttribute("type", "text/javascript");
@@ -1209,7 +1467,11 @@
     }
 
     class Main {
-        static ComponentsConfig = [UserConfig, StyleService, MessageService, MonitorService, TimeRendererService, ConfigPanelService,]
+        static ComponentsConfig = [
+            UserConfig, StyleService, MessageService,
+            MonitorService, TimeRendererService, ConfigPanelService,
+            JavaScriptService,
+        ]
 
         constructor() {
             for (let componentClazz of Main.ComponentsConfig) {
