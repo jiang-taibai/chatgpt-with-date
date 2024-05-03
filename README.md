@@ -19,16 +19,13 @@
 
 提供多种配置选项，例如时间显示格式、时间显示位置等。
 
-![配置面板示意图](https://cdn.coderjiang.com/project/chatgpt-with-date/introduction-to-configuration-panel.gif)
+![配置面板高级使用](https://cdn.coderjiang.com/project/chatgpt-with-date/configuration-panel-basic.gif)
 
-除此之外，时间样式高度自定义，你可以输入以下 html
-代码来实现上图的效果。具体的时间格式化规则请参考 [3.1 时间格式](#time-format)
+如果你了解网页三剑客（HTML、CSS、JavaScript），你完全可以高度自定义时间样式。
 
-```html
-<span style="border-radius: 8px; color: #E0E0E0; font-size: 0.9em; overflow: hidden; display: inline-block;"><span
-        style="background: #333; padding: 2px 4px 2px 10px; display: inline-block;">{yyyy}-{MM}-{dd}</span><span
-        style="background: #606060; padding: 2px 10px 2px 4px; display: inline-block;">{HH}:{mm}:{ss}</span></span>
-```
+![配置面板高级使用](https://cdn.coderjiang.com/project/chatgpt-with-date/configuration-panel-advanced.gif)
+
+我们将在第三节介绍如上图所示的配置以及更多的规则。
 
 ## 2. 使用方法
 
@@ -45,7 +42,7 @@
 
 首次使用请允许跨源资源共享（CORS）请求，本项目将请求 Vue.js 和 NaiveUI 的资源，以便生成配置面板。
 
-![](https://cdn.coderjiang.com/project/chatgpt-with-date/cross-domain-resource-request.jpg)
+![允许跨源资源共享请求](https://cdn.coderjiang.com/project/chatgpt-with-date/cross-domain-resource-request.jpg)
 
 打开 ChatGPT 页面，即可看到消息时间。你可以在此处打开配置面板。
 
@@ -53,40 +50,37 @@
 
 ## 3. 配置
 
-<a name="time-format"></a>
-
 ### 3.1 时间格式
 
-默认支持的时间格式有（文章平台不同可能无法正常显示）：
+支持的时间元素有（以 2024年4月3日18点9分1秒999毫秒周五 为例）
 
-| 模板                                                                                                                                                                                                                                                                                                                                        | 样例                                                                                                                                                                                                                                                                                                                          |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`                                                                                                                                                                                                                                                                                            | <span>2000-12-31 00:00:00</span>                                                                                                                                                                                                                                                                                            |
-| `<span>{MM}/{dd}/{yyyy} {HH}:{mm}:{ss}</span>`                                                                                                                                                                                                                                                                                            | <span>12/31/2000 00:00:00</span>                                                                                                                                                                                                                                                                                            |
-| `<span>{MM}-{dd} {HH}:{mm}:{ss}</span>`                                                                                                                                                                                                                                                                                                   | <span>12-31 00:00:00</span>                                                                                                                                                                                                                                                                                                 |
-| `<span>{MM}-{dd} {HH}:{mm}</span>`                                                                                                                                                                                                                                                                                                        | <span>12-31 00:00</span>                                                                                                                                                                                                                                                                                                    |
-| `<span>{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}</span>`                                                                                                                                                                                                                                                                                       | <span>2000-12-31 00:00:00.000</span>                                                                                                                                                                                                                                                                                        |
-| `<span style="background: #2B2B2B;border-radius: 8px;padding: 1px 10px;color: #717171;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`                                                                                                                                                                                                           | <span style="background: #2B2B2B;border-radius: 8px;padding: 1px 10px;color: #717171;">2000-12-31 00:00:00</span>                                                                                                                                                                                                           |
-| `<span style="border-radius: 8px; color: #E0E0E0; font-size: 0.9em; overflow: hidden; display: inline-block;"><span style="background: #333; padding: 2px 4px 2px 10px; display: inline-block;">{yyyy}-{MM}-{dd}</span><span style="background: #606060; padding: 2px 10px 2px 4px; display: inline-block;">{HH}:{mm}:{ss}</span></span>` | <span style="border-radius: 8px; color: #E0E0E0; font-size: 0.9em; overflow: hidden; display: inline-block;"><span style="background: #333; padding: 2px 4px 2px 10px; display: inline-block;">2000-12-13</span><span style="background: #606060; padding: 2px 10px 2px 4px; display: inline-block;">00:00:00</span></span> |
-
-支持的时间元素有：
-
-- `{yyyy}`: 年份
-- `{MM}`: 月份
-- `{dd}`: 日期
-- `{HH}`: 小时
-- `{mm}`: 分钟
-- `{ss}`: 秒
-- `{ms}`: 毫秒
-
-你完全可以自定义时间格式，只需要输入你想要的 html 代码即可，脚本将替换上面的模板时间元素为当前时间的相应数据。
-在介绍中已经给出了一个示例：
-
-```html
-<span style="border-radius: 8px; color: #E0E0E0; font-size: 0.9em; overflow: hidden; display: inline-block;"><span
-        style="background: #333; padding: 2px 4px 2px 10px; display: inline-block;">{yyyy}-{MM}-{dd}</span><span
-        style="background: #606060; padding: 2px 10px 2px 4px; display: inline-block;">{HH}:{mm}:{ss}</span></span>
-```
+| 元素                                         | 介绍      | 示例     |
+|--------------------------------------------|---------|--------|
+| `{yyyy}`                                   | 四位的年份   | 2024   |
+| `{yy}`                                     | 两位的年份   | 24     |
+| `{MM}`, `{MM:02}`                          | 至少两位的月份 | 04     |
+| `{MM:01}`                                  | 至少一位的月份 | 4      |
+| `{MM#name@zh}`                             | 中文月份    | 四      |
+| `{MM#name@en}`, `{MM#fullname@en}`         | 英文月份    | April  |
+| `{MM#shortname@en}`                        | 英文缩写月份  | Apr    |
+| `{dd}`, `{dd:02}`                          | 当前月已过天数 | 03     |
+| `{dd:01}`                                  | 当前月已过天数 | 3      |
+| `{HH}`, `{HH:02}`, `{HH#24}`, `{HH#24:02}` | 小数      | 18     |
+| `{HH:01}`, `{HH#24:01}`                    | 小时      | 18     |
+| `{HH#12}`, `{HH#12:02}`                    | 12小时制小时 | 06     |
+| `{HH#12:01}`                               | 12小时制小时 | 6      |
+| `{HH#tag}`, `{HH#tag@en}`                  | 上下午     | PM     |
+| `{HH#tag@zh}`                              | 上下午     | 下午     |
+| `{mm}`, `{mm:02}`                          | 分钟      | 09     |
+| `{mm:01}`                                  | 分钟      | 9      |
+| `{ss}`, `{ss:02}`                          | 秒数      | 01     |
+| `{ss:01}`                                  | 秒数      | 1      |
+| `{ms}`                                     | 毫秒      | 999    |
+| `{week}`, `{week:02}`                      | 星期      | 05     |
+| `{week:01}`                                | 星期      | 5      |
+| `{week#name@zh}`                           | 中文星期    | 五      |
+| `{week#name@en}`, `{week#fullname@en}`     | 英文星期    | Friday |
+| `{week#shortname@en}`                      | 英文缩写星期  | Fri    |
 
 ### 3.2 时间位置
 
@@ -96,6 +90,114 @@
 - `角色之后（靠右）`: 时间显示在角色名字的后面，并靠右显示。
 - `角色之下`: 时间显示在角色名字下方。
 
+### 3.3 高级配置
+
+高级配置提供了更多的自定义选项，你可以自定义时间标签的 HTML、CSS、JavaScript 代码。
+
+#### (1) 生命周期钩子函数
+
+本项目提供了两个生命周期钩子函数，分别是 `window.beforeCreateTimeTag(messageId, timeTagHTML)` 和 `window.afterCreateTimeTag(messageId, timeTagNode)`。
+
+- `window.beforeCreateTimeTag(messageId, timeTagHTML)`: 在创建时间标签之前调用，你可以在这里修改时间标签的 HTML 内容。
+  - `messageId`: 消息的 ID。
+  - `timeTagHTML`: 时间标签的 HTML 内容。
+- `window.afterCreateTimeTag(messageId, timeTagNode)`: 在创建时间标签之后调用，你可以在这里修改时间标签的 DOM 节点。
+  - `messageId`: 消息的 ID。
+  - `timeTagNode`: 时间标签的 DOM 节点。
+
+#### (2) 示例
+
+在介绍章节中，我们展示了如何使用高级配置功能来显示一个可以将日期显示为几天前的时间标签，下面是具体的代码：
+
+```html
+<div class="text-tag-box">
+    <span class="date">{yyyy}-{MM}-{dd}</span>
+    <span class="time">{HH}:{mm}:{ss}</span>
+</div>
+```
+
+```css
+.text-tag-box {
+    border-radius: 8px;
+    color: #E0E0E0;
+    font-size: 0.9em;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.text-tag-box .date {
+    background: #333;
+    float: left;
+    padding: 2px 8px 2px 10px;
+    display: inline-block;
+    transition: width 0.5s ease-out;
+    white-space: nowrap;
+}
+
+.text-tag-box .time {
+    background: #606060;
+    float: left;
+    padding: 2px 10px 2px 8px;
+    display: inline-block;
+}
+```
+
+```javascript
+// 建议将以下代码放在一个 IIFE 中，以避免全局变量污染
+(() => {
+    const getNewWidth = (targetNode, text) => {
+        // 创建一个临时元素来测量文本宽度
+        const temp = targetNode.cloneNode();
+        temp.style.width = 'auto'; // 自动宽度
+        temp.style.visibility = 'hidden'; // 隐藏元素，不影响布局
+        temp.style.position = 'absolute'; // 避免影响其他元素
+        temp.style.whiteSpace = 'nowrap'; // 无换行
+        temp.innerText = text;
+        document.body.appendChild(temp);
+        const newWidth = temp.offsetWidth;
+        document.body.removeChild(temp);
+        return newWidth;
+    }
+
+    window.afterCreateTimeTag = (messageId, timeTagNode) => {
+        const dateNode = timeTagNode.querySelector('.date');
+        const date = dateNode.innerText;
+        const originalWidth = getNewWidth(dateNode, date);
+        const paddingWidth = 18;
+        dateNode.style.width = `${originalWidth + paddingWidth}px`;
+
+        timeTagNode.addEventListener('mouseover', () => {
+            const now = new Date();
+            const offset = now - new Date(date);
+            const days = Math.floor(offset / (24 * 60 * 60 * 1000));
+            let text = '';
+            if (days < 1)
+                text = '今天';
+            else if (days < 2)
+                text = '昨天';
+            else if (days < 3)
+                text = '前天';
+            else if (days < 7)
+                text = `${days}天前`;
+            else if (days < 30)
+                text = `${Math.floor(days / 7)}周前`;
+            else if (days < 365)
+                text = `${Math.floor(days / 30)}个月前`;
+            else
+                text = `${Math.floor(days / 365)}年前`;
+            dateNode.innerText = text;
+            dateNode.style.width = `${getNewWidth(dateNode, text) + paddingWidth}px`
+        });
+
+        // 鼠标移出 timeTagNode 时恢复 dateNode 的内容为原来的日期
+        timeTagNode.addEventListener('mouseout', () => {
+            dateNode.innerText = date;
+            dateNode.style.width = `${originalWidth + paddingWidth}px`
+        });
+    }
+})()
+```
+
 ## 4. 反馈
 
 如果你有任何问题或建议，欢迎在 [GitHub Issues](https://github.com/jiang-taibai/chatgpt-with-date/issues)
@@ -104,9 +206,11 @@
 ## 5. 未来计划
 
 - [ ] 国际化：脚本支持多种语言（日志、提示等）。
-- [ ] 时间格式化细粒度配置面板：优化时间格式自定义功能，而不是难以维护的 HTML字符串 表示。
-- [ ] 时间格式化元素：支持更多的时间格式化元素，例如星期、月份（英文）等。
-- [ ] 时间格式化规则：支持更多的时间格式化规则，例如 12 小时制、24 小时制等。
+- [x] 时间格式化细粒度配置面板：优化时间格式自定义功能，而不是难以维护的 HTML字符串 表示。
+- [x] 时间格式化元素：支持更多的时间格式化元素，例如星期、月份（英文）等。
+- [x] 时间格式化规则：支持更多的时间格式化规则，例如 12 小时制、24 小时制等。
+- [ ] 支持分享的界面：支持显示 `https://chat.openai.com/share/uuid` 的界面（即分享的聊天界面）的时间。
+- [ ] 主题网站：提供一个主题网站，展示用户分享的时间标签主题。
 
 ## 6. 开源协议
 
@@ -235,28 +339,28 @@ graph TD
 ```javascript
 function loadScript() {
     return new Promise(resolve => {
-        // ✅✅ 以下方法没有 CSP 限制
         let completeCount = 0;
+        const resources = [
+            {type: 'js', url: 'https://unpkg.com/vue@3.4.26/dist/vue.global.js'},
+            {type: 'js', url: 'https://unpkg.com/naive-ui@2.38.1/dist/index.js'},
+        ]
         const addScript = (content) => {
             let script = document.createElement('script');
             script.textContent = content;
             document.body.appendChild(script);
             completeCount++;
-            if (completeCount === 2) {
+            if (completeCount === resources.length) {
                 resolve()
             }
         }
-        GM_xmlhttpRequest({
-            method: "GET", url: "https://unpkg.com/vue@3.4.26/dist/vue.global.js", onload: function (response) {
-                addScript(response.responseText);
-            }
-        });
-        GM_xmlhttpRequest({
-            method: "GET", url: "https://unpkg.com/naive-ui@2.38.1/dist/index.js", onload: function (response) {
-                addScript(response.responseText);
-            }
-        });
-        // ❎❎ 以下方法有 CSP 限制
+        resources.forEach(resource => {
+            GM_xmlhttpRequest({
+                method: "GET", url: resource.url, onload: function (response) {
+                    addScript(response.responseText);
+                }
+            });
+        })
+        // 以下方法有 CSP 限制
         // const naiveScript = document.createElement('script');
         // naiveScript.setAttribute("type", "text/javascript");
         // naiveScript.text = "https://unpkg.com/naive-ui@2.38.1/dist/index.js";
@@ -267,7 +371,15 @@ function loadScript() {
 
 ## X. Changelog
 
-```markdown
+- v1.2.0 - 2024-05-03 21:26:43
+    - 优化：限制每次渲染时间标签的次数以及总时长，避免页面卡顿
+    - 优化：设置时间标签渲染函数异步执行，避免阻塞页面渲染
+    - 优化：修改 Fetch 劫持 URL 匹配规则，更加精确以免干扰其他请求。并在 URL 匹配成功时才进行具体的劫持操作
+    - 优化：选择模板时直接显示时间格式的示例，而不是冰冷的模板HTML字符串
+    - 新功能：添加更多时间格式的元素，例如星期、月份（英文）等
+    - 新功能：添加更多时间格式化规则，例如 12 小时制、24 小时制等
+    - 新功能：提供自定义样式的 HTML、CSS、JavaScript 的代码编辑器与注入系统
+    - 新功能：提供创建时间标签的生命周期钩子函数 `window.beforeCreateTimeTag(messageId, timeTagHTML)`
+      和 `window.afterCreateTimeTag(messageId, timeTagNode)`
 - v1.1.0 - 2024-05-02 17:50:04
     - 添加更多时间格式的模板
-```
