@@ -6,7 +6,6 @@
 // @author          CoderJiang
 // @license         MIT
 // @match           https://chat.openai.com/*
-// @match           https://tools.coderjiang.com/apps/blank/*
 // @icon            https://cdn.coderjiang.com/project/chatgpt-with-date/logo.svg
 // @grant           GM_xmlhttpRequest
 // @grant           GM_registerMenuCommand
