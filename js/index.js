@@ -1051,7 +1051,7 @@
                         width: 30%;
                     }`
             this.panelHTML = `
-                <div id="${that.appID}" style="visibility: visible">
+                <div id="${that.appID}" style="visibility: hidden">
                     <div class="status-bar">
                         <div class="title" id="${that.appID}-DraggableArea">{{title}}</div>
                         <n-button class="close" @click="onClose" text>
