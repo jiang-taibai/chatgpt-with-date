@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name            ChatGPT with Date
 // @namespace       https://github.com/jiang-taibai/chatgpt-with-date
-// @version         1.2.0
+// @version         1.2.2
 // @description     Tampermonkey plugin for displaying ChatGPT historical and real-time conversation time. 显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @author          CoderJiang
 // @license         MIT
 // @match           https://chat.openai.com/*
+// @match           https://chatgpt.com/*
 // @icon            https://cdn.coderjiang.com/project/chatgpt-with-date/logo.svg
 // @grant           GM_xmlhttpRequest
 // @grant           GM_registerMenuCommand
@@ -291,7 +292,7 @@
         static EnableInfo = true
         static EnableWarn = true
         static EnableError = true
-        static EnableTable = true
+        static EnableTable = false
 
         static prefix(type = 'INFO') {
             const timeFormat = Utils.formatDateTimeByDate(new Date(), SystemConfig.Logger.TimeFormatTemplate);
@@ -708,7 +709,7 @@
          */
         _initMonitorFetch() {
             const that = this;
-            const urlRegex = new RegExp("^https://chat\\.openai\\.com/backend-api/conversation/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+            const urlRegex = new RegExp("^https://(chat\\.openai|chatgpt)\\.com/backend-api/conversation/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
             unsafeWindow.fetch = (...args) => {
                 return that.originalFetch.apply(this, args)
                     .then(response => {
@@ -773,7 +774,7 @@
             const callback = function (mutationsList, observer) {
                 const start = new Date().getTime();
                 for (const mutation of mutationsList) {
-                    if (mutation.type === 'childList') {
+                    if (mutation.type === 'childList' || mutation.type === 'attributes') {
                         mutation.addedNodes.forEach(node => {
                             if (node.nodeType === Node.ELEMENT_NODE) {
                                 let messageDiv = node.querySelector('div[data-message-id]');
@@ -794,7 +795,7 @@
                 Logger.debug(`监控到节点变化，耗时 ${end - start}ms，总耗时 ${that.totalTime}ms。`);
             };
             const observer = new MutationObserver(callback);
-            observer.observe(supervisedNode, {childList: true, subtree: true,});
+            observer.observe(supervisedNode, {childList: true, subtree: true, attributes: true});
         }
     }
 

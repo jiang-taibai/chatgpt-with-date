@@ -211,6 +211,8 @@
 - [x] 时间格式化规则：支持更多的时间格式化规则，例如 12 小时制、24 小时制等。
 - [ ] 支持分享的界面：支持显示 `https://chat.openai.com/share/uuid` 的界面（即分享的聊天界面）的时间。
 - [ ] 主题网站：提供一个主题网站，展示用户分享的时间标签主题。
+- [ ] 重置脚本：由于会将用户输入的内容应用到本地导致奔溃，提供重置脚本的功能。
+- [ ] 提供更多的生命周期钩子函数和自定义函数：例如可以自定义时间元素如何解析。
 
 ## 6. 开源协议
 
@@ -252,6 +254,8 @@ graph TD
     ConfigPanelService --> TimeRendererService
     ConfigPanelService --> MessageService
 ```
+
+<!-- ![原始的依赖关系图](https://cdn.coderjiang.com/project/chatgpt-with-date/original-dependency-graph.svg) -->
 
 本项目采用的依赖注入方式限制了循环依赖的发生，依赖注入的设计架构允许组件保持独立于其依赖项的具体实现。这种技术可以使代码更容易理解、维护和测试。
 之所以要避免循环依赖，因为循环依赖违反了单一职责原则、依赖倒置原则。
@@ -328,6 +332,8 @@ graph TD
     NewComponent --> MessageService
 ```
 
+<!-- ![添加NewComponent后的依赖关系图](https://cdn.coderjiang.com/project/chatgpt-with-date/afther-add-new-component.svg) -->
+
 ### 7.3 一些建议
 
 #### (1) 注入外部 JavaScript 库
@@ -371,15 +377,20 @@ function loadScript() {
 
 ## X. Changelog
 
+
+- v1.2.2 - 2024-05-04 15:24:44
+    - 修复：修复消息 ID 属性变化（往往是第一条）后找不到目标消息 DOM 节点的问题
+- v1.2.1 - 2024-05-04 14:33:12
+    - 修复：ChatGPT 更新域名
 - v1.2.0 - 2024-05-03 21:26:43
-    - 优化：限制每次渲染时间标签的次数以及总时长，避免页面卡顿
-    - 优化：设置时间标签渲染函数异步执行，避免阻塞页面渲染
-    - 优化：修改 Fetch 劫持 URL 匹配规则，更加精确以免干扰其他请求。并在 URL 匹配成功时才进行具体的劫持操作
-    - 优化：选择模板时直接显示时间格式的示例，而不是冰冷的模板HTML字符串
-    - 新功能：添加更多时间格式的元素，例如星期、月份（英文）等
-    - 新功能：添加更多时间格式化规则，例如 12 小时制、24 小时制等
-    - 新功能：提供自定义样式的 HTML、CSS、JavaScript 的代码编辑器与注入系统
-    - 新功能：提供创建时间标签的生命周期钩子函数 `window.beforeCreateTimeTag(messageId, timeTagHTML)`
-      和 `window.afterCreateTimeTag(messageId, timeTagNode)`
+  - 优化：限制每次渲染时间标签的次数以及总时长，避免页面卡顿
+  - 优化：设置时间标签渲染函数异步执行，避免阻塞页面渲染
+  - 优化：修改 Fetch 劫持 URL 匹配规则，更加精确以免干扰其他请求。并在 URL 匹配成功时才进行具体的劫持操作
+  - 优化：选择模板时直接显示时间格式的示例，而不是冰冷的模板HTML字符串
+  - 新功能：添加更多时间格式的元素，例如星期、月份（英文）等
+  - 新功能：添加更多时间格式化规则，例如 12 小时制、24 小时制等
+  - 新功能：提供自定义样式的 HTML、CSS、JavaScript 的代码编辑器与注入系统
+  - 新功能：提供创建时间标签的生命周期钩子函数 `window.beforeCreateTimeTag(messageId, timeTagHTML)`
+    和 `window.afterCreateTimeTag(messageId, timeTagNode)`
 - v1.1.0 - 2024-05-02 17:50:04
     - 添加更多时间格式的模板
