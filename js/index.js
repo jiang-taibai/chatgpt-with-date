@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            ChatGPT with Date
 // @namespace       https://github.com/jiang-taibai/chatgpt-with-date
-// @version         1.2.2
+// @version         1.2.3
 // @description     Tampermonkey plugin for displaying ChatGPT historical and real-time conversation time. 显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @author          CoderJiang
 // @license         MIT
@@ -288,7 +288,7 @@
 
     class Logger {
         static EnableLog = true
-        static EnableDebug = false
+        static EnableDebug = true
         static EnableInfo = true
         static EnableWarn = true
         static EnableError = true
@@ -653,6 +653,16 @@
         }
 
         /**
+         * 移除消息
+         *
+         * @param messageId 消息 ID
+         * @returns {boolean}   返回是否移除成功
+         */
+        removeMessage(messageId) {
+            return this.messages.delete(messageId)
+        }
+
+        /**
          * 通过消息 ID 获取消息元素业务对象
          *
          * @param messageId 消息 ID
@@ -792,7 +802,6 @@
                 }
                 const end = new Date().getTime();
                 that.totalTime += (end - start);
-                Logger.debug(`监控到节点变化，耗时 ${end - start}ms，总耗时 ${that.totalTime}ms。`);
             };
             const observer = new MutationObserver(callback);
             observer.observe(supervisedNode, {childList: true, subtree: true, attributes: true});
@@ -892,6 +901,7 @@
                 const messageToBeRenderedClone = that.messageToBeRendered.slice()
                 that.messageToBeRendered = []
                 let count = 0;
+
                 for (let messageId of messageToBeRenderedClone) {
                     count++;
                     if (count <= SystemConfig.TimeRender.BatchSize && new Date().getTime() - start <= SystemConfig.TimeRender.BatchTimeout) {
@@ -901,6 +911,7 @@
                             if (countOfFailed && countOfFailed >= SystemConfig.TimeRender.RenderRetryCount) {
                                 Logger.debug(`ID ${messageId} 渲染失败次数超过 ${SystemConfig.TimeRender.RenderRetryCount} 次，将不再尝试。`)
                                 that.messageCountOfFailedToRender.delete(messageId)
+                                that.messageService.removeMessage(messageId)
                             } else {
                                 that.messageToBeRendered.push(messageId);
                                 if (countOfFailed) {
@@ -929,7 +940,9 @@
                     }
                 }
                 const end = new Date().getTime();
-                Logger.debug(`处理当前ID队列渲染 ${messageToBeRenderedClone} 耗时 ${end - start}ms`)
+                if (totalCount > 0) {
+                    Logger.debug(`处理当前ID队列渲染 ${messageToBeRenderedClone} 耗时 ${end - start}ms`)
+                }
                 setTimeout(processTimeRender, SystemConfig.TimeRender.Interval);
             }
 
@@ -948,21 +961,21 @@
                 const messageElementBo = this.messageService.getMessageElement(messageId);
                 const messageBo = this.messageService.getMessage(messageId);
                 if (!messageElementBo || !messageBo) resolve(false)
-                const timeElement = messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`);
+                const timeElement = messageElementBo.roleEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`);
                 const element = this._createTimeElement(messageBo.timestamp);
-                if (!timeElement) {
-                    unsafeWindow.beforeCreateTimeTag(messageId, element.timeTagContainer)
-                    switch (this.userConfig.timeRender.mode) {
-                        case 'AfterRoleLeft':
-                        case 'AfterRoleRight':
-                        case 'BelowRole':
-                            messageElementBo.roleEle.innerHTML += element.timeTagContainer
-                            break;
-                    }
-                    unsafeWindow.afterCreateTimeTag(messageId, messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`))
-                } else {
-                    timeElement.innerHTML = element.timeTagFormated
+                // 强制移除时间元素，重新渲染。这样才能保证时间正确的同时也能正确执行用户自定义的脚本。
+                if (timeElement) {
+                    messageElementBo.roleEle.removeChild(timeElement)
                 }
+                unsafeWindow.beforeCreateTimeTag(messageId, element.timeTagContainer)
+                switch (this.userConfig.timeRender.mode) {
+                    case 'AfterRoleLeft':
+                    case 'AfterRoleRight':
+                    case 'BelowRole':
+                        messageElementBo.roleEle.innerHTML += element.timeTagContainer
+                        break;
+                }
+                unsafeWindow.afterCreateTimeTag(messageId, messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`))
                 resolve(true)
             })
         }
