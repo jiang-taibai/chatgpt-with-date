@@ -2,7 +2,7 @@
 
 <div>
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-1.2.0-%231081C1" alt="Version-1.2.0"/>
+  <img src="https://img.shields.io/badge/Version-1.3.0-%231081C1" alt="Version-1.3.0"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -19,7 +19,7 @@
 
 提供多种配置选项，例如时间显示格式、时间显示位置等。
 
-![配置面板高级使用](https://cdn.coderjiang.com/project/chatgpt-with-date/configuration-panel-basic.gif)
+![配置面板基础使用](https://cdn.coderjiang.com/project/chatgpt-with-date/configuration-panel-basic.gif)
 
 如果你了解网页三剑客（HTML、CSS、JavaScript），你完全可以高度自定义时间样式。
 
@@ -147,7 +147,6 @@
 在介绍章节中，我们展示了如何使用高级配置功能来显示一个可以将日期显示为几天前的时间标签，下面是具体的代码：
 
 ```html
-
 <div class="text-tag-box">
     <span class="date">{yyyy}-{MM}-{dd}</span>
     <span class="time">{HH}:{mm}:{ss}</span>
@@ -196,12 +195,12 @@
         return newWidth;
     }
 
-    window.afterCreateTimeTag = (messageId, timeTagNode) => {
+    window.ChatGPTWithDate.hooks.afterCreateTimeTag = (messageId, timeTagNode) => {
         const dateNode = timeTagNode.querySelector('.date');
         const date = dateNode.innerText;
         const originalWidth = getNewWidth(dateNode, date);
         const paddingWidth = 18;
-        dateNode.style.width = `${originalWidth + paddingWidth}px`;
+        dateNode.style.width = (originalWidth  + paddingWidth) + 'px';
 
         timeTagNode.addEventListener('mouseover', () => {
             const now = new Date();
@@ -215,21 +214,21 @@
             else if (days < 3)
                 text = '前天';
             else if (days < 7)
-                text = `${days}天前`;
+                text = days + '天前';
             else if (days < 30)
-                text = `${Math.floor(days / 7)}周前`;
+                text = Math.floor(days / 7) + '周前';
             else if (days < 365)
-                text = `${Math.floor(days / 30)}个月前`;
+                text = Math.floor(days / 30) + '个月前';
             else
-                text = `${Math.floor(days / 365)}年前`;
+                text = Math.floor(days / 365) + '年前';
             dateNode.innerText = text;
-            dateNode.style.width = `${getNewWidth(dateNode, text) + paddingWidth}px`
+            dateNode.style.width = (getNewWidth(dateNode, text)  + paddingWidth) + 'px';
         });
 
         // 鼠标移出 timeTagNode 时恢复 dateNode 的内容为原来的日期
         timeTagNode.addEventListener('mouseout', () => {
             dateNode.innerText = date;
-            dateNode.style.width = `${originalWidth + paddingWidth}px`
+            dateNode.style.width = (originalWidth  + paddingWidth) + 'px';
         });
     }
 })()
@@ -526,6 +525,7 @@ class Main {
     static ComponentsConfig = [
         UserConfig, StyleService, MessageService,
         MonitorService, TimeRendererService, ConfigPanelService,
+        JavaScriptService, HookService,
         NewComponent,
     ]
 }

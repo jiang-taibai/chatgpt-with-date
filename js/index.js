@@ -405,11 +405,11 @@
 
     class Logger {
         static EnableLog = true
-        static EnableDebug = true
+        static EnableDebug = false
         static EnableInfo = true
         static EnableWarn = true
         static EnableError = true
-        static EnableTable = true
+        static EnableTable = false
 
         static prefix(type = 'INFO') {
             const timeFormat = Utils.formatDateTimeByDate(new Date(), SystemConfig.Logger.TimeFormatTemplate);
