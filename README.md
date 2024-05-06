@@ -1,6 +1,6 @@
-# <div align="center">ChatGPT 消息时间</div>
+# <div>ChatGPT 消息时间</div>
 
-<div align="center">
+<div>
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
   <img src="https://img.shields.io/badge/Version-1.2.0-%231081C1" alt="Version-1.2.0"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
@@ -13,7 +13,7 @@
 本项目通过 Tampermonkey 开发，可以在 Chrome 和 Firefox 等支持 Tampermonkey 插件的浏览器上使用，实现显示 ChatGPT
 每一条消息时间的功能。
 
-该插件不但可以获取**以往的消息时间**，还可以实时获取新消息的时间。
+该插件不但可以获取**历史消息时间**，还可以实时获取新消息的时间。
 
 ![在交互时添加时间标签](https://cdn.coderjiang.com/project/chatgpt-with-date/add-time-tag-during-interaction.gif)
 
@@ -50,7 +50,45 @@
 
 ## 3. 配置
 
-### 3.1 时间格式
+### 3.1 时间模板
+
+系统默认的模板实际上是一个 HTML 字符串，下面是几个默认模板的示例：
+
+(1) 常规
+
+<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">2024-04-01 18:06:09</span>
+
+```html
+<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>
+```
+
+(2) 12 小时制
+
+<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">May 06, 2024 03:55 PM</span>
+
+```html
+<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{MM#shortname@en} {dd}, {yyyy} {HH#12}:{mm} {HH#tag}</span>
+```
+
+(3) 徽标类
+
+<span style="margin-left: 4px; color: #E0E0E0; font-size: 0.9em;"><span style="background: #848484; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">2024-05-06</span><span style="background: #a6a6a6; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">15:56:22</span></span>
+
+```html
+<span style="margin-left: 4px; color: #E0E0E0; font-size: 0.9em;"><span style="background: #848484; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">{yyyy}-{MM}-{dd}</span><span style="background: #a6a6a6; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">{HH}:{mm}:{ss}</span></span>
+```
+
+### 3.2 时间位置
+
+时间位置有三种选择：
+
+- `角色之后（靠左）`: 时间显示在角色名字的后面，并靠左显示。
+- `角色之后（靠右）`: 时间显示在角色名字的后面，并靠右显示。
+- `角色之下`: 时间显示在角色名字下方。
+
+### 3.3 高级配置
+
+#### 3.3.1 时间格式
 
 支持的时间元素有（以 2024年4月3日18点9分1秒999毫秒周五 为例）
 
@@ -82,34 +120,34 @@
 | `{week#name@en}`, `{week#fullname@en}`     | 英文星期    | Friday |
 | `{week#shortname@en}`                      | 英文缩写星期  | Fri    |
 
-### 3.2 时间位置
-
-时间位置有三种选择：
-
-- `角色之后（靠左）`: 时间显示在角色名字的后面，并靠左显示。
-- `角色之后（靠右）`: 时间显示在角色名字的后面，并靠右显示。
-- `角色之下`: 时间显示在角色名字下方。
-
-### 3.3 高级配置
-
 高级配置提供了更多的自定义选项，你可以自定义时间标签的 HTML、CSS、JavaScript 代码。
 
-#### (1) 生命周期钩子函数
+#### 3.3.2 钩子函数
 
-本项目提供了两个生命周期钩子函数，分别是 `window.beforeCreateTimeTag(messageId, timeTagHTML)` 和 `window.afterCreateTimeTag(messageId, timeTagNode)`。
+本项目提供了三个钩子函数，你可以在这些函数中实现你想要的功能。
 
-- `window.beforeCreateTimeTag(messageId, timeTagHTML)`: 在创建时间标签之前调用，你可以在这里修改时间标签的 HTML 内容。
-  - `messageId`: 消息的 ID。
-  - `timeTagHTML`: 时间标签的 HTML 内容。
-- `window.afterCreateTimeTag(messageId, timeTagNode)`: 在创建时间标签之后调用，你可以在这里修改时间标签的 DOM 节点。
-  - `messageId`: 消息的 ID。
-  - `timeTagNode`: 时间标签的 DOM 节点。
+- `window.ChatGPTWithDate.hooks.formatDateTimeByDate(date, template)`: 根据 Date 对象将模板 HTML 字符串中的占位符替换为时间元素
+    - 默认实现：将占位符替换为时间元素
+    - `date`: 日期 Date 对象
+    - `template`: 时间格式字符串模板
+    - 返回值: 格式化后的时间字符串
+- `window.ChatGPTWithDate.hooks.beforeCreateTimeTag(messageId, timeTagHTML)`: 在创建时间标签之前调用，你可以在这里修改时间标签的
+  HTML 内容。
+    - 默认实现：空函数
+    - `messageId`: 消息的 ID。
+    - `timeTagHTML`: 时间标签的 HTML 内容。
+- `window.ChatGPTWithDate.hooks.afterCreateTimeTag(messageId, timeTagNode)`: 在创建时间标签之后调用，你可以在这里修改时间标签的
+  DOM 节点。
+    - 默认实现：空函数
+    - `messageId`: 消息的 ID。
+    - `timeTagNode`: 时间标签的 DOM 节点。
 
-#### (2) 示例
+#### 3.3.3 示例
 
 在介绍章节中，我们展示了如何使用高级配置功能来显示一个可以将日期显示为几天前的时间标签，下面是具体的代码：
 
 ```html
+
 <div class="text-tag-box">
     <span class="date">{yyyy}-{MM}-{dd}</span>
     <span class="time">{HH}:{mm}:{ss}</span>
@@ -143,7 +181,6 @@
 ```
 
 ```javascript
-// 建议将以下代码放在一个 IIFE 中，以避免全局变量污染
 (() => {
     const getNewWidth = (targetNode, text) => {
         // 创建一个临时元素来测量文本宽度
@@ -198,6 +235,169 @@
 })()
 ```
 
+#### 3.3.4 提示词 ✨
+
+既然是用在 ChatGPT 上的，那么我们可以利用 ChatGPT 根据提示词来生成你想要的效果对应的 HTML、CSS、JavaScript 代码。
+
+````markdown
+# 1. 任务简介
+
+你需要写 HTML、CSS、JavaScript 代码，实现我的需求，后面我将详细介绍你应该怎么写代码。
+
+# 2. HTML 要求
+
+你需要写一个日期时间的模板 HTML 字符串，你可以使用占位符来表示时间元素，例如：
+
+```html
+<div class="text-tag-box">
+    <span class="date">{yyyy}-{MM}-{dd}</span>
+    <span class="time">{HH}:{mm}:{ss}</span>
+</div>
+```
+
+后面会介绍你怎么用 JavaScript 来实现显示特定的时间。
+
+# 3. CSS 要求
+
+(1) 不允许写标签选择器，只能写类选择器或 ID 选择器
+(2) 尽量写后代选择器，不污染全局样式
+(3) 尽量不要使用 `!important`
+
+# 4. JavaScript 要求
+
+## 4.1 提供的 API 接口
+
+API 定义在 window 上，如有必要你需要在 JS 脚本内重写函数。
+
+- window.ChatGPTWithDate.hooks.formatDateTimeByDate(date, template): 根据 Date 对象将模板 HTML 字符串中的内容替换为 date
+  对象指定的时间
+  - date: 日期 Date 对象
+  - template: HTML 字符串，即你写的 HTML 代码
+  - 返回值: 格式化后的 HTML 代码
+- window.ChatGPTWithDate.hooks.beforeCreateTimeTag(messageId, timeTagHTML): 将 template 插入到页面之前调用
+  - messageId: 消息的 ID，并非 HTML 元素的 ID
+  - timeTagHTML: 此时的字符串是 '<div class="chatgpt-time">' + window.ChatGPTWithDate.hooks.formatDateTimeByDate(date,
+    template) + '</div>'
+  - 返回值: 无
+- window.ChatGPTWithDate.hooks.afterCreateTimeTag(messageId, timeTagNode): 将 template 插入到页面之后调用
+  - messageId: 消息的 ID，并非 HTML 元素的 ID
+  - timeTagNode: 此时的节点是 '<div class="chatgpt-time">' + window.ChatGPTWithDate.hooks.formatDateTimeByDate(date,
+    template) + '</div>' 的 DOM 节点
+  - 返回值: 无
+
+## 4.2 API 执行逻辑
+
+系统会按照以下顺序执行 API：
+
+(1) template = 你输入的 HTML 代码
+(2) template = window.ChatGPTWithDate.hooks.formatDateTimeByDate(date, template)
+(3) timeTagHTML = '<div class="chatgpt-time">' + template + '</div>'
+(4) window.ChatGPTWithDate.hooks.beforeCreateTimeTag(messageId, timeTagHTML)
+(5) 将 timeTagHTML 插入到某位置
+(6) timeTagNode = 刚刚插入的 timeTagHTML 节点
+(7) window.ChatGPTWithDate.hooks.afterCreateTimeTag(messageId, timeTagNode)
+
+## 4.3 代码规范
+
+(1) 请使用 ES6 语法
+(2) 请使用严格模式 `'use strict'`
+(3) 请使用 `const` 和 `let` 声明变量
+(4) 请使用 IIFE 避免全局变量污染
+(5) 请使用 `===` 和 `!==` 避免类型转换问题
+(6) 注释一律写中文注释
+
+# 5. 案例
+
+以下是一个案例，实现光标移动到时间标签上时，日期显示为几天前的效果。
+
+HTML 代码：
+
+```html
+<div class="text-tag-box">
+    <span class="date">{yyyy}-{MM}-{dd}</span>
+    <span class="time">{HH}:{mm}:{ss}</span>
+</div>
+```
+
+CSS 代码：
+
+```css
+.text-tag-box {
+    border-radius: 8px;
+    color: #E0E0E0;
+    font-size: 0.9em;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.text-tag-box .date {
+    background: #333;
+    float: left;
+    padding: 2px 8px 2px 10px;
+    display: inline-block;
+}
+
+.text-tag-box .time {
+    background: #606060;
+    float: left;
+    padding: 2px 10px 2px 8px;
+    display: inline-block;
+}
+```
+
+JavaScript 代码：
+
+```javascript
+(() => {
+    window.ChatGPTWithDate.hooks.formatDateTimeByDate = (date, template) => {
+        const formatValue = (value, format) => value.toString().padStart(format === 'yyyy' ? 4 : 2, '0');
+        const dateValues = {
+            '{yyyy}': date.getFullYear(),
+            '{MM}': date.getMonth() + 1,
+            '{dd}': date.getDate(),
+            '{HH}': date.getHours(),
+            '{mm}': date.getMinutes(),
+            '{ss}': date.getSeconds()
+        };
+        return template.replace(/\{[^}]+\}/g, match => formatValue(dateValues[match], match.slice(1, -1)));
+    }
+    window.ChatGPTWithDate.hooks.afterCreateTimeTag = (messageId, timeTagNode) => {
+        const dateNode = timeTagNode.querySelector('.date');
+        const dateText = dateNode.innerText;
+        const date = new Date(dateText);
+        timeTagNode.addEventListener('mouseover', () => {
+            dateNode.innerText = `${Math.floor((new Date() - date) / 86400000)}天前`;
+        });
+        timeTagNode.addEventListener('mouseout', () => {
+            dateNode.innerText = dateText;
+        });
+    }
+})()
+```
+
+# 5. 你的任务
+
+现在你需要写三段代码，分别为HTML、CSS、JavaScript，要求如下：
+
+- HTML：你只需要写时间标签的 HTML
+- CSS：请使用类选择器或 ID 选择器，不要使用标签选择器（除非是子选择器）
+- JavaScript：请在 IIFE 中编写代码，你可以使用上面讲到的三个钩子函数。
+- 不要说废话，直接上代码，分为三个代码块给我，在每个代码块之前写上“这是HTML代码”、“这是CSS代码”、“这是JS代码”。
+- 接下来的对话我不会重复以上的内容，你需要记住这些内容。
+- 我每次会告诉你我需要怎么改进你的代码，你需要根据我的要求修改代码。
+
+# 6. 你需要完成的我的需求
+
+日期时间格式：2024-04-03 18:09:01
+样式：时间标签显示为一个灰色的矩形框，日期显示在左边，时间显示在右边，日期和时间之间有一个竖线分隔
+额外效果：当鼠标移动到时间标签上时，时间标签抖动一下。
+````
+
+#### 3.3.5 注意事项
+
+1. 请不要在代码中使用外部资源，例如图片、字体等，因为这些资源可能会被网站的 CSP 拦截。
+2. JavaScript：请在 IIFE 中编写代码，尽量不要使用全局变量，在重复执行时可能会出错。
+
 ## 4. 反馈
 
 如果你有任何问题或建议，欢迎在 [GitHub Issues](https://github.com/jiang-taibai/chatgpt-with-date/issues)
@@ -205,14 +405,14 @@
 
 ## 5. 未来计划
 
-- [ ] 国际化：脚本支持多种语言（日志、提示等）。
+- [x] 国际化：脚本支持多种语言（日志、提示等）。
 - [x] 时间格式化细粒度配置面板：优化时间格式自定义功能，而不是难以维护的 HTML字符串 表示。
 - [x] 时间格式化元素：支持更多的时间格式化元素，例如星期、月份（英文）等。
 - [x] 时间格式化规则：支持更多的时间格式化规则，例如 12 小时制、24 小时制等。
 - [ ] 支持分享的界面：支持显示 `https://chat.openai.com/share/uuid` 的界面（即分享的聊天界面）的时间。
 - [ ] 主题网站：提供一个主题网站，展示用户分享的时间标签主题。
-- [ ] 重置脚本：由于会将用户输入的内容应用到本地导致奔溃，提供重置脚本的功能。
-- [ ] 提供更多的生命周期钩子函数和自定义函数：例如可以自定义时间元素如何解析。
+- [x] 重置脚本：由于会将用户输入的内容应用到本地导致奔溃，提供重置脚本的功能。
+- [x] 提供更多的生命周期钩子函数和自定义函数：例如可以自定义时间元素如何解析。
 
 ## 6. 开源协议
 
@@ -224,35 +424,44 @@ CopyRight © 2024~Present [Jiang Liu](https://coderjiang.com)
 
 ### 7.1 项目组织架构
 
-![源代码总览](https://cdn.coderjiang.com/project/chatgpt-with-date/source-code-overview.png)
+![源代码总览](../res/img/source-code-overview.png)
 
 本项目采用依赖注入（DI）的方式组织各个 Component，主要包括以下几个部分：
 
 - `UserConfig`: 用户配置信息，包括时间格式、时间位置等。
-- `StyleService`: 样式服务，负责跟踪管理一些可变化的样式。
+- `StyleService`: 样式服务，负责跟踪管理可变化的样式。
+- `JavaScriptService`: JavaScript 服务，负责管理和存储可变化的 JavaScript 代码。
 - `MessageService`: 消息服务，负责管理和存储消息信息。
 - `MonitorService`: 监控服务，负责劫持 Fetch 请求和实时监听页面新消息的添加。
 - `TimeRendererService`: 时间渲染服务，负责渲染时间。
 - `ConfigPanelService`: 配置面板服务，负责生成基于 Vue+NaiveUI 的配置面板。
+- `HookService`: 钩子服务，负责管理生命周期钩子函数。
 
 上述服务之间的依赖关系如下：
 
 ```mermaid
 graph TD
+;
+    UserConfig --> TimeRendererService;
+    UserConfig --> ConfigPanelService;
+    StyleService --> TimeRendererService;
+    StyleService --> ConfigPanelService;
+    MessageService --> MonitorService;
+    MessageService --> TimeRendererService;
+    MessageService --> ConfigPanelService;
+    TimeRendererService --> MonitorService;
+    TimeRendererService --> ConfigPanelService;
+    JavaScriptService --> TimeRendererService;
+    JavaScriptService --> ConfigPanelService;
+    HookService --> TimeRendererService;
     UserConfig[UserConfig]
     StyleService[StyleService]
     MessageService[MessageService]
     MonitorService[MonitorService]
     TimeRendererService[TimeRendererService]
     ConfigPanelService[ConfigPanelService]
-    MonitorService --> MessageService
-    MonitorService --> TimeRendererService
-    TimeRendererService --> MessageService
-    TimeRendererService --> UserConfig
-    TimeRendererService --> StyleService
-    ConfigPanelService --> UserConfig
-    ConfigPanelService --> TimeRendererService
-    ConfigPanelService --> MessageService
+    JavaScriptService[JavaScriptService]
+    HookService[HookService]
 ```
 
 <!-- ![原始的依赖关系图](https://cdn.coderjiang.com/project/chatgpt-with-date/original-dependency-graph.svg) -->
@@ -264,7 +473,7 @@ graph TD
 
 如果你想自定义一个新的 Component，你需要：
 
-#### (1) 定义一个新的 Component 类
+#### 7.2.1 定义一个新的 Component 类
 
 - 继承：该类必须继承自 `Component` 类
 - 构造函数：在构造函数中定义 `dependencies` 属性，该属性是一个数组，数组中的每个元素是一个对象，对象包含两个属性：`field`
@@ -294,7 +503,21 @@ class NewComponent extends Component {
 }
 ```
 
-#### (2) 注册该 Component
+在迫不得已无法避免循环依赖的情况下，可以通过以下方式解决：
+
+```javascript
+class NewComponent extends Component {
+    constructor() {
+        super();
+    }
+
+    init() {
+        this.cycleDependentComponent = ComponentLocator.get(CycleDependentComponent)
+    }
+}
+```
+
+#### 7.2.2 注册该 Component
 
 将你的 Component 注册到 `Main.ComponentsConfig` 中，不必担心注册的顺序，因为 Main 类会自动按照依赖关系的顺序进行初始化。
 
@@ -312,21 +535,28 @@ class Main {
 
 ```mermaid
 graph TD
+;
+    UserConfig -.-> TimeRendererService;
+    UserConfig -.-> ConfigPanelService;
+    StyleService -.-> TimeRendererService;
+    StyleService -.-> ConfigPanelService;
+    MessageService -.-> MonitorService;
+    MessageService -.-> TimeRendererService;
+    MessageService -.-> ConfigPanelService;
+    TimeRendererService -.-> MonitorService;
+    TimeRendererService -.-> ConfigPanelService;
+    JavaScriptService -.-> TimeRendererService;
+    JavaScriptService -.-> ConfigPanelService;
+    HookService -.-> TimeRendererService;
     UserConfig[UserConfig]
     StyleService[StyleService]
     MessageService[MessageService]
     MonitorService[MonitorService]
     TimeRendererService[TimeRendererService]
     ConfigPanelService[ConfigPanelService]
+    JavaScriptService[JavaScriptService]
+    HookService[HookService]
     NewComponent[NewComponent]
-    MonitorService -.-> MessageService
-    MonitorService -.-> TimeRendererService
-    TimeRendererService -.-> MessageService
-    TimeRendererService -.-> UserConfig
-    TimeRendererService -.-> StyleService
-    ConfigPanelService -.-> UserConfig
-    ConfigPanelService -.-> TimeRendererService
-    ConfigPanelService -.-> MessageService
     NewComponent --> UserConfig
     NewComponent --> TimeRendererService
     NewComponent --> MessageService
@@ -336,15 +566,16 @@ graph TD
 
 ### 7.3 一些建议
 
-#### (1) 注入外部 JavaScript 库
+#### 7.3.1 注入外部 JavaScript 库
 
-请使用 GM_xmlhttpRequest 来获取外部 JavaScript 库的内容，再以字符串的形式注入到页面中。
+请使用 `GM_xmlhttpRequest` 来获取外部 JavaScript 库的内容，再以字符串的形式注入到页面中。
 如果你直接在页面中引入外部 JavaScript 库，可能有CSP限制。
 下面是在项目中注入 Vue.js 和 NaiveUI 的示例：
 
 ```javascript
 function loadScript() {
     return new Promise(resolve => {
+        // 😄 推荐的做法：使用 GM_xmlhttpRequest 获取外部 JavaScript 库的内容，再以字符串的形式注入到页面中
         let completeCount = 0;
         const resources = [
             {type: 'js', url: 'https://unpkg.com/vue@3.4.26/dist/vue.global.js'},
@@ -366,7 +597,7 @@ function loadScript() {
                 }
             });
         })
-        // 以下方法有 CSP 限制
+        // 😢 不推荐的方法：直接在页面中引入外部 JavaScript 库，有 CSP 限制
         // const naiveScript = document.createElement('script');
         // naiveScript.setAttribute("type", "text/javascript");
         // naiveScript.text = "https://unpkg.com/naive-ui@2.38.1/dist/index.js";
@@ -375,23 +606,45 @@ function loadScript() {
 }
 ```
 
+#### 7.3.2 尽量在原来的基础上修改
+
+下面对一些能够共用的类进行解释：
+
+- `SystemConfig`: 系统配置，包括一些常量、默认配置等。如果你需要添加一些常量，可以在这里添加。
+- `Utils`: 工具类，包括一些常用的工具方法，例如时间格式化、字符串格式化等。
+- `Logger`: 日志类，用于输出日志信息。如果你需要输出一些调试信息，可以使用该类。建议使用 `Logger.*` 代替 `console.*`。
+- `HookService`: 钩子服务，用于管理生命周期钩子函数。如果你需要添加一些生命周期钩子函数，可以在这里添加。
+- `StyleService`: 样式服务，用于管理样式。你可以指定一个唯一性的 `key` 来注册样式，后面只需要通过 `key` 来更新样式。
+- `JavaScriptService`: JavaScript 服务，用于管理 JavaScript 代码。你可以指定一个唯一性的 `key` 来注册 JavaScript
+  代码，后面只需要通过 `key` 来更新 JavaScript 代码。
+
 ## X. Changelog
 
+- v1.3.0 - 2024-05-05 14:51:47
+    - 新功能：i18n 国际化支持
+    - 新功能：提供重置脚本的功能
+    - 新功能：提供适应本插件的提示词来生成 HTML、CSS、JavaScript 代码
+    - 新功能：提供教程入口
+    - 新功能：可收起、展开配置面板
+    - 优化：代码输入框支持自定义高度
 - v1.2.3 - 2024-05-04 20:04:51
     - 修复：修复无法正常运行用户自定义代码的问题
+    - 优化：优化即使用户自定义代码出错也不会影响整个脚本的运行
+    - 优化：将渲染顺序调整为最近的消息优先渲染
 - v1.2.2 - 2024-05-04 15:24:44
     - 修复：修复消息 ID 属性变化后找不到目标消息 DOM 节点的问题
 - v1.2.1 - 2024-05-04 14:33:12
     - 修复：ChatGPT 更新域名
 - v1.2.0 - 2024-05-03 21:26:43
-  - 优化：限制每次渲染时间标签的次数以及总时长，避免页面卡顿
-  - 优化：设置时间标签渲染函数异步执行，避免阻塞页面渲染
-  - 优化：修改 Fetch 劫持 URL 匹配规则，更加精确以免干扰其他请求。并在 URL 匹配成功时才进行具体的劫持操作
-  - 优化：选择模板时直接显示时间格式的示例，而不是冰冷的模板HTML字符串
-  - 新功能：添加更多时间格式的元素，例如星期、月份（英文）等
-  - 新功能：添加更多时间格式化规则，例如 12 小时制、24 小时制等
-  - 新功能：提供自定义样式的 HTML、CSS、JavaScript 的代码编辑器与注入系统
-  - 新功能：提供创建时间标签的生命周期钩子函数 `window.beforeCreateTimeTag(messageId, timeTagHTML)`
-    和 `window.afterCreateTimeTag(messageId, timeTagNode)`
+    - 优化：限制每次渲染时间标签的次数以及总时长，避免页面卡顿
+    - 优化：设置时间标签渲染函数异步执行，避免阻塞页面渲染
+    - 优化：修改 Fetch 劫持 URL 匹配规则，更加精确以免干扰其他请求。并在 URL 匹配成功时才进行具体的劫持操作
+    - 优化：选择模板时直接显示时间格式的示例，而不是冰冷的模板HTML字符串
+    - 新功能：添加更多时间格式的元素，例如星期、月份（英文）等
+    - 新功能：添加更多时间格式化规则，例如 12 小时制、24 小时制等
+    - 新功能：提供自定义样式的 HTML、CSS、JavaScript 的代码编辑器与注入系统
+    - 新功能：提供创建时间标签的生命周期钩子函数 `window.beforeCreateTimeTag(messageId, timeTagHTML)`
+      和 `window.afterCreateTimeTag(messageId, timeTagNode)`
 - v1.1.0 - 2024-05-02 17:50:04
     - 添加更多时间格式的模板
+

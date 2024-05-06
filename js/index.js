@@ -12,8 +12,11 @@
 // @grant           GM_registerMenuCommand
 // @grant           GM_setValue
 // @grant           GM_getValue
+// @grant           GM_listValues
+// @grant           GM_deleteValue
 // @grant           unsafeWindow
 // @run-at          document-end
+// @noframes
 // ==/UserScript==
 
 (function () {
@@ -22,31 +25,35 @@
     class SystemConfig {
         static Common = {
             ApplicationName: 'ChatGPT with Date',
+            GPTPrompt: 'IyAxLiDku7vliqHnroDku4sKCuS9oOmcgOimgeWGmSBIVE1M44CBQ1NT44CBSmF2YVNjcmlwdCDku6PnoIHvvIzlrp7njrDmiJHnmoTpnIDmsYLvvIzlkI7pnaLmiJHlsIbor6bnu4bku4vnu43kvaDlupTor6XmgI7kuYjlhpnku6PnoIHjgIIKCiMgMi4gSFRNTCDopoHmsYIKCuS9oOmcgOimgeWGmeS4gOS4quaXpeacn+aXtumXtOeahOaooeadvyBIVE1MIOWtl+espuS4su+8jOS9oOWPr+S7peS9v+eUqOWNoOS9jeespuadpeihqOekuuaXtumXtOWFg+e0oO+8jOS+i+Wmgu+8mgoKYGBgaHRtbAo8ZGl2IGNsYXNzPSJ0ZXh0LXRhZy1ib3giPgogICAgPHNwYW4gY2xhc3M9ImRhdGUiPnt5eXl5fS17TU19LXtkZH08L3NwYW4+CiAgICA8c3BhbiBjbGFzcz0idGltZSI+e0hIfTp7bW19Ontzc308L3NwYW4+CjwvZGl2PgpgYGAKCuWQjumdouS8muS7i+e7jeS9oOaAjuS5iOeUqCBKYXZhU2NyaXB0IOadpeWunueOsOaYvuekuueJueWumueahOaXtumXtOOAggoKIyAzLiBDU1Mg6KaB5rGCCgooMSkg5LiN5YWB6K645YaZ5qCH562+6YCJ5oup5Zmo77yM5Y+q6IO95YaZ57G76YCJ5oup5Zmo5oiWIElEIOmAieaLqeWZqAooMikg5bC96YeP5YaZ5ZCO5Luj6YCJ5oup5Zmo77yM5LiN5rGh5p+T5YWo5bGA5qC35byPCigzKSDlsL3ph4/kuI3opoHkvb/nlKggYCFpbXBvcnRhbnRgCgojIDQuIEphdmFTY3JpcHQg6KaB5rGCCgojIyA0LjEg5o+Q5L6b55qEIEFQSSDmjqXlj6MKCkFQSSDlrprkuYnlnKggd2luZG93IOS4iu+8jOWmguacieW/heimgeS9oOmcgOimgeWcqCBKUyDohJrmnKzlhoXph43lhpnlh73mlbDjgIIKCi0gd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5mb3JtYXREYXRlVGltZUJ5RGF0ZShkYXRlLCB0ZW1wbGF0ZSk6IOagueaNriBEYXRlIOWvueixoeWwhuaooeadvyBIVE1MIOWtl+espuS4suS4reeahOWGheWuueabv+aNouS4uiBkYXRlCiAg5a+56LGh5oyH5a6a55qE5pe26Ze0CiAgLSBkYXRlOiDml6XmnJ8gRGF0ZSDlr7nosaEKICAtIHRlbXBsYXRlOiBIVE1MIOWtl+espuS4su+8jOWNs+S9oOWGmeeahCBIVE1MIOS7o+eggQogIC0g6L+U5Zue5YC8OiDmoLzlvI/ljJblkI7nmoQgSFRNTCDku6PnoIEKLSB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmJlZm9yZUNyZWF0ZVRpbWVUYWcobWVzc2FnZUlkLCB0aW1lVGFnSFRNTCk6IOWwhiB0ZW1wbGF0ZSDmj5LlhaXliLDpobXpnaLkuYvliY3osIPnlKgKICAtIG1lc3NhZ2VJZDog5raI5oGv55qEIElE77yM5bm26Z2eIEhUTUwg5YWD57Sg55qEIElECiAgLSB0aW1lVGFnSFRNTDog5q2k5pe255qE5a2X56ym5Liy5pivICc8ZGl2IGNsYXNzPSJjaGF0Z3B0LXRpbWUiPicgKyB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmZvcm1hdERhdGVUaW1lQnlEYXRlKGRhdGUsCiAgICB0ZW1wbGF0ZSkgKyAnPC9kaXY+JwogIC0g6L+U5Zue5YC8OiDml6AKLSB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmFmdGVyQ3JlYXRlVGltZVRhZyhtZXNzYWdlSWQsIHRpbWVUYWdOb2RlKTog5bCGIHRlbXBsYXRlIOaPkuWFpeWIsOmhtemdouS5i+WQjuiwg+eUqAogIC0gbWVzc2FnZUlkOiDmtojmga/nmoQgSUTvvIzlubbpnZ4gSFRNTCDlhYPntKDnmoQgSUQKICAtIHRpbWVUYWdOb2RlOiDmraTml7bnmoToioLngrnmmK8gJzxkaXYgY2xhc3M9ImNoYXRncHQtdGltZSI+JyArIHdpbmRvdy5DaGF0R1BUV2l0aERhdGUuaG9va3MuZm9ybWF0RGF0ZVRpbWVCeURhdGUoZGF0ZSwKICAgIHRlbXBsYXRlKSArICc8L2Rpdj4nIOeahCBET00g6IqC54K5CiAgLSDov5Tlm57lgLw6IOaXoAoKIyMgNC4yIEFQSSDmiafooYzpgLvovpEKCuezu+e7n+S8muaMieeFp+S7peS4i+mhuuW6j+aJp+ihjCBBUEnvvJoKCigxKSB0ZW1wbGF0ZSA9IOS9oOi+k+WFpeeahCBIVE1MIOS7o+eggQooMikgdGVtcGxhdGUgPSB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmZvcm1hdERhdGVUaW1lQnlEYXRlKGRhdGUsIHRlbXBsYXRlKQooMykgdGltZVRhZ0hUTUwgPSAnPGRpdiBjbGFzcz0iY2hhdGdwdC10aW1lIj4nICsgdGVtcGxhdGUgKyAnPC9kaXY+JwooNCkgd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5iZWZvcmVDcmVhdGVUaW1lVGFnKG1lc3NhZ2VJZCwgdGltZVRhZ0hUTUwpCig1KSDlsIYgdGltZVRhZ0hUTUwg5o+S5YWl5Yiw5p+Q5L2N572uCig2KSB0aW1lVGFnTm9kZSA9IOWImuWImuaPkuWFpeeahCB0aW1lVGFnSFRNTCDoioLngrkKKDcpIHdpbmRvdy5DaGF0R1BUV2l0aERhdGUuaG9va3MuYWZ0ZXJDcmVhdGVUaW1lVGFnKG1lc3NhZ2VJZCwgdGltZVRhZ05vZGUpCgojIyA0LjMg5Luj56CB6KeE6IyDCgooMSkg6K+35L2/55SoIEVTNiDor63ms5UKKDIpIOivt+S9v+eUqOS4peagvOaooeW8jyBgJ3VzZSBzdHJpY3QnYAooMykg6K+35L2/55SoIGBjb25zdGAg5ZKMIGBsZXRgIOWjsOaYjuWPmOmHjwooNCkg6K+35L2/55SoIElJRkUg6YG/5YWN5YWo5bGA5Y+Y6YeP5rGh5p+TCig1KSDor7fkvb/nlKggYD09PWAg5ZKMIGAhPT1gIOmBv+WFjeexu+Wei+i9rOaNoumXrumimAooNikg5rOo6YeK5LiA5b6L5YaZ5Lit5paH5rOo6YeKCgojIDUuIOahiOS+iwoK5Lul5LiL5piv5LiA5Liq5qGI5L6L77yM5a6e546w5YWJ5qCH56e75Yqo5Yiw5pe26Ze05qCH562+5LiK5pe277yM5pel5pyf5pi+56S65Li65Yeg5aSp5YmN55qE5pWI5p6c44CCCgpIVE1MIOS7o+egge+8mgoKYGBgaHRtbAo8ZGl2IGNsYXNzPSJ0ZXh0LXRhZy1ib3giPgogICAgPHNwYW4gY2xhc3M9ImRhdGUiPnt5eXl5fS17TU19LXtkZH08L3NwYW4+CiAgICA8c3BhbiBjbGFzcz0idGltZSI+e0hIfTp7bW19Ontzc308L3NwYW4+CjwvZGl2PgpgYGAKCkNTUyDku6PnoIHvvJoKCmBgYGNzcwoudGV4dC10YWctYm94IHsKICAgIGJvcmRlci1yYWRpdXM6IDhweDsKICAgIGNvbG9yOiAjRTBFMEUwOwogICAgZm9udC1zaXplOiAwLjllbTsKICAgIG92ZXJmbG93OiBoaWRkZW47CiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7Cn0KCi50ZXh0LXRhZy1ib3ggLmRhdGUgewogICAgYmFja2dyb3VuZDogIzMzMzsKICAgIGZsb2F0OiBsZWZ0OwogICAgcGFkZGluZzogMnB4IDhweCAycHggMTBweDsKICAgIGRpc3BsYXk6IGlubGluZS1ibG9jazsKfQoKLnRleHQtdGFnLWJveCAudGltZSB7CiAgICBiYWNrZ3JvdW5kOiAjNjA2MDYwOwogICAgZmxvYXQ6IGxlZnQ7CiAgICBwYWRkaW5nOiAycHggMTBweCAycHggOHB4OwogICAgZGlzcGxheTogaW5saW5lLWJsb2NrOwp9CmBgYAoKSmF2YVNjcmlwdCDku6PnoIHvvJoKCmBgYGphdmFzY3JpcHQKKCgpID0+IHsKICAgIHdpbmRvdy5DaGF0R1BUV2l0aERhdGUuaG9va3MuZm9ybWF0RGF0ZVRpbWVCeURhdGUgPSAoZGF0ZSwgdGVtcGxhdGUpID0+IHsKICAgICAgICBjb25zdCBmb3JtYXRWYWx1ZSA9ICh2YWx1ZSwgZm9ybWF0KSA9PiB2YWx1ZS50b1N0cmluZygpLnBhZFN0YXJ0KGZvcm1hdCA9PT0gJ3l5eXknID8gNCA6IDIsICcwJyk7CiAgICAgICAgY29uc3QgZGF0ZVZhbHVlcyA9IHsKICAgICAgICAgICAgJ3t5eXl5fSc6IGRhdGUuZ2V0RnVsbFllYXIoKSwKICAgICAgICAgICAgJ3tNTX0nOiBkYXRlLmdldE1vbnRoKCkgKyAxLAogICAgICAgICAgICAne2RkfSc6IGRhdGUuZ2V0RGF0ZSgpLAogICAgICAgICAgICAne0hIfSc6IGRhdGUuZ2V0SG91cnMoKSwKICAgICAgICAgICAgJ3ttbX0nOiBkYXRlLmdldE1pbnV0ZXMoKSwKICAgICAgICAgICAgJ3tzc30nOiBkYXRlLmdldFNlY29uZHMoKQogICAgICAgIH07CiAgICAgICAgcmV0dXJuIHRlbXBsYXRlLnJlcGxhY2UoL1x7W159XStcfS9nLCBtYXRjaCA9PiBmb3JtYXRWYWx1ZShkYXRlVmFsdWVzW21hdGNoXSwgbWF0Y2guc2xpY2UoMSwgLTEpKSk7CiAgICB9CiAgICB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmFmdGVyQ3JlYXRlVGltZVRhZyA9IChtZXNzYWdlSWQsIHRpbWVUYWdOb2RlKSA9PiB7CiAgICAgICAgY29uc3QgZGF0ZU5vZGUgPSB0aW1lVGFnTm9kZS5xdWVyeVNlbGVjdG9yKCcuZGF0ZScpOwogICAgICAgIGNvbnN0IGRhdGVUZXh0ID0gZGF0ZU5vZGUuaW5uZXJUZXh0OwogICAgICAgIGNvbnN0IGRhdGUgPSBuZXcgRGF0ZShkYXRlVGV4dCk7CiAgICAgICAgdGltZVRhZ05vZGUuYWRkRXZlbnRMaXN0ZW5lcignbW91c2VvdmVyJywgKCkgPT4gewogICAgICAgICAgICBkYXRlTm9kZS5pbm5lclRleHQgPSBgJHtNYXRoLmZsb29yKChuZXcgRGF0ZSgpIC0gZGF0ZSkgLyA4NjQwMDAwMCl95aSp5YmNYDsKICAgICAgICB9KTsKICAgICAgICB0aW1lVGFnTm9kZS5hZGRFdmVudExpc3RlbmVyKCdtb3VzZW91dCcsICgpID0+IHsKICAgICAgICAgICAgZGF0ZU5vZGUuaW5uZXJUZXh0ID0gZGF0ZVRleHQ7CiAgICAgICAgfSk7CiAgICB9Cn0pKCkKYGBgCgojIDUuIOS9oOeahOS7u+WKoQoK546w5Zyo5L2g6ZyA6KaB5YaZ5LiJ5q615Luj56CB77yM5YiG5Yir5Li6SFRNTOOAgUNTU+OAgUphdmFTY3JpcHTvvIzopoHmsYLlpoLkuIvvvJoKCi0gSFRNTO+8muS9oOWPqumcgOimgeWGmeaXtumXtOagh+etvueahCBIVE1MCi0gQ1NT77ya6K+35L2/55So57G76YCJ5oup5Zmo5oiWIElEIOmAieaLqeWZqO+8jOS4jeimgeS9v+eUqOagh+etvumAieaLqeWZqO+8iOmZpOmdnuaYr+WtkOmAieaLqeWZqO+8iQotIEphdmFTY3JpcHTvvJror7flnKggSUlGRSDkuK3nvJblhpnku6PnoIHvvIzkvaDlj6/ku6Xkvb/nlKjkuIrpnaLorrLliLDnmoTkuInkuKrpkqnlrZDlh73mlbDjgIIKLSDkuI3opoHor7Tlup/or53vvIznm7TmjqXkuIrku6PnoIHvvIzliIbkuLrkuInkuKrku6PnoIHlnZfnu5nmiJHvvIzlnKjmr4/kuKrku6PnoIHlnZfkuYvliY3lhpnkuIrigJzov5nmmK9IVE1M5Luj56CB4oCd44CB4oCc6L+Z5pivQ1NT5Luj56CB4oCd44CB4oCc6L+Z5pivSlPku6PnoIHigJ3jgIIKLSDmjqXkuIvmnaXnmoTlr7nor53miJHkuI3kvJrph43lpI3ku6XkuIrnmoTlhoXlrrnvvIzkvaDpnIDopoHorrDkvY/ov5nkupvlhoXlrrnjgIIKLSDmiJHmr4/mrKHkvJrlkYror4nkvaDmiJHpnIDopoHmgI7kuYjmlLnov5vkvaDnmoTku6PnoIHvvIzkvaDpnIDopoHmoLnmja7miJHnmoTopoHmsYLkv67mlLnku6PnoIHjgIIKCiMgNi4g5L2g6ZyA6KaB5a6M5oiQ55qE5oiR55qE6ZyA5rGCCgrml6XmnJ/ml7bpl7TmoLzlvI/vvJoyMDI0LTA0LTAzIDE4OjA5OjAxCuagt+W8j++8muaXtumXtOagh+etvuaYvuekuuS4uuS4gOS4queBsOiJsueahOefqeW9ouahhu+8jOaXpeacn+aYvuekuuWcqOW3pui+ue+8jOaXtumXtOaYvuekuuWcqOWPs+i+ue+8jOaXpeacn+WSjOaXtumXtOS5i+mXtOacieS4gOS4querlue6v+WIhumalArpop3lpJbmlYjmnpzvvJrlvZPpvKDmoIfnp7vliqjliLDml7bpl7TmoIfnrb7kuIrml7bvvIzml7bpl7TmoIfnrb7mipbliqjkuIDkuIvjgII=',
+        }
+        static Main = {
+            WindowRegisterKey: 'ChatGPTWithDate',
         }
         static Logger = {
             TimeFormatTemplate: "{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}",
         }
         static TimeRender = {
             Interval: 1000,
-            TimeClassName: 'chatgpt-time',
+            TimeClassName: 'chatgpt-time-container',
             BatchSize: 100,
             BatchTimeout: 200,
             RenderRetryCount: 3,
             RenderModes: ['AfterRoleLeft', 'AfterRoleRight', 'BelowRole'],
             RenderModeStyles: {
                 AfterRoleLeft: `
-                    .chatgpt-time {
+                    .chatgpt-time-container {
                         font-weight: normal;
                     }
                 `,
                 AfterRoleRight: `
-                    .chatgpt-time {
+                    .chatgpt-time-container {
                         font-weight: normal;
                         float: right;
                     }
                 `,
                 BelowRole: `
-                    .chatgpt-time {
+                    .chatgpt-time-container {
                         font-weight: normal;
                         display: block;
                     }
@@ -76,9 +83,78 @@
         static ConfigPanel = {
             AppID: 'CWD-Configuration-Panel',
             Icon: {
-                Close: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path d="M649.179 512l212.839-212.84c37.881-37.881 37.881-99.298 0-137.179s-99.298-37.881-137.179 0L512 374.821l-212.839-212.84c-37.881-37.881-99.298-37.881-137.179 0s-37.881 99.298 0 137.179L374.821 512 161.982 724.84c-37.881 37.881-37.881 99.297 0 137.179 18.94 18.94 43.765 28.41 68.589 28.41 24.825 0 49.649-9.47 68.589-28.41L512 649.179l212.839 212.84c18.94 18.94 43.765 28.41 68.589 28.41s49.649-9.47 68.59-28.41c37.881-37.882 37.881-99.298 0-137.179L649.179 512z"></path></svg>',
+                Close: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M834.858667 191.914667l-6.101334-5.546667-5.162666-3.84-5.674667-3.370667a67.712 67.712 0 0 0-80.469333 11.306667L512 416.042667 287.274667 191.36l-2.688-2.56c-27.946667-24.234667-68.266667-24.192-92.672 0.170667l-4.821334 5.12-4.565333 6.144-3.413333 5.674666a67.797333 67.797333 0 0 0 11.306666 80.469334l225.706667 225.664-227.2 227.285333c-24.32 28.16-24.32 68.394667 0 92.885333l5.12 4.778667 6.144 4.608 5.674667 3.370667a67.712 67.712 0 0 0 80.469333-11.306667l225.621333-225.706667 227.072 227.2c28.586667 24.789333 68.906667 23.936 94.293334-1.493333l4.565333-5.034667 4.096-5.632a67.882667 67.882667 0 0 0-8.618667-85.248L607.786667 512l224.554666-224.597333 4.138667-4.394667c23.04-26.752 22.4-66.986667-1.621333-91.136z"></path></svg>',
+                Restore: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M597.333333 85.333333a128 128 0 0 1 127.786667 120.490667L725.333333 213.333333v21.333334h170.666667a42.666667 42.666667 0 0 1 4.992 85.034666L896 320h-42.666667V810.666667a128 128 0 0 1-120.490666 127.786666L725.333333 938.666667H298.666667a128 128 0 0 1-127.786667-120.490667L170.666667 810.666667V320H128a42.666667 42.666667 0 0 1-4.992-85.034667L128 234.666667h170.666667V213.333333a128 128 0 0 1 120.490666-127.786666L426.666667 85.333333h170.666666z m170.666667 234.666667H256V810.666667a42.666667 42.666667 0 0 0 37.674667 42.368L298.666667 853.333333h426.666666a42.666667 42.666667 0 0 0 42.368-37.674666L768 810.666667V320zM426.666667 426.666667a42.666667 42.666667 0 0 1 42.368 37.674666L469.333333 469.333333v213.333334a42.666667 42.666667 0 0 1-85.034666 4.992L384 682.666667v-213.333334a42.666667 42.666667 0 0 1 42.666667-42.666666z m170.666666 0a42.666667 42.666667 0 0 1 42.368 37.674666L640 469.333333v213.333334a42.666667 42.666667 0 0 1-85.034667 4.992L554.666667 682.666667v-213.333334a42.666667 42.666667 0 0 1 42.666666-42.666666z m0-256h-170.666666a42.666667 42.666667 0 0 0-42.368 37.674666L384 213.333333v21.333334h256V213.333333a42.666667 42.666667 0 0 0-37.674667-42.368L597.333333 170.666667z"></path></svg>',
+                Language: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M757.205333 473.173333c5.333333 0 10.453333 2.090667 14.250667 5.717334a19.029333 19.029333 0 0 1 5.888 13.738666v58.154667h141.184c11.093333 0 20.138667 8.704 20.138667 19.413333v232.704a19.797333 19.797333 0 0 1-20.138667 19.413334h-141.184v96.981333a19.754667 19.754667 0 0 1-20.138667 19.370667H716.8a20.565333 20.565333 0 0 1-14.250667-5.674667 19.029333 19.029333 0 0 1-5.888-13.696v-96.981333h-141.141333a20.565333 20.565333 0 0 1-14.250667-5.674667 19.029333 19.029333 0 0 1-5.930666-13.738667v-232.704c0-5.12 2.133333-10.112 5.930666-13.738666a20.565333 20.565333 0 0 1 14.250667-5.674667h141.141333v-58.154667c0-5.162667 2.133333-10.112 5.888-13.738666a20.565333 20.565333 0 0 1 14.250667-5.674667h40.362667zM192.597333 628.394667c22.272 0 40.32 17.365333 40.32 38.826666v38.741334c0 40.618667 32.512 74.368 74.624 77.397333l6.058667 0.213333h80.64c21.930667 0.469333 39.424 17.706667 39.424 38.784 0 21.077333-17.493333 38.314667-39.424 38.784H313.6c-89.088 0-161.28-69.461333-161.28-155.178666v-38.741334c0-21.461333 18.005333-38.826667 40.277333-38.826666z m504.106667 0h-80.64v116.394666h80.64v-116.394666z m161.28 0h-80.64v116.394666h80.64v-116.394666zM320.170667 85.333333c8.234667 0 15.658667 4.778667 18.773333 12.202667H338.773333l161.322667 387.84c2.517333 5.973333 1.706667 12.8-2.005333 18.090667a20.394667 20.394667 0 0 1-16.725334 8.533333h-43.52a20.181333 20.181333 0 0 1-18.688-12.202667L375.850667 395.648H210.901333l-43.264 104.149333A20.181333 20.181333 0 0 1 148.906667 512H105.514667a20.394667 20.394667 0 0 1-16.725334-8.533333 18.773333 18.773333 0 0 1-2.005333-18.090667l161.28-387.84A20.181333 20.181333 0 0 1 266.88 85.333333h53.290667zM716.8 162.901333c42.794667 0 83.84 16.341333 114.090667 45.44a152.234667 152.234667 0 0 1 47.232 109.738667v38.741333c-0.469333 21.077333-18.389333 37.930667-40.32 37.930667s-39.808-16.853333-40.32-37.930667v-38.741333c0-20.608-8.490667-40.32-23.637334-54.869333a82.304 82.304 0 0 0-57.045333-22.741334h-80.64c-21.888-0.469333-39.424-17.706667-39.424-38.784 0-21.077333 17.493333-38.314667 39.424-38.784h80.64z m-423.424 34.304L243.2 318.037333h100.48L293.418667 197.205333z"></path></svg>',
+                Documentation: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M768.085333 85.333333a128 128 0 0 1 127.701334 120.490667L896 213.333333v597.333334a128 128 0 0 1-120.405333 127.786666l-7.509334 0.213334H256.256a128 128 0 0 1-127.744-120.490667L128.298667 810.666667v-80A43.050667 43.050667 0 0 1 128 725.674667l0.298667-4.949334V213.333333A128 128 0 0 1 248.746667 85.546667L256.256 85.333333h511.829333zM810.666667 768.341333H213.589333V810.666667a42.666667 42.666667 0 0 0 37.717334 42.368l4.949333 0.298666h511.829333a42.666667 42.666667 0 0 0 42.368-37.674666L810.666667 810.666667v-42.325334zM768.085333 170.666667h-180.650666v233.728a42.666667 42.666667 0 0 1-61.738667 38.144l-4.096-2.346667-82.218667-53.376-85.077333 53.674667a42.666667 42.666667 0 0 1-64.341333-26.453334l-0.810667-4.693333-0.256-4.949333V170.666667h-32.64a42.666667 42.666667 0 0 0-42.368 37.674666L213.632 213.333333l-0.042667 469.674667H810.666667L810.709333 213.333333a42.666667 42.666667 0 0 0-37.674666-42.368L768.085333 170.666667z m-265.941333 20.352h-128v136.021333l42.88-26.965333a42.666667 42.666667 0 0 1 36.181333-4.394667l4.992 2.048 4.778667 2.688 39.168 25.386667V191.018667z"></path></svg>',
+                Minimize: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M202.922667 562.176H407.466667l2.986666 0.128 3.84 0.554667 3.285334 0.810666 4.565333 1.706667 5.205333 2.986667 3.541334 2.688 3.456 3.413333c1.536 1.706667 2.858667 3.413333 4.053333 5.333333l1.92 3.328 1.834667 4.181334 1.28 4.138666 0.938666 4.352 0.426667 3.456 0.128 3.328v217.088c0 22.314667-16.768 40.405333-37.461333 40.405334-19.2 0-35.072-15.573333-37.205334-35.669334l-0.256-4.736V698.026667l-178.432 186.581333a35.541333 35.541333 0 0 1-52.949333-0.896 42.837333 42.837333 0 0 1-2.346667-53.418667l3.157334-3.754666L314.88 642.986667H202.922667c-20.693333 0-37.461333-18.090667-37.461334-40.405334 0-20.736 14.464-37.802667 33.109334-40.106666l4.352-0.298667z m602.538666-1.621333c20.693333 0 37.461333 18.090667 37.461334 40.405333 0 20.736-14.464 37.802667-33.109334 40.106667l-4.352 0.298666H690.346667l175.530666 183.552c14.848 15.530667 15.232 41.130667 0.853334 57.173334a35.498667 35.498667 0 0 1-49.408 4.181333l-3.584-3.285333-179.968-188.202667v119.978667c0 22.314667-16.768 40.448-37.461334 40.448-19.2 0-35.072-15.616-37.248-35.712l-0.213333-4.693334v-213.845333c0-22.314667 16.768-40.405333 37.461333-40.405333h209.152zM188.16 136.234667l3.541333 3.328 179.797334 190.464V209.237333c0-22.314667 16.768-40.448 37.461333-40.448 19.2 0 35.072 15.616 37.248 35.712l0.213333 4.693334v202.154666c0 6.058667-1.237333 11.818667-3.456 17.024a39.765333 39.765333 0 0 1-1.365333 6.826667l-0.853333 5.205333c-3.541333 16.384-16.298667 28.928-32.085334 30.890667l-4.352 0.298667H199.808c-20.693333 0-37.461333-18.133333-37.461333-40.448 0-20.736 14.464-37.802667 33.109333-40.106667l4.352-0.298667h122.112L139.221333 197.248a42.709333 42.709333 0 0 1-0.512-57.173333 35.456 35.456 0 0 1 49.450667-3.84z m698.368 5.333333c12.714667 15.402667 12.501333 38.4 0.213333 53.461333l-3.328 3.626667-190.250666 182.314667h123.349333c20.693333 0 37.461333 18.133333 37.461333 40.448 0 20.736-14.464 37.802667-33.109333 40.106666l-4.352 0.298667h-220.202667c-20.693333 0-37.461333-18.090667-37.461333-40.405333V204.330667c0-22.314667 16.768-40.405333 37.461333-40.405334 19.2 0 35.029333 15.573333 37.205334 35.669334l0.256 4.736v125.44l199.893333-191.573334a35.584 35.584 0 0 1 52.906667 3.413334z"></path></svg>',
+                Maximize: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path d="M411.648 547.328a36.565333 36.565333 0 0 1 50.688 3.413333c13.866667 14.805333 14.933333 38.101333 3.2 54.186667l-3.2 3.925333-191.701333 204.970667H396.8l4.48 0.298667c19.114667 2.389333 33.92 19.754667 33.92 40.789333 0 21.077333-14.805333 38.4-33.92 40.832L396.8 896H166.4l-4.48-0.256c-17.621333-2.218667-31.616-17.152-33.664-36.010667L128 853.76v-250.026667l0.256-4.778666c2.218667-20.437333 18.432-36.266667 38.144-36.266667s35.925333 15.829333 38.144 36.266667l0.256 4.778666v164.394667l203.264-217.386667 3.584-3.413333z m215.552 340.48l-4.48-0.256c-19.114667-2.346667-33.92-19.712-33.92-40.789333 0-21.077333 14.805333-38.4 33.92-40.789334l4.48-0.298666h155.008l-218.026667-194.346667-3.456-3.541333a43.221333 43.221333 0 0 1-1.408-54.272 36.693333 36.693333 0 0 1 50.176-8.32l3.882667 3.029333 205.824 183.466667V600.32l0.256-4.778667c2.218667-20.437333 18.432-36.266667 38.144-36.266666s35.925333 15.829333 38.144 36.266666l0.256 4.778667v246.442667c0 21.077333-14.805333 38.4-33.92 40.789333l-4.48 0.298667h-230.4zM396.8 128c21.205333 0 38.4 18.389333 38.4 41.088 0 21.034667-14.805333 38.4-33.92 40.789333l-4.48 0.256H264.789333L459.776 384c16.298667 14.506667 18.517333 40.405333 4.906667 57.856a36.693333 36.693333 0 0 1-50.176 8.277333l-3.882667-3.029333-205.824-183.466667V420.266667c0 22.656-17.194667 41.045333-38.4 41.045333-19.712 0-35.925333-15.829333-38.144-36.266667L128 420.266667V169.088c0-21.077333 14.805333-38.4 33.92-40.832L166.4 128h230.4z m460.8 0c19.712 0 35.925333 15.872 38.144 36.266667l0.256 4.821333v246.4c0 22.698667-17.194667 41.088-38.4 41.088-19.712 0-35.925333-15.872-38.144-36.266667l-0.256-4.821333V259.114667l-205.482667 187.648a36.693333 36.693333 0 0 1-54.144-4.608 43.264 43.264 0 0 1 0.853334-54.314667l3.413333-3.584 190.72-174.08H627.2c-21.205333 0-38.4-18.432-38.4-41.088 0-21.077333 14.805333-38.4 33.92-40.832L627.2 128h230.4z"></path></svg>',
             },
             StyleKey: 'config-panel',
+            ApplicationRegisterKey: 'configPanel',
+            I18N: {
+                default: 'zh',
+                rollback: 'zh',
+                supported: ['zh', 'en'],
+                zh: {
+                    'restore-info': '恢复出厂设置',
+                    'restore-warn': '确定恢复出厂设置？你的所有自定义配置将被清除！',
+                    'toggle-language-info': 'Switch to English',
+                    'documentation-info': '查看教程',
+                    'documentation-international-access': '国际访问',
+                    'documentation-china-access': '中国访问',
+                    'template': '模板',
+                    'preview': '预览',
+                    'code': '代码',
+                    'position': '位置',
+                    'advance': '高级',
+                    'reset': '重置',
+                    'apply': '应用',
+                    'save': '保存并关闭',
+                    'apply-failed': '应用失败',
+                    'input-html': '请输入 HTML 代码',
+                    'input-css': '请输入 CSS 代码',
+                    'input-js': '请输入 JavaScript 代码',
+                    'position-after-role-left': '角色之后（靠左）',
+                    'position-after-role-right': '角色之后（靠右）',
+                    'position-below-role': '角色之下',
+                    'gpt-prompt-info': '不会写代码？复制提示词让 ChatGPT 帮你写！',
+                    'copy-success-info': '复制成功，发给 ChatGPT 吧！',
+                    'js-invalid-info': 'JS 代码无效',
+                },
+                en: {
+                    'restore-info': 'Restore factory settings',
+                    'restore-warn': 'Are you sure to restore the factory settings? All your custom configurations will be cleared!',
+                    'toggle-language-info': '切换到中文',
+                    'documentation-info': 'View documentation',
+                    'documentation-international-access': 'International Access',
+                    'documentation-china-access': 'China Access',
+                    'template': 'Template',
+                    'preview': 'Preview',
+                    'code': 'Code',
+                    'position': 'Position',
+                    'advance': 'Advance',
+                    'reset': 'Reset',
+                    'apply': 'Apply',
+                    'apply-failed': 'Apply failed',
+                    'save': 'Save and Close',
+                    'input-html': 'Please enter HTML code',
+                    'input-css': 'Please enter CSS code',
+                    'input-js': 'Please enter JavaScript code',
+                    'position-after-role-left': 'After Role (left)',
+                    'position-after-role-right': 'After Role (right)',
+                    'position-below-role': 'Below Role',
+                    'gpt-prompt-info': 'Not good at coding? Copy the prompt words and let ChatGPT help you!',
+                    'copy-success-info': 'Copy successfully, send it to ChatGPT!',
+                    'js-invalid-info': 'Invalid JS code',
+                },
+            },
+        }
+        static Hook = {
+            // APP 使用 SystemConfig.Main.WindowRegisterKey 作为键绑定到 window 对象上
+            // Hook 使用 SystemConfig.Hook.ApplicationRegisterKey 作为键绑定到 APP 对象上
+            // 即如果要调用钩子 foo() 方法，应该使用 window.ChatGPTWithDate.hooks.foo()
+            ApplicationRegisterKey: 'hooks',
         }
         // GM 存储的键
         static GMStorageKey = {
@@ -284,6 +360,47 @@
             return order;
         }
 
+        /**
+         * 将文本转换为 base64 编码，兼容中文
+         * @param text
+         * @returns {string}
+         */
+        static base64Encode(text) {
+            const encodedUriComponent = encodeURIComponent(text);
+            const binaryString = unescape(encodedUriComponent);
+            return btoa(binaryString);
+        }
+
+        /**
+         * 将 base64 编码的文本解码，兼容中文
+         * @param encoded
+         * @returns {string}
+         */
+        static base64Decode(encoded) {
+            const binaryString = atob(encoded);
+            const encodedUriComponent = escape(binaryString);
+            return decodeURIComponent(encodedUriComponent);
+        }
+
+        /**
+         * 判断 JavaScript 代码字符串是否合法
+         * @param code
+         * @returns {{valid: boolean, error: *}}
+         */
+        static isJavaScriptSyntaxValid(code) {
+            try {
+                new Function(code);
+                return {
+                    valid: true,
+                    error: null
+                };
+            } catch (e) {
+                return {
+                    valid: false,
+                    error: e
+                };
+            }
+        }
     }
 
     class Logger {
@@ -292,7 +409,7 @@
         static EnableInfo = true
         static EnableWarn = true
         static EnableError = true
-        static EnableTable = false
+        static EnableTable = true
 
         static prefix(type = 'INFO') {
             const timeFormat = Utils.formatDateTimeByDate(new Date(), SystemConfig.Logger.TimeFormatTemplate);
@@ -437,16 +554,31 @@
     class UserConfig extends Component {
 
         init() {
-            this.timeRender = {
-                mode: 'AfterRoleLeft',
-                format: SystemConfig.TimeRender.TimeTagTemplates[0],
-                advanced: {
-                    enable: false,
-                    htmlTextContent: `<div class="text-tag-box">
+            const defaultConfig = this.getDefaultConfig()
+            this.timeRender = defaultConfig.timeRender
+            this.i18n = defaultConfig.i18n
+            const userConfig = this.load()
+            if (userConfig) {
+                // 不调用 update 方法，因为 update 方法会保存配置
+                // 为了 （开发者）调试 方便，不保存配置
+                // 为了 （用户）性能 考虑，不保存配置
+                Utils.deepMerge(this.timeRender, userConfig.timeRender)
+                if (userConfig.i18n) this.i18n = userConfig.i18n
+            }
+        }
+
+        getDefaultConfig() {
+            return {
+                timeRender: {
+                    mode: 'AfterRoleLeft',
+                    format: SystemConfig.TimeRender.TimeTagTemplates[0],
+                    advanced: {
+                        enable: false,
+                        htmlTextContent: `<div class="text-tag-box">
     <span class="date">{yyyy}-{MM}-{dd}</span>
     <span class="time">{HH}:{mm}:{ss}</span>
 </div>`,
-                    styleTextContent: `.text-tag-box {
+                        styleTextContent: `.text-tag-box {
     border-radius: 8px;
     color: #E0E0E0;
     font-size: 0.9em;
@@ -469,7 +601,7 @@
     padding: 2px 10px 2px 8px;
     display: inline-block;
 }`,
-                    scriptTextContent: `(() => {
+                        scriptTextContent: `(() => {
     const getNewWidth = (targetNode, text) => {
         // 创建一个临时元素来测量文本宽度
         const temp = targetNode.cloneNode();
@@ -484,7 +616,7 @@
         return newWidth;
     }
 
-    window.afterCreateTimeTag = (messageId, timeTagNode) => {
+    window.ChatGPTWithDate.hooks.afterCreateTimeTag = (messageId, timeTagNode) => {
         const dateNode = timeTagNode.querySelector('.date');
         const date = dateNode.innerText;
         const originalWidth = getNewWidth(dateNode, date);
@@ -521,17 +653,22 @@
         });
     }
 })()`,
-                }
+                    }
+                },
+                i18n: SystemConfig.ConfigPanel.I18N.default
             }
-            const userConfig = this.load()
-            if (userConfig) {
-                Utils.deepMerge(this.timeRender, userConfig.timeRender)
-            }
+        }
+
+        restore() {
+            this.timeRender = this.getDefaultConfig().timeRender
+            this.i18n = SystemConfig.ConfigPanel.I18N.default
+            this.save()
         }
 
         save() {
             GM_setValue(SystemConfig.GMStorageKey.UserConfig, {
-                timeRender: this.timeRender
+                timeRender: this.timeRender,
+                i18n: this.i18n
             })
         }
 
@@ -545,7 +682,77 @@
          */
         update(newConfig) {
             Utils.deepMerge(this.timeRender, newConfig.timeRender)
+            if (newConfig.i18n) this.i18n = newConfig.i18n
             this.save()
+        }
+
+        /**
+         * 更新一个配置项并保存
+         * @param key   配置项的 key
+         * @param value 配置项的 value
+         */
+        updateOne(key, value) {
+            if (this[key] instanceof Object) {
+                Utils.deepMerge(this[key], value)
+            } else {
+                this[key] = value
+            }
+            this.save()
+        }
+    }
+
+    class HookService extends Component {
+
+        init() {
+            this.defaultHooks = {
+                beforeCreateTimeTag: (messageId, timeTagHTML) => {
+                },
+                afterCreateTimeTag: (messageId, timeTagNode) => {
+                },
+                formatDateTimeByDate: Utils.formatDateTimeByDate
+            }
+            this.reset2DefaultHooks()
+        }
+
+        _checkOldVersion(hookName) {
+            if (unsafeWindow[hookName]) {
+                Logger.warn(`钩子函数 ${hookName} 不应该绑定在 window 对象上，请绑定在 window.${SystemConfig.Main.WindowRegisterKey}.${SystemConfig.Hook.ApplicationRegisterKey} 上！未来版本中将不再兼容此情况。`)
+                return true
+            }
+            return false
+        }
+
+        _register2Window() {
+            unsafeWindow[SystemConfig.Main.WindowRegisterKey][SystemConfig.Hook.ApplicationRegisterKey] = {
+                beforeCreateTimeTag: this.hooks.beforeCreateTimeTag,
+                afterCreateTimeTag: this.hooks.afterCreateTimeTag,
+                formatDateTimeByDate: this.hooks.formatDateTimeByDate
+            }
+            for (let hookName in this.defaultHooks) {
+                if (this._checkOldVersion(hookName)) {
+                    unsafeWindow[hookName] = this.defaultHooks[hookName]
+                }
+            }
+        }
+
+        reset2DefaultHooks() {
+            this.hooks = this.defaultHooks
+            this._register2Window()
+        }
+
+        invokeHook(hookName, ...args) {
+            if (!this.defaultHooks[hookName]) {
+                Logger.error(`钩子函数 ${hookName} 非法`)
+                return
+            }
+            if (this._checkOldVersion(hookName)) {
+                unsafeWindow[SystemConfig.Main.WindowRegisterKey][SystemConfig.Hook.ApplicationRegisterKey][hookName] = unsafeWindow[hookName]
+            }
+            try {
+                return unsafeWindow[SystemConfig.Main.WindowRegisterKey][SystemConfig.Hook.ApplicationRegisterKey][hookName](...args)
+            } catch (e) {
+                Logger.error(`调用钩子函数 ${hookName} 失败：`, e)
+            }
         }
     }
 
@@ -631,7 +838,7 @@
             const message = messageElementBO.messageEle.innerHTML;
             if (!this.messages.has(messageId)) {
                 const messageBO = new MessageBO(messageId, role, timestamp, message);
-                this.messages.set(messageId, messageBO);
+                this.addMessage(messageBO)
             }
             return this.messages.get(messageId);
         }
@@ -755,7 +962,7 @@
                     this.messageService.addMessage(messageBO, true)
                 }
             }
-            this.timeRendererService.addMessageArrayToBeRendered(messageIds)
+            this.timeRendererService.addMessageArrayToBeRendered(messageIds.reverse())
             this.messageService.showMessages()
         }
 
@@ -784,20 +991,26 @@
             const callback = function (mutationsList, observer) {
                 const start = new Date().getTime();
                 for (const mutation of mutationsList) {
-                    if (mutation.type === 'childList' || mutation.type === 'attributes') {
-                        mutation.addedNodes.forEach(node => {
+                    let messageDiv = null;
+                    if (mutation.type === 'childList') {
+                        for (let node of mutation.addedNodes) {
                             if (node.nodeType === Node.ELEMENT_NODE) {
-                                let messageDiv = node.querySelector('div[data-message-id]');
+                                messageDiv = node.querySelector('div[data-message-id]');
                                 if (!messageDiv && node.hasAttribute('data-message-id')) {
                                     messageDiv = node
-                                }
-                                if (messageDiv !== null) {
-                                    const messageBO = that.messageService.parseMessageDiv(messageDiv);
-                                    that.timeRendererService.addMessageToBeRendered(messageBO.messageId);
-                                    that.messageService.showMessages()
+                                    break
                                 }
                             }
-                        });
+                        }
+                    } else if (mutation.type === 'attributes' && mutation.attributeName === 'data-message-id') {
+                        messageDiv = mutation.target;
+                    }
+                    if (messageDiv !== null) {
+                        const messageBO = that.messageService.parseMessageDiv(messageDiv);
+                        if (messageBO) {
+                            that.timeRendererService.addMessageToBeRendered(messageBO.messageId);
+                            that.messageService.showMessages()
+                        }
                     }
                 }
                 const end = new Date().getTime();
@@ -816,19 +1029,17 @@
             this.userConfig = null
             this.styleService = null
             this.javaScriptService = null
+            this.hookService = null
             this.dependencies = [
                 {field: 'messageService', clazz: MessageService},
                 {field: 'userConfig', clazz: UserConfig},
                 {field: 'styleService', clazz: StyleService},
                 {field: 'javaScriptService', clazz: JavaScriptService},
+                {field: 'hookService', clazz: HookService},
             ]
         }
 
         init() {
-            unsafeWindow.beforeCreateTimeTag = (messageId, timeTagHTML) => {
-            }
-            unsafeWindow.afterCreateTimeTag = (messageId, timeTagNode) => {
-            }
             this.messageToBeRendered = []
             this.messageCountOfFailedToRender = new Map()
             this._setStyleAndJavaScript()
@@ -847,10 +1058,7 @@
                 this.javaScriptService.updateJavaScript(SystemConfig.TimeRender.AdditionalScriptKey, this.userConfig.timeRender.advanced.scriptTextContent)
             } else {
                 this.styleService.removeStyle(SystemConfig.TimeRender.AdditionalStyleKey)
-                unsafeWindow.beforeCreateTimeTag = (messageId, timeTagHTML) => {
-                }
-                unsafeWindow.afterCreateTimeTag = (messageId, timeTagNode) => {
-                }
+                this.hookService.reset2DefaultHooks()
                 this.javaScriptService.removeJavaScript(SystemConfig.TimeRender.AdditionalScriptKey)
             }
         }
@@ -967,7 +1175,7 @@
                 if (timeElement) {
                     messageElementBo.roleEle.removeChild(timeElement)
                 }
-                unsafeWindow.beforeCreateTimeTag(messageId, element.timeTagContainer)
+                this.hookService.invokeHook('beforeCreateTimeTag', messageId, element.timeTagContainer)
                 switch (this.userConfig.timeRender.mode) {
                     case 'AfterRoleLeft':
                     case 'AfterRoleRight':
@@ -975,7 +1183,7 @@
                         messageElementBo.roleEle.innerHTML += element.timeTagContainer
                         break;
                 }
-                unsafeWindow.afterCreateTimeTag(messageId, messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`))
+                this.hookService.invokeHook('afterCreateTimeTag', messageId, messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`))
                 resolve(true)
             })
         }
@@ -990,9 +1198,9 @@
         _createTimeElement(timestamp) {
             let timeTagFormated = ''
             if (this.userConfig.timeRender.advanced.enable) {
-                timeTagFormated = Utils.formatDateTimeByDate(new Date(timestamp), this.userConfig.timeRender.advanced.htmlTextContent)
+                timeTagFormated = this.hookService.invokeHook('formatDateTimeByDate', new Date(timestamp), this.userConfig.timeRender.advanced.htmlTextContent)
             } else {
-                timeTagFormated = Utils.formatDateTimeByDate(new Date(timestamp), this.userConfig.timeRender.format);
+                timeTagFormated = this.hookService.invokeHook('formatDateTimeByDate', new Date(timestamp), this.userConfig.timeRender.format);
             }
             const timeTagContainer = `<span class="${SystemConfig.TimeRender.TimeClassName}">${timeTagFormated}</span>`;
             return {
@@ -1045,12 +1253,12 @@
          */
         async init() {
             this.appID = SystemConfig.ConfigPanel.AppID
-            this._initVariables()
             Logger.debug('开始初始化配置面板')
-            await this._initStyle()
-            Logger.debug('初始化样式完成')
             await this._initExternalResources()
             Logger.debug('初始化脚本完成')
+            this._initVariables()
+            await this._initStyle()
+            Logger.debug('初始化样式完成')
             await this._initPanel()
             Logger.debug('初始化面板完成')
             this._initVue()
@@ -1068,6 +1276,8 @@
          */
         _initVariables() {
             const that = this
+            unsafeWindow[SystemConfig.Main.WindowRegisterKey][SystemConfig.ConfigPanel.ApplicationRegisterKey] = {}
+            const GPTPrompt = Utils.base64Decode(SystemConfig.Common.GPTPrompt)
             const TimeTagComponent = {
                 props: ['html'],
                 render() {
@@ -1078,15 +1288,18 @@
                     .v-binder-follower-container {
                         position: fixed;
                     }
+                    .n-button .n-button__content {
+                        white-space: pre-wrap;
+                    }
                     
                     #CWD-Configuration-Panel {
                         position: absolute;
                         top: 50px;
                         left: 50px;
-                        width: 250px;
+                        width: 600px;
                         background-color: #FFFFFF;
                         border: #D7D8D9 1px solid;
-                        border-radius: 4px;
+                        border-radius: 8px;
                         resize: horizontal;
                         min-width: 200px;
                         overflow: auto;
@@ -1096,7 +1309,7 @@
             
                     #CWD-Configuration-Panel .status-bar {
                         cursor: move;
-                        background-color: #f0f0f0;
+                        background-color: #ECECEA;
                         border-radius: 4px 4px 0 0;
                         display: flex;
                     }
@@ -1112,18 +1325,18 @@
                         font-weight: bold;
                     }
             
-                    #CWD-Configuration-Panel .status-bar .close {
+                    #CWD-Configuration-Panel .status-bar .button {
                         cursor: pointer;
                         padding: 10px;
                         transition: color 0.3s;
                     }
             
-                    #CWD-Configuration-Panel .status-bar .close:hover {
+                    #CWD-Configuration-Panel .status-bar .button:hover {
                         color: #f00;
                     }
             
                     #CWD-Configuration-Panel .container {
-                        padding: 20px;
+                        padding: 20px 20px 0;
                     }
                     
                     #CWD-Configuration-Panel .container .code-block {
@@ -1132,78 +1345,140 @@
                         border-radius: 4px;
                     }
                     
-                    #CWD-Configuration-Panel .container .button-group {
+                    #CWD-Configuration-Panel .operation-group {
+                        background-color: #ECECEA;
+                        border-radius: 8px;
                         display: flex;
                         justify-content: center;
                         gap: 10px;
+                        padding: 20px 0;
                     }
                     
-                    #CWD-Configuration-Panel .container .button-group > button {
+                    #CWD-Configuration-Panel .operation-group > button {
                         width: 30%;
                     }`
             this.panelHTML = `
-                <div id="${that.appID}" style="visibility: hidden">
-                    <div class="status-bar">
-                        <div class="title" id="${that.appID}-DraggableArea">{{title}}</div>
-                        <n-button class="close" @click="onClose" text>
-                            <n-icon size="20">
-                                ${SystemConfig.ConfigPanel.Icon.Close}
-                            </n-icon>
-                        </n-button>
-                    </div>
-                    <n-scrollbar style="max-height: 80vh">
-                        <div class="container">
-                            <n-form :label-width="40" :model="configForm" label-placement="left">
-                                <n-form-item v-show="!configForm.advanced.enable" label="模板" path="format">
-                                    <n-select v-model:value="configForm.format"
-                                              :disabled="configForm.advanced.enable" :render-label="renderLabel"
-                                              :options="formatOptions" @update:value="onConfigUpdate"></n-select>
-                                </n-form-item>
-                                <n-form-item v-show="!configForm.advanced.enable" label="预览" path="format">
-                                    <div v-html="reFormatTimeHTML(configForm.format)"></div>
-                                </n-form-item>
-                                <n-form-item v-show="!configForm.advanced.enable" label="代码" path="format">
-                                    <n-config-provider :hljs="hljs">
-                                        <div class="code-block">
-                                            <n-scrollbar style="max-height: 4em">
-                                                <n-code :code="configForm.format" language="html" word-wrap/>
-                                            </n-scrollbar>
-                                        </div>
-                                    </n-config-provider>
-                                </n-form-item>
-                                <n-form-item label="位置" path="mode">
-                                    <n-select v-model:value="configForm.mode" 
-                                              :options="modeOptions" @update:value="onConfigUpdate"></n-select>
-                                </n-form-item>
-                                <n-form-item label="高级" path="advanced.enable">
-                                    <n-switch v-model:value="configForm.advanced.enable" @update:value="onConfigUpdate" />
-                                </n-form-item>
-                                <div v-show="configForm.advanced.enable">
-                                    <n-form-item label="HTML" path="advanced.htmlTextContent">
-                                        <n-input type="textarea" placeholder="请输入 HTML 代码" :autosize="{ minRows: 1, maxRows: 5 }" 
-                                                    @keydown.tab="insertTab" @update:value="onConfigUpdate"
-                                                    v-model:value="configForm.advanced.htmlTextContent"/>
-                                    </n-form-item>
-                                    <n-form-item label="CSS" path="advanced.styleTextContent">
-                                        <n-input type="textarea" placeholder="请输入 CSS 代码" :autosize="{ minRows: 1, maxRows: 5 }"
-                                                    @keydown.tab="insertTab" @update:value="onConfigUpdate"
-                                                    v-model:value="configForm.advanced.styleTextContent"/>
-                                    </n-form-item>
-                                    <n-form-item label="JS" path="advanced.scriptTextContent">
-                                        <n-input type="textarea" placeholder="请输入 JavaScript 代码" :autosize="{ minRows: 1, maxRows: 5 }"
-                                                    @keydown.tab="insertTab" @update:value="onConfigUpdate"
-                                                    v-model:value="configForm.advanced.scriptTextContent"/>
-                                    </n-form-item>
-                                </div>
-                            </n-form>
-                            <div class="button-group">
-                                <n-button @click="onReset" :disabled="!configDirty">重置</n-button>
-                                <n-button @click="onApply">应用</n-button>
-                                <n-button @click="onConfirm">保存</n-button>
+<div id="${that.appID}" style="visibility: hidden">
+    <n-config-provider :hljs="hljs" :locale="locale">
+        <div class="status-bar">
+                <div class="title" id="${that.appID}-DraggableArea">{{title}}</div>
+                <div class="button-group">
+                    <n-popconfirm @positive-click="onRestore">
+                        <template #trigger>
+                            <n-tooltip trigger="hover">
+                                <template #trigger>
+                                    <n-button class="button" text>
+                                        <n-icon size="20">
+                                            ${SystemConfig.ConfigPanel.Icon.Restore}
+                                        </n-icon>
+                                    </n-button>
+                                </template>
+                                <span>{{ map2text('restore-info') }}</span>
+                            </n-tooltip>
+                        </template>
+                        <span>{{ map2text('restore-warn') }}</span>
+                    </n-popconfirm>
+                    <n-tooltip trigger="hover">
+                        <template #trigger>
+                            <n-button class="button" @click="toggleLanguage" text>
+                                <n-icon size="20">
+                                    ${SystemConfig.ConfigPanel.Icon.Language}
+                                </n-icon>
+                            </n-button>
+                        </template>
+                        <span>{{ map2text('toggle-language-info') }}</span>
+                    </n-tooltip>
+                    <n-popover trigger="hover">
+                        <template #trigger>
+                            <n-tooltip trigger="hover">
+                                <template #trigger>
+                                    <n-button class="button" @click="onDocumentation" text>
+                                        <n-icon size="20">
+                                            ${SystemConfig.ConfigPanel.Icon.Documentation}
+                                        </n-icon>
+                                    </n-button>
+                                </template>
+                                <span>{{ map2text('documentation-info') }}</span>
+                            </n-tooltip>
+                        </template>
+                        <template #header>
+                            <n-button text @click="openUrl('#', '_blank')">{{ map2text('documentation-international-access') }}</n-button>
+                        </template>
+                        <template #footer>
+                            <n-button text @click="openUrl('#', '_blank')">{{ map2text('documentation-china-access') }}</n-button>
+                        </template>
+                    </n-popover>
+                    <n-button class="button" @click="toggleFolding" text>
+                        <n-icon v-if="folding" size="20">
+                            ${SystemConfig.ConfigPanel.Icon.Maximize}
+                        </n-icon>
+                        <n-icon v-else size="20">
+                            ${SystemConfig.ConfigPanel.Icon.Minimize}
+                        </n-icon>
+                    </n-button>
+                    <n-button class="button" @click="onClose" text>
+                        <n-icon size="20">
+                            ${SystemConfig.ConfigPanel.Icon.Close}
+                        </n-icon>
+                    </n-button>
+                </div>
+        </div>
+        <div v-show="!folding">
+            <n-scrollbar style="max-height: 80vh">
+                <div class="container">
+                    <n-form :label-width="i18n === 'zh' ? 40 : 80" :model="configForm" label-placement="left">
+                        <n-form-item v-show="!configForm.advanced.enable" :label="map2text('template')" path="format">
+                            <n-select v-model:value="configForm.format"
+                                      :disabled="configForm.advanced.enable" :render-label="renderLabel"
+                                      :options="formatOptions" @update:value="onConfigUpdate"></n-select>
+                        </n-form-item>
+                        <n-form-item v-show="!configForm.advanced.enable" :label="map2text('preview')" path="format">
+                            <div v-html="reFormatTimeHTML(configForm.format)"></div>
+                        </n-form-item>
+                        <n-form-item v-show="!configForm.advanced.enable" :label="map2text('code')" path="format">
+                            <div class="code-block">
+                                <n-scrollbar style="max-height: 4em">
+                                    <n-code :code="configForm.format" language="html" word-wrap/>
+                                </n-scrollbar>
                             </div>
+                        </n-form-item>
+                        <n-form-item :label="map2text('position')" path="mode">
+                            <n-select v-model:value="configForm.mode" @update:value="onConfigUpdate"
+                                        :options="modeOptions" :render-label="renderModeLabel"></n-select>
+                        </n-form-item>
+                        <n-form-item :label="map2text('advance')" path="advanced.enable">
+                            <n-switch v-model:value="configForm.advanced.enable" @update:value="onConfigUpdate" />
+                        </n-form-item>
+                        <div v-show="configForm.advanced.enable">
+                            <n-button strong secondary type="info" round  block @click="copyGPTPrompt">{{ map2text('gpt-prompt-info') }}</n-button>
+                            <div style="height: 24px;"></div>
+                            <n-form-item label="HTML" path="advanced.htmlTextContent">
+                                <n-input type="textarea" :placeholder="map2text('input-html')" 
+                                            @keydown.tab="insertTab" @update:value="onConfigUpdate"
+                                            v-model:value="configForm.advanced.htmlTextContent"/>
+                            </n-form-item>
+                            <n-form-item label="CSS" path="advanced.styleTextContent">
+                                <n-input type="textarea" :placeholder="map2text('input-css')" 
+                                            @keydown.tab="insertTab" @update:value="onConfigUpdate"
+                                            v-model:value="configForm.advanced.styleTextContent"/>
+                            </n-form-item>
+                            <n-form-item label="JS" path="advanced.scriptTextContent">
+                                <n-input type="textarea" :placeholder="map2text('input-js')" 
+                                            @keydown.tab="insertTab" @update:value="onConfigUpdate"
+                                            v-model:value="configForm.advanced.scriptTextContent"/>
+                            </n-form-item>
                         </div>
-                    </n-scrollbar>
-                </div>`
+                    </n-form>
+                </div>
+            </n-scrollbar>
+        <div class="operation-group">
+            <n-button strong secondary type="error" @click="onReset" :disabled="!configDirty">{{map2text('reset')}}</n-button>
+            <n-button strong secondary type="primary" @click="onApply">{{map2text('apply')}}</n-button>
+            <n-button strong secondary type="primary" @click="onConfirm">{{map2text('save')}}</n-button>
+        </div>
+    </div>
+    </n-config-provider>
+</div>`
             this.appConfig = {
                 el: `#${that.appID}`,
                 data() {
@@ -1215,9 +1490,9 @@
                             return {label: item, value: item}
                         }),
                         modeOptions: [
-                            {label: '角色之后（靠左）', value: 'AfterRoleLeft'},
-                            {label: '角色之后（居右）', value: 'AfterRoleRight'},
-                            {label: '角色之下', value: 'BelowRole'},
+                            {key: 'position-after-role-left', label: '角色之后（靠左）', value: 'AfterRoleLeft'},
+                            {key: 'position-after-role-right', label: '角色之后（居右）', value: 'AfterRoleRight'},
+                            {key: 'position-below-role', label: '角色之下', value: 'BelowRole'},
                         ],
                         configForm: {
                             format: that.userConfig.timeRender.format,
@@ -1239,6 +1514,9 @@
                                 scriptTextContent: that.userConfig.timeRender.advanced.scriptTextContent,
                             },
                         },
+                        locale: null,
+                        i18n: that.userConfig.i18n,
+                        folding: false,
                         configDirty: false,
                         configPanel: {
                             display: true,
@@ -1247,9 +1525,20 @@
                 },
                 methods: {
                     onApply() {
+                        const jsValidResult = Utils.isJavaScriptSyntaxValid(this.configForm.advanced.scriptTextContent)
+                        if (!jsValidResult.valid) {
+                            that.notification.error({
+                                title: this.map2text('js-invalid-info'),
+                                content: jsValidResult.error.toString(),
+                                duration: 3000,
+                                keepAliveOnHover: true,
+                            });
+                            return false
+                        }
                         this.config = JSON.parse(JSON.stringify(this.configForm));
-                        that.updateConfig(this.config)
+                        that.updateConfig({timeRender: this.config})
                         this.configDirty = false
+                        return true
                     },
                     onConfirm() {
                         this.onApply()
@@ -1259,15 +1548,17 @@
                         this.configForm = JSON.parse(JSON.stringify(this.config));
                         this.configDirty = false
                     },
-                    onClose() {
-                        that.hide()
-                    },
                     onConfigUpdate() {
                         this.configDirty = true
                     },
                     renderLabel(option) {
                         return Vue.h(TimeTagComponent, {
                             html: option.label,
+                        })
+                    },
+                    renderModeLabel(option) {
+                        return Vue.h('div', {
+                            innerText: this.map2text(option.key),
                         })
                     },
                     reFormatTimeHTML(html) {
@@ -1292,6 +1583,70 @@
                                 });
                             }
                         }
+                    },
+                    onClose() {
+                        that.hide()
+                    },
+                    toggleFolding() {
+                        this.folding = !this.folding
+                    },
+                    onRestore() {
+                        // 清空所有 GM 存储的数据
+                        const keys = GM_listValues();
+                        keys.forEach(key => {
+                            GM_deleteValue(key);
+                        });
+                        // 重置配置至出厂设置
+                        const defaultConfig = that.userConfig.getDefaultConfig()
+                        this.config = defaultConfig.timeRender
+                        this.i18n = defaultConfig.i18n
+                        // 重置 Vue 表单
+                        this.onReset()
+                        // 重置样式与脚本
+                        that.updateConfig(defaultConfig)
+                    },
+                    toggleLanguage() {
+                        let index = SystemConfig.ConfigPanel.I18N.supported.indexOf(this.i18n)
+                        if (index === -1) {
+                            Logger.error("嗯？当前语言未知？")
+                        }
+                        index = (index + 1) % SystemConfig.ConfigPanel.I18N.supported.length;
+                        this.i18n = SystemConfig.ConfigPanel.I18N.supported[index]
+                        that.userConfig.updateOne('i18n', this.i18n)
+                        this.setNaiveUILanguage()
+                    },
+                    setNaiveUILanguage() {
+                        this.locale = this.i18n === 'zh' ? naive.zhCN : null;
+                    },
+                    onDocumentation() {
+
+                    },
+                    openUrl(url, target) {
+                        window.open(url, target)
+                    },
+                    copyGPTPrompt() {
+                        navigator.clipboard.writeText(GPTPrompt).then(() => {
+                            that.notification.success({
+                                content: this.map2text('copy-success-info'),
+                                duration: 1000,
+                            });
+                        })
+                    },
+                },
+                computed: {
+                    map2text() {
+                        return key => {
+                            const language = this.i18n;
+                            if (!SystemConfig.ConfigPanel.I18N[language]) {
+                                Logger.error(`当前语言 ${language} 不受支持！已回退至 ${SystemConfig.ConfigPanel.I18N.default}`);
+                                return SystemConfig.ConfigPanel.I18N[SystemConfig.ConfigPanel.I18N.default][key] || 'NULL';
+                            }
+                            if (!SystemConfig.ConfigPanel.I18N[language][key]) {
+                                Logger.debug(`当前语言 ${language} 不存在键为 ${key} 的 i18n 支持，已回退至 ${SystemConfig.ConfigPanel.I18N.default}`);
+                                return SystemConfig.ConfigPanel.I18N[SystemConfig.ConfigPanel.I18N.default][key] || 'NULL';
+                            }
+                            return SystemConfig.ConfigPanel.I18N[language][key];
+                        };
                     }
                 },
                 created() {
@@ -1302,11 +1657,15 @@
                 },
                 mounted() {
                     this.timestampInterval = setInterval(() => {
-                        this.date = new Date()
-                        this.formatOptions.forEach(item => {
-                            item.label = this.reFormatTimeHTML(item.value)
-                        })
+                        // 满足打开状态且高级模式开启时才更新时间，避免不必要的性能消耗
+                        if (that.isShow() && this.config.advanced.enable) {
+                            this.date = new Date()
+                            this.formatOptions.forEach(item => {
+                                item.label = this.reFormatTimeHTML(item.value)
+                            })
+                        }
                     }, 50)
+                    this.setNaiveUILanguage()
                 },
                 beforeUnmount() {
                     clearInterval(this.timestampInterval)
@@ -1410,6 +1769,13 @@
         _initVue() {
             const app = Vue.createApp(this.appConfig);
             app.use(naive)
+            const {notification} = naive.createDiscreteApi(
+                ["notification"], {
+                    configProviderProps: {
+                        theme: naive.lightTheme
+                    }
+                },);
+            this.notification = notification
             app.mount(`#${this.appID}`);
         }
 
@@ -1537,6 +1903,7 @@
          */
         show() {
             document.getElementById(this.appID).style.visibility = 'visible';
+            unsafeWindow[SystemConfig.Main.WindowRegisterKey][SystemConfig.ConfigPanel.ApplicationRegisterKey].visibility = true
         }
 
         /**
@@ -1544,6 +1911,11 @@
          */
         hide() {
             document.getElementById(this.appID).style.visibility = 'hidden';
+            unsafeWindow[SystemConfig.Main.WindowRegisterKey][SystemConfig.ConfigPanel.ApplicationRegisterKey].visibility = false
+        }
+
+        isShow() {
+            return unsafeWindow[SystemConfig.Main.WindowRegisterKey][SystemConfig.ConfigPanel.ApplicationRegisterKey].visibility
         }
 
         /**
@@ -1551,7 +1923,7 @@
          * @param config
          */
         updateConfig(config) {
-            this.userConfig.update({timeRender: config})
+            this.userConfig.update(config)
             this.timeRendererService.reRender()
         }
     }
@@ -1560,7 +1932,7 @@
         static ComponentsConfig = [
             UserConfig, StyleService, MessageService,
             MonitorService, TimeRendererService, ConfigPanelService,
-            JavaScriptService,
+            JavaScriptService, HookService,
         ]
 
         constructor() {
@@ -1582,10 +1954,20 @@
                 const dependencies = this[componentClazz.name].dependencies.map(dependency => dependency.clazz.name)
                 dependencyGraph.push({node: componentClazz.name, dependencies})
             }
+            Logger.debug('依赖关系图：', JSON.stringify(dependencyGraph))
             return dependencyGraph
         }
 
+        /**
+         * 注册全局变量
+         * @private
+         */
+        _registerGlobalVariables() {
+            unsafeWindow[SystemConfig.Main.WindowRegisterKey] = {}
+        }
+
         start() {
+            this._registerGlobalVariables()
             const dependencyGraph = this._getDependencyGraph()
             const order = Utils.dependencyAnalysis(dependencyGraph)
             Logger.debug('初始化顺序：', order.join(' -> '))
@@ -1602,3 +1984,15 @@
     main.start();
 
 })();
+
+
+
+
+
+
+
+
+
+
+
+
