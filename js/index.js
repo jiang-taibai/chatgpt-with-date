@@ -1402,10 +1402,10 @@
                             </n-tooltip>
                         </template>
                         <template #header>
-                            <n-button text @click="openUrl('#', '_blank')">{{ map2text('documentation-international-access') }}</n-button>
+                            <n-button text @click="openUrl('https://jiang-taibai.github.io/chatgpt-with-date/', '_blank')">{{ map2text('documentation-international-access') }}</n-button>
                         </template>
                         <template #footer>
-                            <n-button text @click="openUrl('#', '_blank')">{{ map2text('documentation-china-access') }}</n-button>
+                            <n-button text @click="openUrl('https://jiang-taibai.gitee.io/chatgpt-with-date/', '_blank')">{{ map2text('documentation-china-access') }}</n-button>
                         </template>
                     </n-popover>
                     <n-button class="button" @click="toggleFolding" text>
