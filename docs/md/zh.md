@@ -10,8 +10,8 @@
 ## 1. 介绍
 
 有时我们希望看到 ChatGPT 的消息时间，但 ChatGPT 并没有显示消息时间的功能。
-本项目通过 Tampermonkey 开发，可以在 Chrome 和 Firefox 等支持 Tampermonkey 插件的浏览器上使用，实现显示 ChatGPT
-每一条消息时间的功能。
+本项目通过 Tampermonkey 开发，可以在 Edge、Chrome、Firefox、Safari、Opera 等支持 Tampermonkey 插件的浏览器上使用，
+实现显示 ChatGPT 每一条消息时间的功能。
 
 该插件不但可以获取**历史消息时间**，还可以实时获取新消息的时间。
 
