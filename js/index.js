@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            ChatGPT with Date
 // @namespace       https://github.com/jiang-taibai/chatgpt-with-date
-// @version         1.2.3
+// @version         1.3.0
 // @description     Tampermonkey plugin for displaying ChatGPT historical and real-time conversation time. 显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @author          CoderJiang
 // @license         MIT
@@ -1053,13 +1053,12 @@
          */
         _setStyleAndJavaScript() {
             this.styleService.updateStyle(SystemConfig.TimeRender.BasicStyleKey, SystemConfig.TimeRender.RenderModeStyles[this.userConfig.timeRender.mode])
+            this.hookService.reset2DefaultHooks()
+            this.styleService.removeStyle(SystemConfig.TimeRender.AdditionalStyleKey)
+            this.javaScriptService.removeJavaScript(SystemConfig.TimeRender.AdditionalScriptKey)
             if (this.userConfig.timeRender.advanced.enable) {
                 this.styleService.updateStyle(SystemConfig.TimeRender.AdditionalStyleKey, this.userConfig.timeRender.advanced.styleTextContent)
                 this.javaScriptService.updateJavaScript(SystemConfig.TimeRender.AdditionalScriptKey, this.userConfig.timeRender.advanced.scriptTextContent)
-            } else {
-                this.styleService.removeStyle(SystemConfig.TimeRender.AdditionalStyleKey)
-                this.hookService.reset2DefaultHooks()
-                this.javaScriptService.removeJavaScript(SystemConfig.TimeRender.AdditionalScriptKey)
             }
         }
 
