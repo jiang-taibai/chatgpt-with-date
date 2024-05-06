@@ -1,0 +1,5 @@
+- [中文](md/zh.md)
+- [English](md/en.md)
+- Links
+    - [GitHub](https://github.com/jiang-taibai/chatgpt-with-date)
+    - [Tampermonkey](https://greasyfork.org/en/scripts/493949-chatgpt-with-date)

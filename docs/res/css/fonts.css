@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'JetBrainsMono-Regular';
+    src: url('../font/JetBrainsMono-Regular.woff2') format('woff2'),
+    url('../font/JetBrainsMono-Regular.woff') format('woff')
+}
+
+@font-face {
+    font-family: 'AlibabaPuHuiTi-3-55-Regular';
+    src: url('../font/AlibabaPuHuiTi-3-55-Regular.woff2') format('woff2'),
+    url('../font/AlibabaPuHuiTi-3-55-Regular.woff') format('woff')
+}

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>ChatGPT with Date 双语文档</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="description" content="Description">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <link rel="icon" href="favicon.svg" type="image/x-icon">
+    <!-- Theme: Simple -->
+    <link id="theme-style-link" rel="stylesheet" href="res/css/theme-simple.css">
+    <!-- 目录跳转 -->
+    <link rel="stylesheet" href="res/css/docsify-plugin-toc.css">
+    <!-- JetBrains Mono字体 -->
+    <link rel="stylesheet" href="res/css/fonts.css" type="text/css">
+    <!-- 侧边栏图标 -->
+    <link rel="stylesheet" href="res/css/sidebar.min.css"/>
+    <!-- 预加载，以防卡顿 -->
+    <link rel="prefetch" href="res/css/theme-simple-dark.css" as="style">
+    <link rel="prefetch" href="res/svg/moon.svg" as="image">
+    <link rel="prefetch" href="res/svg/sun.svg" as="image">
+    <style>
+        :root {
+            /* 侧边栏样式 */
+            --sidebar-nav-pagelink-padding: 0 0 0 0;
+            --sidebar-nav-pagelink-background: transparent;
+            --sidebar-nav-pagelink-background--active: transparent;
+            --sidebar-nav-pagelink-background--collapse: transparent;
+            --sidebar-nav-pagelink-background--loaded: transparent;
+        }
+
+        /* 侧边栏文件夹与文件的样式 */
+        .file, .folder {
+            margin: 4px 0 !important;
+            padding-left: 4px !important;
+        }
+
+        .app-nav {
+            padding-right: 20px;
+        }
+
+        /* 覆写所有字体 */
+        * {
+            font-family: 'JetBrainsMono-Regular', 'AlibabaPuHuiTi-3-55-Regular', 'Consolas', 'Microsoft YaHei',
+            'San Francisco', Arial, 'Helvetica Neue', Helvetica, sans-serif !important;
+        }
+
+        /* 当视口宽度小于或等于 600px 时，适用于移动设备的 CSS 样式 */
+        @media (max-width: 600px) {
+            * {
+                transition: background 0.3s ease-in-out !important;
+            }
+        }
+
+        /* 当视口宽度大于 600px 时，适用于桌面设备的 CSS 样式 */
+        @media (min-width: 601px) {
+            * {
+                transition: background 0.3s ease-in-out,
+                color 0.3s ease-in-out,
+                border-color 0.3s ease-in-out !important;
+            }
+        }
+
+        /* 自定义的图片组，可实现每行两列图片并排放置 */
+        .custom-img-group {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .custom-img-group img {
+            width: calc(50% - 2px);
+            box-sizing: border-box;
+            margin-bottom: 2px;
+        }
+
+        .medium-zoom-image {
+            border-radius: 4px;
+        }
+
+        #theme-change-button {
+            position: fixed;
+            right: 25px;
+            top: 25px;
+            width: 25px;
+            height: 25px;
+            background-repeat: no-repeat;
+            background-image: url("res/svg/moon.svg");
+            background-size: cover;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            transition: background-image .15s ease-in-out .15s;
+        }
+
+        .iconfont {
+            width: 1em;
+            height: 1em;
+            font-size: 16px;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+            margin-right: 4px;
+        }
+
+        .image-title {
+            color: #999;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .custom-paper-image-group {
+            display: flex; /* 使用flex布局实现横向排列 */
+            overflow-x: auto; /* 横向溢出时自动显示滚动条 */
+            white-space: nowrap; /* 防止内容换行 */
+            gap: 8px;
+            padding: 8px;
+            border-radius: 8px;
+            border: #d7d8d9 solid 1px;
+            cursor: ew-resize !important;
+            background-color: var(--sidebar-background);
+        }
+
+        .custom-paper-image-group img {
+            flex-shrink: 0; /* 防止图片在缩小窗口时压缩 */
+            height: 150px; /* 图片的高度 */
+            cursor: ew-resize !important;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+</div>
+
+<!-- Iconfont-Cloud for Test -->
+<!--<script src="//at.alicdn.com/t/c/font_4193017_kx3erqn8tq.js"></script>-->
+
+<script>
+    /**
+     * 添加一个主题切换按钮
+     * @param hook  事件钩子
+     * @param vm    实例
+     */
+    function ThemeSimpleDarkLightChangeable(hook, vm) {
+
+        const variableKey = "ThemeSimpleDarkLightChangeable.theme";
+
+        const ThemeConfig = {
+            light: {
+                key: "light",
+                themeHref: "https://cdn.coderjiang.com/doc/whut/public/css/theme-simple.css",
+                imgSrc: "https://cdn.coderjiang.com/doc/whut/public/svg/moon.svg"
+            },
+            dark: {
+                key: "dark",
+                themeHref: "https://cdn.coderjiang.com/doc/whut/public/css/theme-simple-dark.css",
+                imgSrc: "https://cdn.coderjiang.com/doc/whut/public/svg/sun.svg"
+            }
+        }
+
+        let currentTheme = localStorage.getItem(variableKey) || ThemeConfig.light.key;
+
+        function changeTheme() {
+            if (currentTheme === ThemeConfig.light.key) {
+                setThemeToDark();
+            } else {
+                setThemeToLight();
+            }
+        }
+
+        function setThemeToDark() {
+            currentTheme = ThemeConfig.dark.key;
+            document.getElementById('theme-change-button').style.backgroundImage = `url("${ThemeConfig[currentTheme].imgSrc}")`;
+            document.getElementById('theme-style-link').href = ThemeConfig[currentTheme].themeHref;
+            localStorage.setItem(variableKey, currentTheme);
+        }
+
+        function setThemeToLight() {
+            currentTheme = ThemeConfig.light.key;
+            document.getElementById('theme-change-button').style.backgroundImage = `url("${ThemeConfig[currentTheme].imgSrc}")`;
+            document.getElementById('theme-style-link').href = ThemeConfig[currentTheme].themeHref;
+            localStorage.setItem(variableKey, currentTheme);
+        }
+
+        hook.ready(function () {
+            // <div id="theme-change-button"><p>.</p></div>
+            let themeChangeButton = document.createElement("div");
+            themeChangeButton.id = "theme-change-button";
+            let emptyP = document.createElement("p");
+            // emptyP.innerText = ".";
+            themeChangeButton.append(emptyP);
+            themeChangeButton.addEventListener("click", () => {
+                changeTheme();
+            })
+            let main = document.body.querySelector("main")
+            // 将按钮插入到main标签中
+            main.append(themeChangeButton);
+
+            // 如果没有设置过主题，则设置默认主题
+            if (!localStorage.getItem(variableKey)) {
+                localStorage.setItem(variableKey, ThemeConfig.dark.key);
+            } else {
+                // 设置过，就检查是否是light主题，如果是，就设置为light主题
+                if (localStorage.getItem(variableKey) === ThemeConfig.light.key) {
+                    setThemeToLight();
+                }
+            }
+        });
+
+    }
+
+    /**
+     * 为链接添加图标
+     * @param hook  事件钩子
+     * @param vm    实例
+     */
+    function IconifyLink(hook, vm) {
+        const linkTypes = {
+
+            outside_github: {
+                prefixes: [
+                    /^https?:\/\/(.*\.)?github\.com/,
+                    /^https?:\/\/(.*\.)?github\.io/,
+                ],
+                iconfontSymbol: "#icon-github"
+            },
+            outside_gitlab: {
+                prefixes: [
+                    /^https?:\/\/(.*\.)?gitlab\.com/,
+                ],
+                iconfontSymbol: "#icon-gitlab"
+            },
+            outside_baiduDrive: {
+                prefixes: [
+                    /^https?:\/\/pan\.baidu\.com/,
+                ],
+                iconfontSymbol: "#icon-baidu-drive"
+            },
+            outside_googleDrive: {
+                prefixes: [
+                    /^https?:\/\/drive\.google\.com/,
+                ],
+                iconfontSymbol: "#icon-google-drive"
+            },
+            outside_tampermonkey: {
+                prefixes: [
+                    /^https?:\/\/(.+\.)?tampermonkey\.net/,
+                ],
+                iconfontSymbol: "#icon-tampermonkey"
+            },
+            outside_greasyfork: {
+                prefixes: [
+                    /^https?:\/\/(.+\.)?greasyfork\.org/,
+                ],
+                iconfontSymbol: "#icon-greasyfork"
+            },
+            outside_paper: {
+                prefixes: [
+                    /^https?:\/\/(.+\.)?arxiv\.org/,
+                    /^https?:\/\/(.+\.)?sciencemag\.org/,
+                    /^https?:\/\/(.+\.)?nature\.com/,
+                    /^https?:\/\/(.+\.)?plos\.org/,
+                    /^https?:\/\/(.+\.)?jstor\.org/,
+                    /^https?:\/\/(.+\.)?ieee\.org/,
+                    /^https?:\/\/(.+\.)?acm\.org/,
+                    /^https?:\/\/(.+\.)?springer\.com/,
+                    /^https?:\/\/(.+\.)?wiley\.com/,
+                    /^https?:\/\/(.+\.)?sciencedirect\.com/,
+                    /^https?:\/\/(.+\.)?ncbi\.nlm\.nih\.gov/,
+                    /^https?:\/\/(.+\.)?biorxiv\.org/,
+                    /^https?:\/\/(.+\.)?chemrxiv\.org/,
+                    /^https?:\/\/(.+\.)?ssrn\.com/,
+                    /^https?:\/\/(.+\.)?jamanetwork\.com/,
+                    /^https?:\/\/(.+\.)?thelancet\.com/,
+                    /^https?:\/\/(.+\.)?springer\.com/,
+                    /^https?:\/\/(.+\.)?doi\.org/,
+                    /^https?:\/\/(.+\.)?thecvf\.com"/,
+                    /^https?:\/\/(.+\.)?frontiersin\.org/,
+                    /^https?:\/\/(.+\.)?cnki.net/,
+                    /^https?:\/\/(.+\.)?tcsae.org/,
+                    /^https?:\/\/(.+\.)?mdpi.com/,
+                    /^https?:\/\/(.+\.)?asabe.org/,
+                ],
+                iconfontSymbol: "#icon-paper"
+            },
+            outside_ftp: {
+                prefixes: ["ftp://"],
+                iconfontSymbol: "#icon-ftp"
+            },
+            outside_resource_pdf: {
+                prefixes: [/\.pdf$/],
+                iconfontSymbol: "#icon-file-pdf"
+            },
+            outside_resource_md: {
+                prefixes: [/\.md$/],
+                iconfontSymbol: "#icon-file-md"
+            },
+            outside_resource_html: {
+                prefixes: [/\.html?$/],
+                iconfontSymbol: "#icon-file-code"
+            },
+            outside_resource_img: {
+                prefixes: [/\.png$/, /\.jpe?g$/, /\.gif$/, /\.bmp$/, /\.tiff?$/, /\.exif$/, /\.webp$/],
+                iconfontSymbol: "#icon-file-img"
+            },
+            outside_resource_word: {
+                prefixes: [/\.docx?$/],
+                iconfontSymbol: "#icon-file-word"
+            },
+            outside_resource_package: {
+                prefixes: [/\.zip$/, /\.rar$/, /\.7z$/, /\.tar$/, /\.gz$/, /\.bz2$/, /\.xz$/, /\.zstd$/, /\.lzma$/, /\.cab$/, /\.iso$/, /\.dmg$/, /\.cpio$/, /\.ar$/, /\.shar$/, /\.lzip$/, /\.rz$/],
+                iconfontSymbol: "#icon-file-package"
+            },
+            outside: {
+                prefixes: ["http", "https"],
+                iconfontSymbol: "#icon-link"
+            },
+
+            inside_annotation: {
+                prefixes: ["#/md/annotations/"],
+                iconfontSymbol: "#icon-annotation"
+            },
+            inside_code: {
+                prefixes: ["#/md/codes/"],
+                iconfontSymbol: "#icon-code"
+            },
+            inside_dataset: {
+                prefixes: ["#/md/datasets/"],
+                iconfontSymbol: "#icon-dataset"
+            },
+            inside_directory: {
+                prefixes: ["#/md/directories/"],
+                iconfontSymbol: "#icon-folder"
+            },
+            inside_team: {
+                prefixes: ["#/md/teams/"],
+                iconfontSymbol: "#icon-group"
+            },
+            inside_tool: {
+                prefixes: ["#/md/tools/"],
+                iconfontSymbol: "#icon-celiang"
+            },
+            inside_normal: {
+                prefixes: ["#/"],
+                iconfontSymbol: "#icon-page"
+            },
+
+        }
+        hook.doneEach(function () {
+            let linkArray = document.querySelectorAll(".markdown-section a")
+            for (let i = 0; i < linkArray.length; i++) {
+                if (linkArray[i].hasAttribute("data-id")) continue;
+                let href = linkArray[i].getAttribute("href")
+                let text = linkArray[i].innerText;
+                let iconfontSymbol = "";
+                let done = false;
+                for (const key in linkTypes) {
+                    const linkType = linkTypes[key]
+                    for (const prefix of linkType.prefixes) {
+                        if (typeof prefix === "string" && href.startsWith(prefix)) {
+                            done = true;
+                            iconfontSymbol = linkType.iconfontSymbol;
+                            break;
+                        } else if (prefix instanceof RegExp && prefix.test(href)) {
+                            done = true;
+                            iconfontSymbol = linkType.iconfontSymbol;
+                            break;
+                        }
+                    }
+                    if (done) break;
+                }
+
+
+                if (done) {
+                    const htmlString = `
+                        <svg class="iconfont" aria-hidden="true">
+                          <use xlink:href="${iconfontSymbol}"></use>
+                        </svg>
+                    `;
+                    let parser = new DOMParser();
+                    let doc = parser.parseFromString(htmlString, 'text/html');
+                    let iconfont = doc.body.firstChild;
+                    linkArray[i].insertBefore(iconfont, linkArray[i].firstChild)
+                }
+            }
+        });
+    }
+
+    /**
+     * 如果图片有title属性，那么就为图片添加标题
+     * 同时，当浏览器宽度变化时，重新设置div的最大宽度
+     * @param hook  事件钩子
+     * @param vm    实例
+     */
+    function ShowImageTitle(hook, vm) {
+
+        function getImageWidth(img) {
+            return new Promise((resolve, reject) => {
+                if (img.complete) {
+                    resolve(img.width)
+                } else {
+                    img.onload = () => {
+                        resolve(img.width)
+                    }
+                }
+            })
+        }
+
+        hook.doneEach(() => {
+            let imgArray = document.querySelectorAll(".markdown-section img")
+            for (const img of imgArray) {
+                if (img.hasAttribute("title")) {
+                    let title = img.getAttribute("title")
+                    let div = document.createElement("div")
+                    div.classList.add("image-title")
+                    div.innerText = `(${title})`
+
+                    getImageWidth(img).then(width => {
+                        div.style.maxWidth = width + "px"
+                        img.parentNode.insertBefore(div, img.nextSibling)
+                    })
+                    window.addEventListener("resize", () => {
+                        div.style.maxWidth = img.width + "px"
+                    })
+                }
+            }
+        })
+    }
+
+    /**
+     * 为图片预览组添加横向滚动事件
+     * @param hook  事件钩子
+     * @param vm    实例
+     */
+    function PaperImageGroupScrollX(hook, vm) {
+        hook.doneEach(() => {
+            let imgGroupArray = document.querySelectorAll(".markdown-section .custom-paper-image-group")
+            imgGroupArray.forEach(imgGroup => {
+                imgGroup.addEventListener("wheel", e => {
+                    e.preventDefault();
+                    imgGroup.scrollLeft += e.deltaY;
+                })
+            })
+        })
+    }
+
+</script>
+
+<script>
+    window.$docsify = {
+        name: '<b>ChatGPT with Date</b>',
+        alias: {
+            "/.*/_sidebar.md": "/_sidebar.md",
+        },
+        // logo: 'res/svg/logo.svg',
+        coverpage: true,
+        loadSidebar: true,
+        loadNavbar: true,
+        // 最大支持渲染的标题层级
+        // maxLevel: 3,
+        // // 自定义侧边栏后默认不会再生成目录，设置生成目录的最大层级，建议配置为1或者2
+        subMaxLevel: 4,
+        sidebarDisplayLevel: 4,
+        // 自动跳转到页面顶部
+        auto2top: true,
+        // 搜索功能
+        search: {
+            maxAge: 86400000,
+            paths: 'auto',
+            placeholder: '搜索',
+            noData: '找不到结果',
+            depth: 4,
+            hideOtherSidebarContent: false,
+            namespace: 'ChatGPT with Date',
+        },
+        //字数插件
+        count: {
+            countable: true,
+            fontsize: '0.9em',
+            color: 'rgb(90,90,90)',
+            language: 'chinese'
+        },
+        // 分页导航插件
+        pagination: {
+            previousText: '上一节',
+            nextText: '下一节',
+            crossChapter: true,
+            crossChapterText: true
+        },
+        // 文本高亮
+        'flexible-alerts': {
+            style: 'callout',
+        },
+        // 目录跳转
+        toc: {
+            tocMaxLevel: 5,
+            target: 'h2, h3, h4, h5, h6',
+            ignoreHeaders: []
+        },
+        // 代码复制
+        copyCode: {
+            buttonText: 'Copy',
+            errorText: 'Error',
+            successText: 'Copied'
+        },
+        mermaidConfig: {
+            querySelector: ".mermaid"
+        },
+        plugins: [
+            ThemeSimpleDarkLightChangeable,
+            ShowImageTitle,
+            IconifyLink,
+            PaperImageGroupScrollX,
+        ]
+    }
+</script>
+
+<!-- Docsify v4 -->
+<script src="res/js/docsify@4.js"></script>
+<!-- docsify-themeable主题 -->
+<script src="res/js/docsify-themeable.min.js"></script>
+<!-- 图片放大缩小支持 -->
+<script src="res/js/zoom-image.min.js"></script>
+<!-- 搜索功能 -->
+<script src="res/js/search.min.js"></script>
+<!-- 字数统计 -->
+<script src="res/js/countable.min.js"></script>
+<!-- 分页导航 -->
+<script src="res/js/docsify-pagination.min.js"></script>
+<!-- 文本高亮 -->
+<script src="res/js/docsify-plugin-flexible-alerts.min.js"></script>
+<!-- 侧边栏扩展与折叠 -->
+<script src="res/js/docsify-sidebar-collapse.min.js"></script>
+<!-- 代码高亮 -->
+<script src="res/js/prism/prism-javascript.min.js"></script>
+<script src="res/js/prism/prism-css.min.js"></script>
+<script src="res/js/prism/prism-markup.min.js"></script>
+<script src="res/js/prism/prism-markdown.min.js"></script>
+<!-- 目录跳转 -->
+<script src="res/js/docsify-plugin-toc.min.js"></script>
+<!-- Mermaid 支持 -->
+<script src="res/js/docsify-mermaid.js"></script>
+<script src="res/js/mermaid.js"></script>
+<script type="module">
+    window.mermaid.initialize({
+        startOnLoad: true,
+        securityLevel: 'loose',
+        logLevel: 1
+    });
+</script>
+<!-- docsify-pdf-embed -->
+<!--<script src="res/js/pdfobject.min.js"></script>-->
+<!--<script src="res/js/docsify-pdf-embed.js"></script>-->
+<!-- docsify-copy-code -->
+<script src="res/js/docsify-copy-code.min.js"></script>
+<!-- docsify-tabs -->
+<script src="res/js/docsify-tabs.js"></script>
+<!-- Iconfont -->
+<script src="res/js/iconfont.js"></script>
+
+</body>
+</html>
