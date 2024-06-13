@@ -7,6 +7,8 @@
 // @license         MIT
 // @match           https://chat.openai.com/*
 // @match           https://chatgpt.com/*
+// @match           https://jiang-taibai.github.io/chatgpt-with-date-config-page*
+// @match           https://project.coderjiang.com/chatgpt-with-date-config-page*
 // @icon            https://cdn.coderjiang.com/project/chatgpt-with-date/logo.svg
 // @grant           GM_xmlhttpRequest
 // @grant           GM_registerMenuCommand
@@ -14,6 +16,9 @@
 // @grant           GM_getValue
 // @grant           GM_listValues
 // @grant           GM_deleteValue
+// @grant           GM_addElement
+// @grant           GM_addStyle
+// @grant           GM_openInTab
 // @grant           unsafeWindow
 // @run-at          document-end
 // @noframes
@@ -21,6 +26,9 @@
 
 (function () {
     'use strict';
+
+    const IsConfigPage = window.location.hostname === 'jiang-taibai.github.io' ||
+        window.location.hostname === 'project.coderjiang.com'
 
     class SystemConfig {
         static Common = {
@@ -405,7 +413,7 @@
 
     class Logger {
         static EnableLog = true
-        static EnableDebug = false
+        static EnableDebug = true
         static EnableInfo = true
         static EnableWarn = true
         static EnableError = true
@@ -796,17 +804,16 @@
 
         updateJavaScript(key, textContent) {
             this.removeJavaScript(key)
-            const scriptNode = document.createElement('script')
-            scriptNode.type = 'text/javascript'
-            scriptNode.textContent = textContent
-            document.body.appendChild(scriptNode)
+            const scriptNode = GM_addElement('script', {
+                textContent: textContent
+            });
             this.javaScriptNodes.set(key, scriptNode)
         }
 
         removeJavaScript(key) {
             let scriptNode = this.javaScriptNodes.get(key)
             if (scriptNode) {
-                document.body.removeChild(scriptNode)
+                document.head.removeChild(scriptNode)
                 this.javaScriptNodes.delete(key)
             }
         }
@@ -917,6 +924,7 @@
             this.originalFetch = window.fetch;
             this._initMonitorFetch();
             this._initMonitorAddedMessageNode();
+            this._initConfigPageNode();
         }
 
         /**
@@ -1018,6 +1026,25 @@
             };
             const observer = new MutationObserver(callback);
             observer.observe(supervisedNode, {childList: true, subtree: true, attributes: true});
+        }
+
+        /**
+         * 初始化配置页面节点，以便显示配置页面的时间渲染效果
+         * @private
+         */
+        _initConfigPageNode() {
+            if (IsConfigPage) {
+                const messageIds = []
+                const messageDivs = document.querySelectorAll('div[data-message-id]');
+                for (let messageDiv of messageDivs) {
+                    const dataMessageId = messageDiv.getAttribute('data-message-id');
+                    const timestamp = parseInt(messageDiv.getAttribute('data-chatgpt-with-date-demo-timestamp'))
+                    const messageBO = new MessageBO(dataMessageId, 'ConfigDemo', timestamp)
+                    messageIds.push(dataMessageId)
+                    this.messageService.addMessage(messageBO, true)
+                }
+                this.timeRendererService.addMessageArrayToBeRendered(messageIds)
+            }
         }
     }
 
@@ -1251,20 +1278,23 @@
          * @returns {Promise<void>}
          */
         async init() {
-            this.appID = SystemConfig.ConfigPanel.AppID
-            Logger.debug('开始初始化配置面板')
-            await this._initExternalResources()
-            Logger.debug('初始化脚本完成')
-            this._initVariables()
-            await this._initStyle()
-            Logger.debug('初始化样式完成')
-            await this._initPanel()
-            Logger.debug('初始化面板完成')
-            this._initVue()
-            Logger.debug('初始化Vue完成')
-            this._initConfigPanelSizeAndPosition()
-            this._initConfigPanelEventMonitor()
-            Logger.debug('初始化配置面板事件监控完成')
+            if (IsConfigPage) {
+                this.appID = SystemConfig.ConfigPanel.AppID
+                Logger.debug('开始初始化配置面板')
+                await this._initExternalResources()
+                Logger.debug('初始化脚本完成')
+                this._initVariables()
+                await this._initStyle()
+                Logger.debug('初始化样式完成')
+                await this._initPanel()
+                Logger.debug('初始化面板完成')
+                this._initVue()
+                Logger.debug('初始化Vue完成')
+                this._initConfigPanelSizeAndPosition()
+                this._initConfigPanelEventMonitor()
+                Logger.debug('初始化配置面板事件监控完成')
+                this.show()
+            }
             this._initMenuCommand()
             Logger.debug('初始化菜单命令完成')
         }
@@ -1482,8 +1512,8 @@
                 el: `#${that.appID}`,
                 data() {
                     return {
-                        hljs: hljs,
                         date: new Date(),
+                        hljs: hljs,
                         title: "ChatGPTWithDate",
                         formatOptions: SystemConfig.TimeRender.TimeTagTemplates.map(item => {
                             return {label: item, value: item}
@@ -1657,7 +1687,7 @@
                 mounted() {
                     this.timestampInterval = setInterval(() => {
                         // 满足打开状态且高级模式开启时才更新时间，避免不必要的性能消耗
-                        if (that.isShow() && this.config.advanced.enable) {
+                        if (that.isShow()) {
                             this.date = new Date()
                             this.formatOptions.forEach(item => {
                                 item.label = this.reFormatTimeHTML(item.value)
@@ -1707,34 +1737,55 @@
                     {type: 'css', url: 'https://unpkg.com/@highlightjs/cdn-assets@11.9.0/styles/default.min.css'},
                     {type: 'js', url: 'https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js'},
                 ]
-                const addScript = (content) => {
-                    let script = document.createElement('script');
-                    script.textContent = content;
-                    document.body.appendChild(script);
-                    completeCount++;
-                    if (completeCount === resources.length) {
-                        resolve()
-                    }
-                }
-                const addStyle = (content) => {
-                    let style = document.createElement('style');
-                    style.textContent = content;
-                    document.head.appendChild(style);
-                    completeCount++;
-                    if (completeCount === resources.length) {
-                        resolve()
-                    }
-                }
+                // const addScript = (content) => {
+                //     let script = document.createElement('script');
+                //     script.textContent = content;
+                //     // document.head.appendChild(script);
+                //     iframeDocument.head.appendChild(script);
+                //     completeCount++;
+                //     if (completeCount === resources.length) {
+                //         resolve()
+                //     }
+                // }
+                // const addStyle = (content) => {
+                //     let style = document.createElement('style');
+                //     style.textContent = content;
+                //     // document.head.appendChild(style);
+                //     iframeDocument.head.appendChild(style);
+                //     completeCount++;
+                //     if (completeCount === resources.length) {
+                //         resolve()
+                //     }
+                // }
                 resources.forEach(resource => {
-                    GM_xmlhttpRequest({
-                        method: "GET", url: resource.url, onload: function (response) {
-                            if (resource.type === 'js') {
-                                addScript(response.responseText);
-                            } else if (resource.type === 'css') {
-                                addStyle(response.responseText);
-                            }
+                    let element = null
+                    if (resource.type === 'js') {
+                        element = GM_addElement('script', {
+                            src: resource.url,
+                            type: 'text/javascript'
+                        });
+                    } else if (resource.type === 'css') {
+                        element = GM_addElement('link', {
+                            rel: 'stylesheet',
+                            type: 'text/css',
+                            href: resource.url
+                        });
+                    }
+                    element.onload = () => {
+                        completeCount++;
+                        if (completeCount === resources.length) {
+                            resolve()
                         }
-                    });
+                    }
+                    // GM_xmlhttpRequest({
+                    //     method: "GET", url: resource.url, onload: function (response) {
+                    //         if (resource.type === 'js') {
+                    //             addScript(response.responseText);
+                    //         } else if (resource.type === 'css') {
+                    //             addStyle(response.responseText);
+                    //         }
+                    //     }
+                    // });
                 })
                 // 以下方法有 CSP 限制
                 // const naiveScript = document.createElement('script');
@@ -1892,9 +1943,18 @@
          */
         _initMenuCommand() {
             let that = this
-            GM_registerMenuCommand("配置面板", () => {
-                that.show()
-            })
+            if (IsConfigPage) {
+                GM_registerMenuCommand("配置面板", () => {
+                    that.show()
+                })
+            } else {
+                GM_registerMenuCommand("配置面板（中国访问）", () => {
+                    GM_openInTab("https://www.example.com/");
+                })
+                GM_registerMenuCommand("Configuration Panel (International Access)", () => {
+                    GM_openInTab("https://jiang-taibai.github.io/chatgpt-with-date-config-page/");
+                })
+            }
         }
 
         /**
@@ -1930,8 +1990,9 @@
     class Main {
         static ComponentsConfig = [
             UserConfig, StyleService, MessageService,
-            MonitorService, TimeRendererService, ConfigPanelService,
+            MonitorService, TimeRendererService,
             JavaScriptService, HookService,
+            ConfigPanelService,
         ]
 
         constructor() {
