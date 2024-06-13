@@ -1260,6 +1260,7 @@
          */
         async init() {
             if (IsConfigPage) {
+                // 仅在配置页面初始化配置面板，同时可以防止代码高亮插件对非配置页面的代码块进行处理
                 this.appID = SystemConfig.ConfigPanel.AppID
                 Logger.debug('开始初始化配置面板')
                 await this._initExternalResources()
