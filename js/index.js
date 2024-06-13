@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name            ChatGPT with Date
 // @namespace       https://github.com/jiang-taibai/chatgpt-with-date
-// @version         1.3.0
+// @version         2.0.0
 // @description     Tampermonkey plugin for displaying ChatGPT historical and real-time conversation time. 显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @author          CoderJiang
 // @license         MIT
-// @match           https://chat.openai.com/*
-// @match           https://chatgpt.com/*
-// @match           https://jiang-taibai.github.io/chatgpt-with-date-config-page*
-// @match           https://project.coderjiang.com/chatgpt-with-date-config-page*
-// @icon            https://cdn.coderjiang.com/project/chatgpt-with-date/logo.svg
+// @match           *chat.openai.com/*
+// @match           *chatgpt.com/*
+// @match           *jiang-taibai.github.io/chatgpt-with-date-config-page*
+// @match           *project.coderjiang.com/chatgpt-with-date-config-page*
+// @icon            *cdn.coderjiang.com/project/chatgpt-with-date/logo.svg
 // @grant           GM_xmlhttpRequest
 // @grant           GM_registerMenuCommand
 // @grant           GM_setValue
@@ -47,42 +47,32 @@
             BatchSize: 100,
             BatchTimeout: 200,
             RenderRetryCount: 3,
-            RenderModes: ['AfterRoleLeft', 'AfterRoleRight', 'BelowRole'],
-            RenderModeStyles: {
-                AfterRoleLeft: `
-                    .chatgpt-time-container {
-                        font-weight: normal;
-                    }
-                `,
-                AfterRoleRight: `
-                    .chatgpt-time-container {
-                        font-weight: normal;
-                        float: right;
-                    }
-                `,
-                BelowRole: `
-                    .chatgpt-time-container {
-                        font-weight: normal;
-                        display: block;
-                    }
-                `,
-            },
+            BasicStyle: `
+                .chatgpt-time-container.user {
+                    display:flex;
+                    justify-content: flex-end;
+                }
+                .chatgpt-time-container.assistant {
+                    display:flex;
+                    justify-content: flex-start;
+                }
+            `,
             TimeTagTemplates: [
                 // 默认：2023-10-15 12:01:00
-                `<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
+                `<span style="padding-right: 1rem; color: #ababab; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
                 // 美国：Oct 15, 2023 12:01 PM
-                `<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{MM#shortname@en} {dd}, {yyyy} {HH#12}:{mm} {HH#tag}</span>`,
+                `<span style="padding-right: 1rem; color: #ababab; font-size: 0.9em;">{MM#shortname@en} {dd}, {yyyy} {HH#12}:{mm} {HH#tag}</span>`,
                 // 英国：01/01/2024 12:01
-                `<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{dd}/{MM}/{yyyy} {HH}:{mm}</span>`,
+                `<span style="padding-right: 1rem; color: #ababab; font-size: 0.9em;">{dd}/{MM}/{yyyy} {HH}:{mm}</span>`,
                 // 日本：2023年10月15日 12:01
-                `<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{yyyy}年{MM}月{dd}日 {HH}:{mm}</span>`,
+                `<span style="padding-right: 1rem; color: #ababab; font-size: 0.9em;">{yyyy}年{MM}月{dd}日 {HH}:{mm}</span>`,
                 // 显示毫秒数：2023-10-15 12:01:00.000
-                `<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}</span>`,
+                `<span style="padding-right: 1rem; color: #ababab; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}</span>`,
                 // 复杂模板
-                `<span style="margin-left: 4px; background: #2B2B2b; border-radius: 8px; padding: 1px 10px; color: #717171; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
-                `<span style="margin-left: 4px; background: #d7d7d7; border-radius: 8px; padding: 1px 10px; color: #2b2b2b; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
-                `<span style="margin-left: 4px; color: #E0E0E0; font-size: 0.9em;"><span style="background: #333; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">{yyyy}-{MM}-{dd}</span><span style="background: #606060; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">{HH}:{mm}:{ss}</span></span>`,
-                `<span style="margin-left: 4px; color: #E0E0E0; font-size: 0.9em;"><span style="background: #848484; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">{yyyy}-{MM}-{dd}</span><span style="background: #a6a6a6; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">{HH}:{mm}:{ss}</span></span>`,
+                `<span style="padding-right: 1rem; margin-bottom: .5rem; background: #2B2B2b; border-radius: 8px; padding: 1px 10px; color: #717171; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
+                `<span style="padding-right: 1rem; margin-bottom: .5rem; background: #d7d7d7; border-radius: 8px; padding: 1px 10px; color: #2b2b2b; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
+                `<span style="padding-right: 1rem; margin-bottom: .5rem; color: #E0E0E0; font-size: 0.9em;"><span style="background: #333; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">{yyyy}-{MM}-{dd}</span><span style="background: #606060; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">{HH}:{mm}:{ss}</span></span>`,
+                `<span style="padding-right: 1rem; margin-bottom: .5rem; color: #E0E0E0; font-size: 0.9em;"><span style="background: #848484; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">{yyyy}-{MM}-{dd}</span><span style="background: #a6a6a6; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">{HH}:{mm}:{ss}</span></span>`,
             ],
             BasicStyleKey: 'time-render',
             AdditionalStyleKey: 'time-render-advanced',
@@ -488,14 +478,12 @@
         /**
          * 消息元素业务对象
          *
-         * @param rootEle       消息的根元素，并非是总根元素，而是 roleEle 和 messageEle 的最近公共祖先元素
-         * @param roleEle       角色元素，例如 <div>ChatGPT</div>
+         * @param rootEle       消息的根元素，也就是 messageEle 的父节点
          * @param messageEle    消息元素，包含 data-message-id 属性
          *                      例如 <div data-message-id="123456">你好</div>
          */
-        constructor(rootEle, roleEle, messageEle) {
+        constructor(rootEle, messageEle) {
             this.rootEle = rootEle;
-            this.roleEle = roleEle;
             this.messageEle = messageEle;
         }
     }
@@ -578,7 +566,6 @@
         getDefaultConfig() {
             return {
                 timeRender: {
-                    mode: 'AfterRoleLeft',
                     format: SystemConfig.TimeRender.TimeTagTemplates[0],
                     advanced: {
                         enable: false,
@@ -836,12 +823,12 @@
                 return;
             }
             const messageId = messageDiv.getAttribute('data-message-id');
+            const role = messageDiv.getAttribute('data-message-author-role');
             const messageElementBO = this.getMessageElement(messageId)
             if (!messageElementBO) {
                 return;
             }
             let timestamp = new Date().getTime();
-            const role = messageElementBO.roleEle.innerText;
             const message = messageElementBO.messageEle.innerHTML;
             if (!this.messages.has(messageId)) {
                 const messageBO = new MessageBO(messageId, role, timestamp, message);
@@ -887,9 +874,8 @@
             if (!messageDiv) {
                 return;
             }
-            const rootDiv = messageDiv.parentElement.parentElement.parentElement;
-            const roleDiv = rootDiv.firstChild;
-            return new MessageElementBO(rootDiv, roleDiv, messageDiv);
+            const rootDiv = messageDiv.parentElement;
+            return new MessageElementBO(rootDiv, messageDiv);
         }
 
         /**
@@ -1079,7 +1065,7 @@
          * @private
          */
         _setStyleAndJavaScript() {
-            this.styleService.updateStyle(SystemConfig.TimeRender.BasicStyleKey, SystemConfig.TimeRender.RenderModeStyles[this.userConfig.timeRender.mode])
+            this.styleService.updateStyle(SystemConfig.TimeRender.BasicStyleKey, SystemConfig.TimeRender.BasicStyle)
             this.hookService.reset2DefaultHooks()
             this.styleService.removeStyle(SystemConfig.TimeRender.AdditionalStyleKey)
             this.javaScriptService.removeJavaScript(SystemConfig.TimeRender.AdditionalScriptKey)
@@ -1195,20 +1181,15 @@
                 const messageElementBo = this.messageService.getMessageElement(messageId);
                 const messageBo = this.messageService.getMessage(messageId);
                 if (!messageElementBo || !messageBo) resolve(false)
-                const timeElement = messageElementBo.roleEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`);
-                const element = this._createTimeElement(messageBo.timestamp);
+                const timeElement = messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`);
+                const role = messageElementBo.messageEle.getAttribute('data-message-author-role');
+                const element = this._createTimeElement(messageBo.timestamp, role);
                 // 强制移除时间元素，重新渲染。这样才能保证时间正确的同时也能正确执行用户自定义的脚本。
                 if (timeElement) {
-                    messageElementBo.roleEle.removeChild(timeElement)
+                    messageElementBo.rootEle.removeChild(timeElement)
                 }
                 this.hookService.invokeHook('beforeCreateTimeTag', messageId, element.timeTagContainer)
-                switch (this.userConfig.timeRender.mode) {
-                    case 'AfterRoleLeft':
-                    case 'AfterRoleRight':
-                    case 'BelowRole':
-                        messageElementBo.roleEle.innerHTML += element.timeTagContainer
-                        break;
-                }
+                messageElementBo.rootEle.firstChild.insertAdjacentHTML('beforebegin', element.timeTagContainer);
                 this.hookService.invokeHook('afterCreateTimeTag', messageId, messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`))
                 resolve(true)
             })
@@ -1221,14 +1202,14 @@
          * @returns {{timeTagFormated, timeTagContainer: string}} 返回格式化后的时间标签 和 包含时间标签的容器的 HTML 字符串
          * @private
          */
-        _createTimeElement(timestamp) {
+        _createTimeElement(timestamp, role) {
             let timeTagFormated = ''
             if (this.userConfig.timeRender.advanced.enable) {
                 timeTagFormated = this.hookService.invokeHook('formatDateTimeByDate', new Date(timestamp), this.userConfig.timeRender.advanced.htmlTextContent)
             } else {
                 timeTagFormated = this.hookService.invokeHook('formatDateTimeByDate', new Date(timestamp), this.userConfig.timeRender.format);
             }
-            const timeTagContainer = `<span class="${SystemConfig.TimeRender.TimeClassName}">${timeTagFormated}</span>`;
+            const timeTagContainer = `<span class="${SystemConfig.TimeRender.TimeClassName} ${role}">${timeTagFormated}</span>`;
             return {
                 timeTagFormated, timeTagContainer,
             };
@@ -1471,10 +1452,6 @@
                                 </n-scrollbar>
                             </div>
                         </n-form-item>
-                        <n-form-item :label="map2text('position')" path="mode">
-                            <n-select v-model:value="configForm.mode" @update:value="onConfigUpdate"
-                                        :options="modeOptions" :render-label="renderModeLabel"></n-select>
-                        </n-form-item>
                         <n-form-item :label="map2text('advance')" path="advanced.enable">
                             <n-switch v-model:value="configForm.advanced.enable" @update:value="onConfigUpdate" />
                         </n-form-item>
@@ -1518,14 +1495,8 @@
                         formatOptions: SystemConfig.TimeRender.TimeTagTemplates.map(item => {
                             return {label: item, value: item}
                         }),
-                        modeOptions: [
-                            {key: 'position-after-role-left', label: '角色之后（靠左）', value: 'AfterRoleLeft'},
-                            {key: 'position-after-role-right', label: '角色之后（居右）', value: 'AfterRoleRight'},
-                            {key: 'position-below-role', label: '角色之下', value: 'BelowRole'},
-                        ],
                         configForm: {
                             format: that.userConfig.timeRender.format,
-                            mode: that.userConfig.timeRender.mode,
                             advanced: {
                                 enable: that.userConfig.timeRender.advanced.enable,
                                 htmlTextContent: that.userConfig.timeRender.advanced.htmlTextContent,
@@ -1583,11 +1554,6 @@
                     renderLabel(option) {
                         return Vue.h(TimeTagComponent, {
                             html: option.label,
-                        })
-                    },
-                    renderModeLabel(option) {
-                        return Vue.h('div', {
-                            innerText: this.map2text(option.key),
                         })
                     },
                     reFormatTimeHTML(html) {
@@ -1949,7 +1915,7 @@
                 })
             } else {
                 GM_registerMenuCommand("配置面板（中国访问）", () => {
-                    GM_openInTab("https://www.example.com/");
+                    GM_openInTab("https://project.coderjiang.com/chatgpt-with-date-config-page/");
                 })
                 GM_registerMenuCommand("Configuration Panel (International Access)", () => {
                     GM_openInTab("https://jiang-taibai.github.io/chatgpt-with-date-config-page/");
