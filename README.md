@@ -2,7 +2,7 @@
 
 <div>
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-1.3.0-%231081C1" alt="Version-1.3.0"/>
+  <img src="https://img.shields.io/badge/Version-2.0.1-%231081C1" alt="Version-2.0.1"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
