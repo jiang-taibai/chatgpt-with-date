@@ -78,14 +78,6 @@
 <span style="margin-left: 4px; color: #E0E0E0; font-size: 0.9em;"><span style="background: #848484; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">{yyyy}-{MM}-{dd}</span><span style="background: #a6a6a6; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">{HH}:{mm}:{ss}</span></span>
 ```
 
-### 3.2 时间位置
-
-时间位置有三种选择：
-
-- `角色之后（靠左）`: 时间显示在角色名字的后面，并靠左显示。
-- `角色之后（靠右）`: 时间显示在角色名字的后面，并靠右显示。
-- `角色之下`: 时间显示在角色名字下方。
-
 ### 3.3 高级配置
 
 #### 3.3.1 时间格式
@@ -623,6 +615,7 @@ function loadScript() {
 - v2.0.0 - 2024-06-13 16:58:05
     - 修复：适应新版 ChatGPT 对话型 UI
     - 新功能：提供全新的配置页面（其实是 ChatGPT 不支持 unsafe-eval 了）
+    - 功能调整：为适应新版 UI，不再支持“时间徽标插入位置”
 - v1.3.0 - 2024-05-06 19:48:01
     - 新功能：i18n 国际化支持
     - 新功能：提供重置脚本的功能
