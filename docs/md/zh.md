@@ -2,7 +2,7 @@
 
 <div>
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-2.0.1-%231081C1" alt="Version-2.0.1"/>
+  <img src="https://img.shields.io/badge/Version-2.0.2-%231081C1" alt="Version-2.0.2"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -617,6 +617,8 @@ function loadScript() {
 
 ## X. Changelog
 
+- v2.0.2 - Unpublished
+    - 优化：统一访问 GitHub 部署的资源
 - v2.0.1 - 2024-06-15 16:33:35
     - 修复：解决“切换上下一个消息时时间强制变成当前时间”的问题
 - v2.0.0 - 2024-06-13 16:58:05

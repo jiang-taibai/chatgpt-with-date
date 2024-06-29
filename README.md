@@ -2,7 +2,7 @@
 
 <div>
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-2.0.1-%231081C1" alt="Version-2.0.1"/>
+  <img src="https://img.shields.io/badge/Version-2.0.2-%231081C1" alt="Version-2.0.2"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -15,11 +15,11 @@
 
 该插件不但可以获取**历史消息时间**，还可以实时获取新消息的时间。
 
-![在交互时添加时间标签](res/在交互时添加时间标签.gif)
+![在交互时添加时间标签](res/img/在交互时添加时间标签.gif)
 
 访问 [配置界面](https://jiang-taibai.github.io/chatgpt-with-date-config-page/) 提供多种配置选项。
 
-![配置面板基础使用](res/配置面板-基本使用.gif)
+![配置面板基础使用](res/img/配置面板-基本使用.gif)
 
 如果你了解网页三剑客（HTML、CSS、JavaScript），你完全可以高度自定义时间样式。
 
@@ -617,6 +617,8 @@ function loadScript() {
 
 ## X. Changelog
 
+- v2.0.2 - Unpublished
+    - 优化：统一访问 GitHub 部署的资源
 - v2.0.1 - 2024-06-15 16:33:35
     - 修复：解决“切换上下一个消息时时间强制变成当前时间”的问题
 - v2.0.0 - 2024-06-13 16:58:05
