@@ -1398,26 +1398,16 @@
                         </template>
                         <span>{{ map2text('toggle-language-info') }}</span>
                     </n-tooltip>
-                    <n-popover trigger="hover">
+                    <n-tooltip trigger="hover">
                         <template #trigger>
-                            <n-tooltip trigger="hover">
-                                <template #trigger>
-                                    <n-button class="button" @click="onDocumentation" text>
-                                        <n-icon size="20">
-                                            ${SystemConfig.ConfigPanel.Icon.Documentation}
-                                        </n-icon>
-                                    </n-button>
-                                </template>
-                                <span>{{ map2text('documentation-info') }}</span>
-                            </n-tooltip>
+                            <n-button class="button" @click="openUrl('https://jiang-taibai.github.io/chatgpt-with-date/', '_blank')" text>
+                                <n-icon size="20">
+                                    ${SystemConfig.ConfigPanel.Icon.Documentation}
+                                </n-icon>
+                            </n-button>
                         </template>
-                        <template #header>
-                            <n-button text @click="openUrl('https://jiang-taibai.github.io/chatgpt-with-date/', '_blank')">{{ map2text('documentation-international-access') }}</n-button>
-                        </template>
-                        <template #footer>
-                            <n-button text @click="openUrl('https://doc.coderjiang.com/project/chatgpt-with-date/', '_blank')">{{ map2text('documentation-china-access') }}</n-button>
-                        </template>
-                    </n-popover>
+                        <span>{{ map2text('documentation-info') }}</span>
+                    </n-tooltip>
                     <n-button class="button" @click="toggleFolding" text>
                         <n-icon v-if="folding" size="20">
                             ${SystemConfig.ConfigPanel.Icon.Maximize}
@@ -1612,9 +1602,6 @@
                     },
                     setNaiveUILanguage() {
                         this.locale = this.i18n === 'zh' ? naive.zhCN : null;
-                    },
-                    onDocumentation() {
-
                     },
                     openUrl(url, target) {
                         window.open(url, target)
@@ -1914,10 +1901,7 @@
                     that.show()
                 })
             } else {
-                GM_registerMenuCommand("配置面板（中国访问）", () => {
-                    GM_openInTab("https://project.coderjiang.com/chatgpt-with-date-config-page/");
-                })
-                GM_registerMenuCommand("Configuration Panel (International Access)", () => {
+                GM_registerMenuCommand("配置面板 Configuration Panel", () => {
                     GM_openInTab("https://jiang-taibai.github.io/chatgpt-with-date-config-page/");
                 })
             }

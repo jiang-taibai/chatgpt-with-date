@@ -15,11 +15,11 @@
 
 该插件不但可以获取**历史消息时间**，还可以实时获取新消息的时间。
 
-![在交互时添加时间标签](https://cdn.coderjiang.com/project/chatgpt-with-date/add-time-tag-during-interaction.gif)
+![在交互时添加时间标签](res/在交互时添加时间标签.gif)
 
-提供多种配置选项，例如时间显示格式、时间显示位置等。
+访问 [配置界面](https://jiang-taibai.github.io/chatgpt-with-date-config-page/) 提供多种配置选项。
 
-![配置面板基础使用](https://cdn.coderjiang.com/project/chatgpt-with-date/configuration-panel-basic.gif)
+![配置面板基础使用](res/配置面板-基本使用.gif)
 
 如果你了解网页三剑客（HTML、CSS、JavaScript），你完全可以高度自定义时间样式。
 
@@ -56,26 +56,30 @@
 
 (1) 常规
 
-<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">2024-04-01 18:06:09</span>
+<span style="padding-right: 1rem; color: #ababab; font-size: 0.9em;">2024-04-01 18:06:09</span>
 
 ```html
-<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>
+<span style="padding-right: 1rem; color: #ababab; font-size: 0.9em;">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>
 ```
 
 (2) 12 小时制
 
-<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">May 06, 2024 03:55 PM</span>
+<span style="padding-right: 1rem; color: #ababab; font-size: 0.9em;">May 06, 2024 03:55 PM</span>
 
 ```html
-<span style="margin-left: 4px; color: #ababab; font-size: 0.9em;">{MM#shortname@en} {dd}, {yyyy} {HH#12}:{mm} {HH#tag}</span>
+<span style="padding-right: 1rem; color: #ababab; font-size: 0.9em;">{MM#shortname@en} {dd}, {yyyy} {HH#12}:{mm} {HH#tag}</span>
 ```
 
 (3) 徽标类
 
-<span style="margin-left: 4px; color: #E0E0E0; font-size: 0.9em;"><span style="background: #848484; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">2024-05-06</span><span style="background: #a6a6a6; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">15:56:22</span></span>
+<span style="padding-right: 1rem; margin-bottom: .5rem; color: #E0E0E0; font-size: 0.9em;"><span style="background: #333; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">
+2024-05-06</span><span style="background: #606060; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">
+15:56:22</span></span>
 
 ```html
-<span style="margin-left: 4px; color: #E0E0E0; font-size: 0.9em;"><span style="background: #848484; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">{yyyy}-{MM}-{dd}</span><span style="background: #a6a6a6; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">{HH}:{mm}:{ss}</span></span>
+<span style="padding-right: 1rem; margin-bottom: .5rem; color: #E0E0E0; font-size: 0.9em;"><span
+        style="background: #333; padding: 1px 4px 1px 10px; display: inline-block; border-radius: 8px 0 0 8px;">{yyyy}-{MM}-{dd}</span><span
+        style="background: #606060; padding: 1px 10px 1px 4px; display: inline-block; border-radius: 0 8px 8px 0;">{HH}:{mm}:{ss}</span></span>
 ```
 
 ### 3.3 高级配置
@@ -139,6 +143,7 @@
 在介绍章节中，我们展示了如何使用高级配置功能来显示一个可以将日期显示为几天前的时间标签，下面是具体的代码：
 
 ```html
+
 <div class="text-tag-box">
     <span class="date">{yyyy}-{MM}-{dd}</span>
     <span class="time">{HH}:{mm}:{ss}</span>
@@ -192,7 +197,7 @@
         const date = dateNode.innerText;
         const originalWidth = getNewWidth(dateNode, date);
         const paddingWidth = 18;
-        dateNode.style.width = (originalWidth  + paddingWidth) + 'px';
+        dateNode.style.width = (originalWidth + paddingWidth) + 'px';
 
         timeTagNode.addEventListener('mouseover', () => {
             const now = new Date();
@@ -214,13 +219,13 @@
             else
                 text = Math.floor(days / 365) + '年前';
             dateNode.innerText = text;
-            dateNode.style.width = (getNewWidth(dateNode, text)  + paddingWidth) + 'px';
+            dateNode.style.width = (getNewWidth(dateNode, text) + paddingWidth) + 'px';
         });
 
         // 鼠标移出 timeTagNode 时恢复 dateNode 的内容为原来的日期
         timeTagNode.addEventListener('mouseout', () => {
             dateNode.innerText = date;
-            dateNode.style.width = (originalWidth  + paddingWidth) + 'px';
+            dateNode.style.width = (originalWidth + paddingWidth) + 'px';
         });
     }
 })()
@@ -262,19 +267,19 @@ API 定义在 window 上，如有必要你需要在 JS 脚本内重写函数。
 
 - window.ChatGPTWithDate.hooks.formatDateTimeByDate(date, template): 根据 Date 对象将模板 HTML 字符串中的内容替换为 date
   对象指定的时间
-  - date: 日期 Date 对象
-  - template: HTML 字符串，即你写的 HTML 代码
-  - 返回值: 格式化后的 HTML 代码
+    - date: 日期 Date 对象
+    - template: HTML 字符串，即你写的 HTML 代码
+    - 返回值: 格式化后的 HTML 代码
 - window.ChatGPTWithDate.hooks.beforeCreateTimeTag(messageId, timeTagHTML): 将 template 插入到页面之前调用
-  - messageId: 消息的 ID，并非 HTML 元素的 ID
-  - timeTagHTML: 此时的字符串是 '<div class="chatgpt-time">' + window.ChatGPTWithDate.hooks.formatDateTimeByDate(date,
-    template) + '</div>'
-  - 返回值: 无
+    - messageId: 消息的 ID，并非 HTML 元素的 ID
+    - timeTagHTML: 此时的字符串是 '<div class="chatgpt-time">' + window.ChatGPTWithDate.hooks.formatDateTimeByDate(date,
+      template) + '</div>'
+    - 返回值: 无
 - window.ChatGPTWithDate.hooks.afterCreateTimeTag(messageId, timeTagNode): 将 template 插入到页面之后调用
-  - messageId: 消息的 ID，并非 HTML 元素的 ID
-  - timeTagNode: 此时的节点是 '<div class="chatgpt-time">' + window.ChatGPTWithDate.hooks.formatDateTimeByDate(date,
-    template) + '</div>' 的 DOM 节点
-  - 返回值: 无
+    - messageId: 消息的 ID，并非 HTML 元素的 ID
+    - timeTagNode: 此时的节点是 '<div class="chatgpt-time">' + window.ChatGPTWithDate.hooks.formatDateTimeByDate(date,
+      template) + '</div>' 的 DOM 节点
+    - 返回值: 无
 
 ## 4.2 API 执行逻辑
 
