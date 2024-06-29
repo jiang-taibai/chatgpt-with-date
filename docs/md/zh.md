@@ -15,11 +15,11 @@
 
 该插件不但可以获取**历史消息时间**，还可以实时获取新消息的时间。
 
-![在交互时添加时间标签](../res/img/在交互时添加时间标签.gif)
+![在交互时添加时间标签](res/img/在交互时添加时间标签.gif)
 
 访问 [配置界面](https://jiang-taibai.github.io/chatgpt-with-date-config-page/) 提供多种配置选项。
 
-![配置面板基础使用](../res/img/配置面板-基本使用.gif)
+![配置面板基础使用](res/img/配置面板-基本使用.gif)
 
 如果你了解网页三剑客（HTML、CSS、JavaScript），你完全可以高度自定义时间样式。
 

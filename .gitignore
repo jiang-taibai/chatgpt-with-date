@@ -2,3 +2,5 @@
 /debug
 /lib
 /example
+package-lock.json
+package.json
