@@ -27,8 +27,7 @@
 (function () {
     'use strict';
 
-    const IsConfigPage = window.location.hostname === 'jiang-taibai.github.io' ||
-        window.location.hostname === 'project.coderjiang.com'
+    const IsConfigPage = window.location.hostname === 'jiang-taibai.github.io'
 
     class SystemConfig {
         static Common = {
@@ -911,6 +910,7 @@
             this._initMonitorFetch();
             this._initMonitorAddedMessageNode();
             this._initConfigPageNode();
+            this._initSharePageDataFetch();
         }
 
         /**
@@ -932,8 +932,24 @@
                             }).catch(error => Logger.error('解析响应体失败:', error));
                         }
                         return response;
-                    });
+                    })
             };
+        }
+
+        /**
+         * 初始化获取分享界面的消息数据
+         *
+         * @private
+         */
+        _initSharePageDataFetch() {
+            const __NEXT_DATA__ = document.querySelector("#__NEXT_DATA__")
+            if (!__NEXT_DATA__) return;
+            const jsonData = JSON.parse(__NEXT_DATA__.text);
+            try {
+                this._parseConversationJsonData(jsonData.props.pageProps.serverResponse.data)
+            } catch (e) {
+                Logger.error('解析分享页面数据失败：', e)
+            }
         }
 
         /**
