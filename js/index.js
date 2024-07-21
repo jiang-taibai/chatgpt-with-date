@@ -8,7 +8,6 @@
 // @match           *chat.openai.com/*
 // @match           *chatgpt.com/*
 // @match           *jiang-taibai.github.io/chatgpt-with-date-config-page*
-// @match           *project.coderjiang.com/chatgpt-with-date-config-page*
 // @icon            https://cdn.coderjiang.com/project/chatgpt-with-date/logo.svg
 // @grant           GM_xmlhttpRequest
 // @grant           GM_registerMenuCommand
