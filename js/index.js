@@ -31,7 +31,6 @@
     class SystemConfig {
         static Common = {
             ApplicationName: 'ChatGPT with Date',
-            GPTPrompt: 'IyAxLiDku7vliqHnroDku4sKCuS9oOmcgOimgeWGmSBIVE1M44CBQ1NT44CBSmF2YVNjcmlwdCDku6PnoIHvvIzlrp7njrDmiJHnmoTpnIDmsYLvvIzlkI7pnaLmiJHlsIbor6bnu4bku4vnu43kvaDlupTor6XmgI7kuYjlhpnku6PnoIHjgIIKCiMgMi4gSFRNTCDopoHmsYIKCuS9oOmcgOimgeWGmeS4gOS4quaXpeacn+aXtumXtOeahOaooeadvyBIVE1MIOWtl+espuS4su+8jOS9oOWPr+S7peS9v+eUqOWNoOS9jeespuadpeihqOekuuaXtumXtOWFg+e0oO+8jOS+i+Wmgu+8mgoKYGBgaHRtbAo8ZGl2IGNsYXNzPSJ0ZXh0LXRhZy1ib3giPgogICAgPHNwYW4gY2xhc3M9ImRhdGUiPnt5eXl5fS17TU19LXtkZH08L3NwYW4+CiAgICA8c3BhbiBjbGFzcz0idGltZSI+e0hIfTp7bW19Ontzc308L3NwYW4+CjwvZGl2PgpgYGAKCuWQjumdouS8muS7i+e7jeS9oOaAjuS5iOeUqCBKYXZhU2NyaXB0IOadpeWunueOsOaYvuekuueJueWumueahOaXtumXtOOAggoKIyAzLiBDU1Mg6KaB5rGCCgooMSkg5LiN5YWB6K645YaZ5qCH562+6YCJ5oup5Zmo77yM5Y+q6IO95YaZ57G76YCJ5oup5Zmo5oiWIElEIOmAieaLqeWZqAooMikg5bC96YeP5YaZ5ZCO5Luj6YCJ5oup5Zmo77yM5LiN5rGh5p+T5YWo5bGA5qC35byPCigzKSDlsL3ph4/kuI3opoHkvb/nlKggYCFpbXBvcnRhbnRgCgojIDQuIEphdmFTY3JpcHQg6KaB5rGCCgojIyA0LjEg5o+Q5L6b55qEIEFQSSDmjqXlj6MKCkFQSSDlrprkuYnlnKggd2luZG93IOS4iu+8jOWmguacieW/heimgeS9oOmcgOimgeWcqCBKUyDohJrmnKzlhoXph43lhpnlh73mlbDjgIIKCi0gd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5mb3JtYXREYXRlVGltZUJ5RGF0ZShkYXRlLCB0ZW1wbGF0ZSk6IOagueaNriBEYXRlIOWvueixoeWwhuaooeadvyBIVE1MIOWtl+espuS4suS4reeahOWGheWuueabv+aNouS4uiBkYXRlCiAg5a+56LGh5oyH5a6a55qE5pe26Ze0CiAgLSBkYXRlOiDml6XmnJ8gRGF0ZSDlr7nosaEKICAtIHRlbXBsYXRlOiBIVE1MIOWtl+espuS4su+8jOWNs+S9oOWGmeeahCBIVE1MIOS7o+eggQogIC0g6L+U5Zue5YC8OiDmoLzlvI/ljJblkI7nmoQgSFRNTCDku6PnoIEKLSB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmJlZm9yZUNyZWF0ZVRpbWVUYWcobWVzc2FnZUlkLCB0aW1lVGFnSFRNTCk6IOWwhiB0ZW1wbGF0ZSDmj5LlhaXliLDpobXpnaLkuYvliY3osIPnlKgKICAtIG1lc3NhZ2VJZDog5raI5oGv55qEIElE77yM5bm26Z2eIEhUTUwg5YWD57Sg55qEIElECiAgLSB0aW1lVGFnSFRNTDog5q2k5pe255qE5a2X56ym5Liy5pivICc8ZGl2IGNsYXNzPSJjaGF0Z3B0LXRpbWUiPicgKyB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmZvcm1hdERhdGVUaW1lQnlEYXRlKGRhdGUsCiAgICB0ZW1wbGF0ZSkgKyAnPC9kaXY+JwogIC0g6L+U5Zue5YC8OiDml6AKLSB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmFmdGVyQ3JlYXRlVGltZVRhZyhtZXNzYWdlSWQsIHRpbWVUYWdOb2RlKTog5bCGIHRlbXBsYXRlIOaPkuWFpeWIsOmhtemdouS5i+WQjuiwg+eUqAogIC0gbWVzc2FnZUlkOiDmtojmga/nmoQgSUTvvIzlubbpnZ4gSFRNTCDlhYPntKDnmoQgSUQKICAtIHRpbWVUYWdOb2RlOiDmraTml7bnmoToioLngrnmmK8gJzxkaXYgY2xhc3M9ImNoYXRncHQtdGltZSI+JyArIHdpbmRvdy5DaGF0R1BUV2l0aERhdGUuaG9va3MuZm9ybWF0RGF0ZVRpbWVCeURhdGUoZGF0ZSwKICAgIHRlbXBsYXRlKSArICc8L2Rpdj4nIOeahCBET00g6IqC54K5CiAgLSDov5Tlm57lgLw6IOaXoAoKIyMgNC4yIEFQSSDmiafooYzpgLvovpEKCuezu+e7n+S8muaMieeFp+S7peS4i+mhuuW6j+aJp+ihjCBBUEnvvJoKCigxKSB0ZW1wbGF0ZSA9IOS9oOi+k+WFpeeahCBIVE1MIOS7o+eggQooMikgdGVtcGxhdGUgPSB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmZvcm1hdERhdGVUaW1lQnlEYXRlKGRhdGUsIHRlbXBsYXRlKQooMykgdGltZVRhZ0hUTUwgPSAnPGRpdiBjbGFzcz0iY2hhdGdwdC10aW1lIj4nICsgdGVtcGxhdGUgKyAnPC9kaXY+JwooNCkgd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5iZWZvcmVDcmVhdGVUaW1lVGFnKG1lc3NhZ2VJZCwgdGltZVRhZ0hUTUwpCig1KSDlsIYgdGltZVRhZ0hUTUwg5o+S5YWl5Yiw5p+Q5L2N572uCig2KSB0aW1lVGFnTm9kZSA9IOWImuWImuaPkuWFpeeahCB0aW1lVGFnSFRNTCDoioLngrkKKDcpIHdpbmRvdy5DaGF0R1BUV2l0aERhdGUuaG9va3MuYWZ0ZXJDcmVhdGVUaW1lVGFnKG1lc3NhZ2VJZCwgdGltZVRhZ05vZGUpCgojIyA0LjMg5Luj56CB6KeE6IyDCgooMSkg6K+35L2/55SoIEVTNiDor63ms5UKKDIpIOivt+S9v+eUqOS4peagvOaooeW8jyBgJ3VzZSBzdHJpY3QnYAooMykg6K+35L2/55SoIGBjb25zdGAg5ZKMIGBsZXRgIOWjsOaYjuWPmOmHjwooNCkg6K+35L2/55SoIElJRkUg6YG/5YWN5YWo5bGA5Y+Y6YeP5rGh5p+TCig1KSDor7fkvb/nlKggYD09PWAg5ZKMIGAhPT1gIOmBv+WFjeexu+Wei+i9rOaNoumXrumimAooNikg5rOo6YeK5LiA5b6L5YaZ5Lit5paH5rOo6YeKCgojIDUuIOahiOS+iwoK5Lul5LiL5piv5LiA5Liq5qGI5L6L77yM5a6e546w5YWJ5qCH56e75Yqo5Yiw5pe26Ze05qCH562+5LiK5pe277yM5pel5pyf5pi+56S65Li65Yeg5aSp5YmN55qE5pWI5p6c44CCCgpIVE1MIOS7o+egge+8mgoKYGBgaHRtbAo8ZGl2IGNsYXNzPSJ0ZXh0LXRhZy1ib3giPgogICAgPHNwYW4gY2xhc3M9ImRhdGUiPnt5eXl5fS17TU19LXtkZH08L3NwYW4+CiAgICA8c3BhbiBjbGFzcz0idGltZSI+e0hIfTp7bW19Ontzc308L3NwYW4+CjwvZGl2PgpgYGAKCkNTUyDku6PnoIHvvJoKCmBgYGNzcwoudGV4dC10YWctYm94IHsKICAgIGJvcmRlci1yYWRpdXM6IDhweDsKICAgIGNvbG9yOiAjRTBFMEUwOwogICAgZm9udC1zaXplOiAwLjllbTsKICAgIG92ZXJmbG93OiBoaWRkZW47CiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7Cn0KCi50ZXh0LXRhZy1ib3ggLmRhdGUgewogICAgYmFja2dyb3VuZDogIzMzMzsKICAgIGZsb2F0OiBsZWZ0OwogICAgcGFkZGluZzogMnB4IDhweCAycHggMTBweDsKICAgIGRpc3BsYXk6IGlubGluZS1ibG9jazsKfQoKLnRleHQtdGFnLWJveCAudGltZSB7CiAgICBiYWNrZ3JvdW5kOiAjNjA2MDYwOwogICAgZmxvYXQ6IGxlZnQ7CiAgICBwYWRkaW5nOiAycHggMTBweCAycHggOHB4OwogICAgZGlzcGxheTogaW5saW5lLWJsb2NrOwp9CmBgYAoKSmF2YVNjcmlwdCDku6PnoIHvvJoKCmBgYGphdmFzY3JpcHQKKCgpID0+IHsKICAgIHdpbmRvdy5DaGF0R1BUV2l0aERhdGUuaG9va3MuZm9ybWF0RGF0ZVRpbWVCeURhdGUgPSAoZGF0ZSwgdGVtcGxhdGUpID0+IHsKICAgICAgICBjb25zdCBmb3JtYXRWYWx1ZSA9ICh2YWx1ZSwgZm9ybWF0KSA9PiB2YWx1ZS50b1N0cmluZygpLnBhZFN0YXJ0KGZvcm1hdCA9PT0gJ3l5eXknID8gNCA6IDIsICcwJyk7CiAgICAgICAgY29uc3QgZGF0ZVZhbHVlcyA9IHsKICAgICAgICAgICAgJ3t5eXl5fSc6IGRhdGUuZ2V0RnVsbFllYXIoKSwKICAgICAgICAgICAgJ3tNTX0nOiBkYXRlLmdldE1vbnRoKCkgKyAxLAogICAgICAgICAgICAne2RkfSc6IGRhdGUuZ2V0RGF0ZSgpLAogICAgICAgICAgICAne0hIfSc6IGRhdGUuZ2V0SG91cnMoKSwKICAgICAgICAgICAgJ3ttbX0nOiBkYXRlLmdldE1pbnV0ZXMoKSwKICAgICAgICAgICAgJ3tzc30nOiBkYXRlLmdldFNlY29uZHMoKQogICAgICAgIH07CiAgICAgICAgcmV0dXJuIHRlbXBsYXRlLnJlcGxhY2UoL1x7W159XStcfS9nLCBtYXRjaCA9PiBmb3JtYXRWYWx1ZShkYXRlVmFsdWVzW21hdGNoXSwgbWF0Y2guc2xpY2UoMSwgLTEpKSk7CiAgICB9CiAgICB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmFmdGVyQ3JlYXRlVGltZVRhZyA9IChtZXNzYWdlSWQsIHRpbWVUYWdOb2RlKSA9PiB7CiAgICAgICAgY29uc3QgZGF0ZU5vZGUgPSB0aW1lVGFnTm9kZS5xdWVyeVNlbGVjdG9yKCcuZGF0ZScpOwogICAgICAgIGNvbnN0IGRhdGVUZXh0ID0gZGF0ZU5vZGUuaW5uZXJUZXh0OwogICAgICAgIGNvbnN0IGRhdGUgPSBuZXcgRGF0ZShkYXRlVGV4dCk7CiAgICAgICAgdGltZVRhZ05vZGUuYWRkRXZlbnRMaXN0ZW5lcignbW91c2VvdmVyJywgKCkgPT4gewogICAgICAgICAgICBkYXRlTm9kZS5pbm5lclRleHQgPSBgJHtNYXRoLmZsb29yKChuZXcgRGF0ZSgpIC0gZGF0ZSkgLyA4NjQwMDAwMCl95aSp5YmNYDsKICAgICAgICB9KTsKICAgICAgICB0aW1lVGFnTm9kZS5hZGRFdmVudExpc3RlbmVyKCdtb3VzZW91dCcsICgpID0+IHsKICAgICAgICAgICAgZGF0ZU5vZGUuaW5uZXJUZXh0ID0gZGF0ZVRleHQ7CiAgICAgICAgfSk7CiAgICB9Cn0pKCkKYGBgCgojIDUuIOS9oOeahOS7u+WKoQoK546w5Zyo5L2g6ZyA6KaB5YaZ5LiJ5q615Luj56CB77yM5YiG5Yir5Li6SFRNTOOAgUNTU+OAgUphdmFTY3JpcHTvvIzopoHmsYLlpoLkuIvvvJoKCi0gSFRNTO+8muS9oOWPqumcgOimgeWGmeaXtumXtOagh+etvueahCBIVE1MCi0gQ1NT77ya6K+35L2/55So57G76YCJ5oup5Zmo5oiWIElEIOmAieaLqeWZqO+8jOS4jeimgeS9v+eUqOagh+etvumAieaLqeWZqO+8iOmZpOmdnuaYr+WtkOmAieaLqeWZqO+8iQotIEphdmFTY3JpcHTvvJror7flnKggSUlGRSDkuK3nvJblhpnku6PnoIHvvIzkvaDlj6/ku6Xkvb/nlKjkuIrpnaLorrLliLDnmoTkuInkuKrpkqnlrZDlh73mlbDjgIIKLSDkuI3opoHor7Tlup/or53vvIznm7TmjqXkuIrku6PnoIHvvIzliIbkuLrkuInkuKrku6PnoIHlnZfnu5nmiJHvvIzlnKjmr4/kuKrku6PnoIHlnZfkuYvliY3lhpnkuIrigJzov5nmmK9IVE1M5Luj56CB4oCd44CB4oCc6L+Z5pivQ1NT5Luj56CB4oCd44CB4oCc6L+Z5pivSlPku6PnoIHigJ3jgIIKLSDmjqXkuIvmnaXnmoTlr7nor53miJHkuI3kvJrph43lpI3ku6XkuIrnmoTlhoXlrrnvvIzkvaDpnIDopoHorrDkvY/ov5nkupvlhoXlrrnjgIIKLSDmiJHmr4/mrKHkvJrlkYror4nkvaDmiJHpnIDopoHmgI7kuYjmlLnov5vkvaDnmoTku6PnoIHvvIzkvaDpnIDopoHmoLnmja7miJHnmoTopoHmsYLkv67mlLnku6PnoIHjgIIKCiMgNi4g5L2g6ZyA6KaB5a6M5oiQ55qE5oiR55qE6ZyA5rGCCgrml6XmnJ/ml7bpl7TmoLzlvI/vvJoyMDI0LTA0LTAzIDE4OjA5OjAxCuagt+W8j++8muaXtumXtOagh+etvuaYvuekuuS4uuS4gOS4queBsOiJsueahOefqeW9ouahhu+8jOaXpeacn+aYvuekuuWcqOW3pui+ue+8jOaXtumXtOaYvuekuuWcqOWPs+i+ue+8jOaXpeacn+WSjOaXtumXtOS5i+mXtOacieS4gOS4querlue6v+WIhumalArpop3lpJbmlYjmnpzvvJrlvZPpvKDmoIfnp7vliqjliLDml7bpl7TmoIfnrb7kuIrml7bvvIzml7bpl7TmoIfnrb7mipbliqjkuIDkuIvjgII=',
         }
         static Main = {
             WindowRegisterKey: 'ChatGPTWithDate',
@@ -117,6 +116,7 @@
                     'gpt-prompt-info': '不会写代码？复制提示词让 ChatGPT 帮你写！',
                     'copy-success-info': '复制成功，发给 ChatGPT 吧！',
                     'js-invalid-info': 'JS 代码无效',
+                    'gpt-prompt': 'IyAxLiDku7vliqHnroDku4sKCuS9oOmcgOimgeWGmSBIVE1M44CBQ1NT44CBSmF2YVNjcmlwdCDku6PnoIHvvIzlrp7njrDmiJHnmoTpnIDmsYLvvIzlkI7pnaLmiJHlsIbor6bnu4bku4vnu43kvaDlupTor6XmgI7kuYjlhpnku6PnoIHjgIIKCiMgMi4gSFRNTCDopoHmsYIKCuS9oOmcgOimgeWGmeS4gOS4quaXpeacn+aXtumXtOeahOaooeadvyBIVE1MIOWtl+espuS4su+8jOS9oOWPr+S7peS9v+eUqOWNoOS9jeespuadpeihqOekuuaXtumXtOWFg+e0oO+8jOS+i+Wmgu+8mgoKYGBgaHRtbAo8ZGl2IGNsYXNzPSJ0ZXh0LXRhZy1ib3giPgogICAgPHNwYW4gY2xhc3M9ImRhdGUiPnt5eXl5fS17TU19LXtkZH08L3NwYW4+CiAgICA8c3BhbiBjbGFzcz0idGltZSI+e0hIfTp7bW19Ontzc308L3NwYW4+CjwvZGl2PgpgYGAKCuWQjumdouS8muS7i+e7jeS9oOaAjuS5iOeUqCBKYXZhU2NyaXB0IOadpeWunueOsOaYvuekuueJueWumueahOaXtumXtOOAggoKIyAzLiBDU1Mg6KaB5rGCCgooMSkg5LiN5YWB6K645L2/55So5qCH562+6YCJ5oup5Zmo77yM5Y+q6IO95L2/55So57G76YCJ5oup5Zmo5oiWIElEIOmAieaLqeWZqAooMikg5bC96YeP5L2/55So5ZCO5Luj6YCJ5oup5Zmo77yM5LiN5rGh5p+T5YWo5bGA5qC35byPCigzKSDlsL3ph4/kuI3opoHkvb/nlKggYCFpbXBvcnRhbnRgCgojIDQuIEphdmFTY3JpcHQg6KaB5rGCCgojIyA0LjEg5o+Q5L6b55qEIEFQSSDmjqXlj6MKCkFQSSDlrprkuYnlnKggd2luZG93IOS4iu+8jOWmguacieW/heimgeS9oOmcgOimgeWcqCBKUyDohJrmnKzlhoXph43lhpnlh73mlbDjgIIKCi0gd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5mb3JtYXREYXRlVGltZUJ5RGF0ZShkYXRlLCB0ZW1wbGF0ZSk6IOagueaNriBEYXRlIOWvueixoeWwhuaooeadvyBIVE1MIOWtl+espuS4suS4reeahOWGheWuueabv+aNouS4uiBkYXRlCiAg5a+56LGh5oyH5a6a55qE5pe26Ze0CiAgICAtIGRhdGU6IEphdmFTY3JpcHQgRGF0ZSDlrp7kvosKICAgIC0gdGVtcGxhdGU6IEhUTUwg5a2X56ym5Liy77yM5Y2z5L2g5YaZ55qEIEhUTUwg5Luj56CBCiAgICAtIOi/lOWbnuWAvDog5qC85byP5YyW5pe26Ze05ZCO55qEIEhUTUwg5Luj56CBCi0gd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5iZWZvcmVDcmVhdGVUaW1lVGFnKG1lc3NhZ2VJZCwgdGltZVRhZ0hUTUwpOiDlsIYgdGVtcGxhdGUg5o+S5YWl5Yiw6aG16Z2i5LmL5YmN6LCD55SoCiAgICAtIG1lc3NhZ2VJZDog5raI5oGv55qEIElE77yM5bm26Z2eIEhUTUwg5YWD57Sg55qEIElECiAgICAtIHRpbWVUYWdIVE1MOiDlrZfnrKbkuLLnsbvlnovvvIwnPGRpdiBjbGFzcz0iY2hhdGdwdC10aW1lIj4nICsgd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5mb3JtYXREYXRlVGltZUJ5RGF0ZShkYXRlLAogICAgICB0ZW1wbGF0ZSkgKyAnPC9kaXY+JwogICAgLSDov5Tlm57lgLw6IOaXoAotIHdpbmRvdy5DaGF0R1BUV2l0aERhdGUuaG9va3MuYWZ0ZXJDcmVhdGVUaW1lVGFnKG1lc3NhZ2VJZCwgdGltZVRhZ0NvbnRhaW5lck5vZGUpOiDlsIYgdGVtcGxhdGUg5o+S5YWl5Yiw6aG16Z2i5LmL5ZCO6LCD55SoCiAgICAtIG1lc3NhZ2VJZDog5raI5oGv5pe26Ze05a+55bqU5raI5oGv55qEIElE77yM5bm26Z2eIEhUTUwg5YWD57Sg55qEIElECiAgICAtIHRpbWVUYWdOb2RlOiDmraTml7bnmoToioLngrnmmK8gJzxkaXYgY2xhc3M9ImNoYXRncHQtdGltZSI+JyArIHdpbmRvdy5DaGF0R1BUV2l0aERhdGUuaG9va3MuZm9ybWF0RGF0ZVRpbWVCeURhdGUoZGF0ZSwKICAgICAgdGVtcGxhdGUpICsgJzwvZGl2Picg55qEIERPTSDoioLngrkKICAgIC0g6L+U5Zue5YC8OiDml6AKCiMjIDQuMiBBUEkg5omn6KGM6YC76L6RCgrns7vnu5/kvJrmjInnhafku6XkuIvpobrluo/miafooYwgQVBJ77yaCgooMSkgdGVtcGxhdGUgPSDkvaDovpPlhaXnmoQgSFRNTCDku6PnoIEKKDIpIHRlbXBsYXRlID0gd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5mb3JtYXREYXRlVGltZUJ5RGF0ZShkYXRlLCB0ZW1wbGF0ZSkKKDMpIHRpbWVUYWdIVE1MID0gJzxkaXYgY2xhc3M9ImNoYXRncHQtdGltZSI+JyArIHRlbXBsYXRlICsgJzwvZGl2PicKKDQpIHdpbmRvdy5DaGF0R1BUV2l0aERhdGUuaG9va3MuYmVmb3JlQ3JlYXRlVGltZVRhZyhtZXNzYWdlSWQsIHRpbWVUYWdIVE1MKQooNSkg5bCGIHRpbWVUYWdIVE1MIOaPkuWFpeWIsOafkOS9jee9rgooNikgdGltZVRhZ05vZGUgPSDliJrliJrmj5LlhaXnmoQgdGltZVRhZ0hUTUwg6IqC54K5Cig3KSB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmFmdGVyQ3JlYXRlVGltZVRhZyhtZXNzYWdlSWQsIHRpbWVUYWdOb2RlKQoKIyMgNC4zIOS7o+eggeinhOiMgwoKKDEpIOivt+S9v+eUqCBFUzYg6K+t5rOVCigyKSDor7fkvb/nlKjkuKXmoLzmqKHlvI8gYCd1c2Ugc3RyaWN0J2AKKDMpIOivt+S9v+eUqCBgY29uc3RgIOWSjCBgbGV0YCDlo7DmmI7lj5jph48KKDQpIOivt+S9v+eUqCBJSUZFIOmBv+WFjeWFqOWxgOWPmOmHj+axoeafkwooNSkg6K+35L2/55SoIGA9PT1gIOWSjCBgIT09YCDpgb/lhY3nsbvlnovovazmjaLpl67popgKKDYpIOazqOmHiuS4gOW+i+WGmeS4reaWh+azqOmHigoKIyA1LiDmoYjkvosKCuS7peS4i+aYr+S4gOS4quahiOS+i++8jOWunueOsOWFieagh+enu+WKqOWIsOaXtumXtOagh+etvuS4iuaXtu+8jOaXpeacn+aYvuekuuS4uuWHoOWkqeWJjeeahOaViOaenOOAggoKSFRNTCDku6PnoIHvvJoKCmBgYGh0bWwKPHNwYW4gY2xhc3M9InRpbWUtdGFnIj57eXl5eX0te01NfS17ZGR9IHtISH06e21tfTp7c3N9PC9zcGFuPgpgYGAKCkNTUyDku6PnoIHvvJoKCmBgYGNzcwoudGltZS10YWcgewogICAgcGFkZGluZy1yaWdodDogMXJlbTsgCiAgICBjb2xvcjogI2FiYWJhYjsgCiAgICBmb250LXNpemU6IDAuOWVtOwp9CmBgYAoKSmF2YVNjcmlwdCDku6PnoIHvvJoKCmBgYGphdmFzY3JpcHQKKCgpID0+IHsKICAgICd1c2Ugc3RyaWN0JzsKICAgIAogICAgd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5mb3JtYXREYXRlVGltZUJ5RGF0ZSA9IChkYXRlLCB0ZW1wbGF0ZSkgPT4gewogICAgICAgIGNvbnN0IGZvcm1hdFZhbHVlID0gKHZhbHVlLCBmb3JtYXQpID0+IHZhbHVlLnRvU3RyaW5nKCkucGFkU3RhcnQoZm9ybWF0ID09PSAneXl5eScgPyA0IDogMiwgJzAnKTsKICAgICAgICBjb25zdCBkYXRlVmFsdWVzID0gewogICAgICAgICAgICAne3l5eXl9JzogZGF0ZS5nZXRGdWxsWWVhcigpLAogICAgICAgICAgICAne01NfSc6IGRhdGUuZ2V0TW9udGgoKSArIDEsCiAgICAgICAgICAgICd7ZGR9JzogZGF0ZS5nZXREYXRlKCksCiAgICAgICAgICAgICd7SEh9JzogZGF0ZS5nZXRIb3VycygpLAogICAgICAgICAgICAne21tfSc6IGRhdGUuZ2V0TWludXRlcygpLAogICAgICAgICAgICAne3NzfSc6IGRhdGUuZ2V0U2Vjb25kcygpCiAgICAgICAgfTsKICAgICAgICByZXR1cm4gdGVtcGxhdGUucmVwbGFjZSgvXHtbXn1dK1x9L2csIG1hdGNoID0+IGZvcm1hdFZhbHVlKGRhdGVWYWx1ZXNbbWF0Y2hdLCBtYXRjaC5zbGljZSgxLCAtMSkpKTsKICAgIH0KICAgIHdpbmRvdy5DaGF0R1BUV2l0aERhdGUuaG9va3MuYWZ0ZXJDcmVhdGVUaW1lVGFnID0gKG1lc3NhZ2VJZCwgdGltZVRhZ0NvbnRhaW5lck5vZGUpID0+IHsKICAgICAgICBjb25zdCB0aW1lVGFnTm9kZSA9IHRpbWVUYWdDb250YWluZXJOb2RlLnF1ZXJ5U2VsZWN0b3IoJy50aW1lLXRhZycpOwogICAgICAgIGNvbnN0IGRhdGVUZXh0ID0gdGltZVRhZ05vZGUuaW5uZXJUZXh0OwogICAgICAgIGNvbnN0IGRhdGUgPSBuZXcgRGF0ZShkYXRlVGV4dCk7CiAgICAgICAgdGltZVRhZ05vZGUuYWRkRXZlbnRMaXN0ZW5lcignbW91c2VvdmVyJywgKCkgPT4gewogICAgICAgICAgICB0aW1lVGFnTm9kZS5pbm5lclRleHQgPSBgJHtNYXRoLmZsb29yKChuZXcgRGF0ZSgpIC0gZGF0ZSkgLyA4NjQwMDAwMCl9IOWkqeWJjWA7CiAgICAgICAgfSk7CiAgICAgICAgdGltZVRhZ05vZGUuYWRkRXZlbnRMaXN0ZW5lcignbW91c2VvdXQnLCAoKSA9PiB7CiAgICAgICAgICAgIHRpbWVUYWdOb2RlLmlubmVyVGV4dCA9IGRhdGVUZXh0OwogICAgICAgIH0pOwogICAgfQp9KSgpCmBgYAoKIyA2LiDkvaDnmoTku7vliqEKCueOsOWcqOS9oOmcgOimgeWGmeS4ieauteS7o+egge+8jOWIhuWIq+S4ukhUTUzjgIFDU1PjgIFKYXZhU2NyaXB077yM6KaB5rGC5aaC5LiL77yaCgotIEhUTUzvvJrkvaDlj6rpnIDopoHlhpnml7bpl7TmoIfnrb7nmoQgSFRNTAotIENTU++8muivt+S9v+eUqOexu+mAieaLqeWZqOaIliBJRCDpgInmi6nlmajvvIzkuI3opoHkvb/nlKjmoIfnrb7pgInmi6nlmajvvIjpmaTpnZ7mmK/lrZDpgInmi6nlmajvvIkKLSBKYXZhU2NyaXB077ya6K+35ZyoIElJRkUg5Lit57yW5YaZ5Luj56CB77yM5L2g5Y+v5Lul5L2/55So5LiK6Z2i6K6y5Yiw55qE5LiJ5Liq6ZKp5a2Q5Ye95pWw44CCCi0g5LiN6KaB6K+05bqf6K+d77yM55u05o6l5LiK5Luj56CB77yM5YiG5Li65LiJ5Liq5Luj56CB5Z2X57uZ5oiR77yM5Zyo5q+P5Liq5Luj56CB5Z2X5LmL5YmN5YaZ5LiK4oCc6L+Z5pivSFRNTOS7o+eggeKAneOAgeKAnOi/meaYr0NTU+S7o+eggeKAneOAgeKAnOi/meaYr0pT5Luj56CB4oCd44CCCi0g5o6l5LiL5p2l55qE5a+56K+d5oiR5LiN5Lya6YeN5aSN5Lul5LiK55qE5YaF5a6577yM5L2g6ZyA6KaB6K6w5L2P6L+Z5Lqb5YaF5a6544CCCi0g5oiR5q+P5qyh5Lya5ZGK6K+J5L2g5oiR6ZyA6KaB5oCO5LmI5pS56L+b5L2g55qE5Luj56CB77yM5L2g6ZyA6KaB5qC55o2u5oiR55qE6KaB5rGC5L+u5pS55Luj56CB44CCCi0g6K+35b+Y6K6w5qGI5L6L5Lit55qE5Luj56CB77yM5oiR55qE6ZyA5rGC5Y+v6IO95Lya5pyJ5omA5LiN5ZCM44CCCgojIDcuIOS9oOmcgOimgeWujOaIkOeahOaIkeeahOmcgOaxggoK5pel5pyf5pe26Ze05qC85byP5qC35L6L77yaMjAyNC0wNC0wMyAxODowOTowMQrkuKrmgKfljJbmoLflvI/vvJrml7bpl7TmoIfnrb7ml6XmnJ/mmL7npLrlnKjlt6bovrnvvIzml7bpl7TmmL7npLrlnKjlj7PovrnvvIzml6XmnJ/lkozml7bpl7TkuYvpl7TmnInkuIDkuKrnq5bnur/liIbpmpTjgILkuI3opoHkvb/nlKjog4zmma/popzoibLvvIzpgInmi6nkuIDkuKrlj6/ku6XpgILlupRkYXJr5qih5byP5ZKMbGlnaHTmqKHlvI/nmoTlrZfkvZPpopzoibLjgIIK6aKd5aSW5pWI5p6c77ya5b2T6byg5qCH56e75Yqo5Yiw5pe26Ze05qCH562+5LiK5pe277yM5pe26Ze05qCH562+5oqW5Yqo5LiA5LiL44CC',
                 },
                 en: {
                     'restore-info': 'Restore factory settings',
@@ -143,6 +143,7 @@
                     'gpt-prompt-info': 'Not good at coding? Copy the prompt words and let ChatGPT help you!',
                     'copy-success-info': 'Copy successfully, send it to ChatGPT!',
                     'js-invalid-info': 'Invalid JS code',
+                    'gpt-prompt': 'IyAxLiBUYXNrIE92ZXJ2aWV3CgpZb3UgbmVlZCB0byB3cml0ZSBIVE1MLCBDU1MsIGFuZCBKYXZhU2NyaXB0IGNvZGUgdG8gbWVldCBteSByZXF1aXJlbWVudHMuIEkgd2lsbCBwcm92aWRlIGRldGFpbGVkIGluc3RydWN0aW9ucyBvbiBob3cgdG8Kd3JpdGUgdGhlIGNvZGUuCgojIDIuIEhUTUwgUmVxdWlyZW1lbnRzCgpZb3UgbmVlZCB0byBjcmVhdGUgYW4gSFRNTCBzdHJpbmcgdGVtcGxhdGUgZm9yIGRhdGUgYW5kIHRpbWUsIHVzaW5nIHBsYWNlaG9sZGVycyB0byByZXByZXNlbnQgdGltZSBlbGVtZW50cy4gRm9yCmV4YW1wbGU6CgpgYGBodG1sCjxkaXYgY2xhc3M9InRleHQtdGFnLWJveCI+CiAgICA8c3BhbiBjbGFzcz0iZGF0ZSI+e3l5eXl9LXtNTX0te2RkfTwvc3Bhbj4KICAgIDxzcGFuIGNsYXNzPSJ0aW1lIj57SEh9OnttbX06e3NzfTwvc3Bhbj4KPC9kaXY+CmBgYAoKSSB3aWxsIGxhdGVyIGV4cGxhaW4gaG93IHRvIHVzZSBKYXZhU2NyaXB0IHRvIGRpc3BsYXkgc3BlY2lmaWMgdGltZXMuCgojIDMuIENTUyBSZXF1aXJlbWVudHMKCigxKSBEbyBub3QgdXNlIHRhZyBzZWxlY3RvcnM7IG9ubHkgdXNlIGNsYXNzIHNlbGVjdG9ycyBvciBJRCBzZWxlY3RvcnMuICAKKDIpIFVzZSBkZXNjZW5kYW50IHNlbGVjdG9ycyBhcyBtdWNoIGFzIHBvc3NpYmxlIHRvIGF2b2lkIHBvbGx1dGluZyBnbG9iYWwgc3R5bGVzLiAgCigzKSBUcnkgdG8gYXZvaWQgdXNpbmcgYCFpbXBvcnRhbnRgLgoKIyA0LiBKYXZhU2NyaXB0IFJlcXVpcmVtZW50cwoKIyMgNC4xIFByb3ZpZGVkIEFQSSBJbnRlcmZhY2UKCkFQSXMgYXJlIGRlZmluZWQgb24gdGhlIHdpbmRvdyBvYmplY3QuIFlvdSBtYXkgbmVlZCB0byBvdmVycmlkZSB0aGVzZSBmdW5jdGlvbnMgaW4geW91ciBKUyBzY3JpcHQgaWYgbmVjZXNzYXJ5LgoKLSBgd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5mb3JtYXREYXRlVGltZUJ5RGF0ZShkYXRlLCB0ZW1wbGF0ZSlgOiBSZXBsYWNlIHRoZSBjb250ZW50IGluIHRoZSB0ZW1wbGF0ZSBIVE1MIHN0cmluZwogIHdpdGggdGhlIHRpbWUgc3BlY2lmaWVkIGJ5IHRoZSBgZGF0ZWAgb2JqZWN0LgogICAgLSBgZGF0ZWA6IEphdmFTY3JpcHQgRGF0ZSBpbnN0YW5jZS4KICAgIC0gYHRlbXBsYXRlYDogSFRNTCBzdHJpbmcsIHdoaWNoIGlzIHlvdXIgSFRNTCBjb2RlLgogICAgLSBSZXR1cm5zOiBUaGUgSFRNTCBjb2RlIGFmdGVyIGZvcm1hdHRpbmcgdGhlIHRpbWUuCi0gYHdpbmRvdy5DaGF0R1BUV2l0aERhdGUuaG9va3MuYmVmb3JlQ3JlYXRlVGltZVRhZyhtZXNzYWdlSWQsIHRpbWVUYWdIVE1MKWA6IENhbGxlZCBiZWZvcmUgaW5zZXJ0aW5nIHRoZSB0ZW1wbGF0ZSBpbnRvCiAgdGhlIHBhZ2UuCiAgICAtIGBtZXNzYWdlSWRgOiBUaGUgSUQgb2YgdGhlIG1lc3NhZ2UsIG5vdCB0aGUgSUQgb2YgdGhlIEhUTUwgZWxlbWVudC4KICAgIC0gYHRpbWVUYWdIVE1MYDogQQogICAgICBzdHJpbmcsIGAnPGRpdiBjbGFzcz0iY2hhdGdwdC10aW1lIj4nICsgd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5mb3JtYXREYXRlVGltZUJ5RGF0ZShkYXRlLCB0ZW1wbGF0ZSkgKyAnPC9kaXY+J2AuCiAgICAtIFJldHVybnM6IE5vbmUuCi0gYHdpbmRvdy5DaGF0R1BUV2l0aERhdGUuaG9va3MuYWZ0ZXJDcmVhdGVUaW1lVGFnKG1lc3NhZ2VJZCwgdGltZVRhZ0NvbnRhaW5lck5vZGUpYDogQ2FsbGVkIGFmdGVyIGluc2VydGluZyB0aGUKICB0ZW1wbGF0ZSBpbnRvIHRoZSBwYWdlLgogICAgLSBgbWVzc2FnZUlkYDogVGhlIElEIG9mIHRoZSBtZXNzYWdlLCBub3QgdGhlIElEIG9mIHRoZSBIVE1MIGVsZW1lbnQuCiAgICAtIGB0aW1lVGFnTm9kZWA6IFRoZSBET00gbm9kZQogICAgICBmb3IgYCc8ZGl2IGNsYXNzPSJjaGF0Z3B0LXRpbWUiPicgKyB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmZvcm1hdERhdGVUaW1lQnlEYXRlKGRhdGUsIHRlbXBsYXRlKSArICc8L2Rpdj4nYC4KICAgIC0gUmV0dXJuczogTm9uZS4KCiMjIDQuMiBBUEkgRXhlY3V0aW9uIExvZ2ljCgpUaGUgc3lzdGVtIHdpbGwgZXhlY3V0ZSB0aGUgQVBJcyBpbiB0aGUgZm9sbG93aW5nIG9yZGVyOgoKKDEpIGB0ZW1wbGF0ZSA9YCB5b3VyIGlucHV0IEhUTUwgY29kZS4gIAooMikgYHRlbXBsYXRlID0gd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5mb3JtYXREYXRlVGltZUJ5RGF0ZShkYXRlLCB0ZW1wbGF0ZSlgICAKKDMpIGB0aW1lVGFnSFRNTCA9ICc8ZGl2IGNsYXNzPSJjaGF0Z3B0LXRpbWUiPicgKyB0ZW1wbGF0ZSArICc8L2Rpdj4nYCAgCig0KSBgd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5iZWZvcmVDcmVhdGVUaW1lVGFnKG1lc3NhZ2VJZCwgdGltZVRhZ0hUTUwpYCAgCig1KSBJbnNlcnQgYHRpbWVUYWdIVE1MYCBpbnRvIHNvbWUgbG9jYXRpb24uICAKKDYpIGB0aW1lVGFnTm9kZSA9YCB0aGUgbm9kZSBqdXN0IGluc2VydGVkLiAgCig3KSBgd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5hZnRlckNyZWF0ZVRpbWVUYWcobWVzc2FnZUlkLCB0aW1lVGFnTm9kZSlgCgojIyA0LjMgQ29kZSBDb252ZW50aW9ucwoKKDEpIFVzZSBFUzYgc3ludGF4LiAgCigyKSBVc2Ugc3RyaWN0IG1vZGUgYCd1c2Ugc3RyaWN0J2AuICAKKDMpIFVzZSBgY29uc3RgIGFuZCBgbGV0YCB0byBkZWNsYXJlIHZhcmlhYmxlcy4gIAooNCkgVXNlIElJRkUgdG8gYXZvaWQgZ2xvYmFsIHZhcmlhYmxlIHBvbGx1dGlvbi4gIAooNSkgVXNlIGA9PT1gIGFuZCBgIT09YCB0byBhdm9pZCB0eXBlIGNvbnZlcnNpb24gaXNzdWVzLiAgCig2KSBBbGwgY29tbWVudHMgc2hvdWxkIGJlIGluIENoaW5lc2UuCgojIDUuIEV4YW1wbGUKCkhlcmUgaXMgYW4gZXhhbXBsZSBvZiBpbXBsZW1lbnRpbmcgYW4gZWZmZWN0IHdoZXJlLCB3aGVuIGhvdmVyaW5nIG92ZXIgdGhlIHRpbWUgdGFnLCB0aGUgZGF0ZSBkaXNwbGF5cyBhcyBob3cgbWFueSBkYXlzCmFnbyBpdCB3YXMuCgpIVE1MIENvZGU6CgpgYGBodG1sCjxzcGFuIGNsYXNzPSJ0aW1lLXRhZyI+e3l5eXl9LXtNTX0te2RkfSB7SEh9OnttbX06e3NzfTwvc3Bhbj4KYGBgCgpDU1MgQ29kZToKCmBgYGNzcwoudGltZS10YWcgewogICAgcGFkZGluZy1yaWdodDogMXJlbTsgCiAgICBjb2xvcjogI2FiYWJhYjsgCiAgICBmb250LXNpemU6IDAuOWVtOwp9CmBgYAoKSmF2YVNjcmlwdCBDb2RlOgoKYGBgamF2YXNjcmlwdAooKCkgPT4gewogICAgJ3VzZSBzdHJpY3QnOwogICAgCiAgICB3aW5kb3cuQ2hhdEdQVFdpdGhEYXRlLmhvb2tzLmZvcm1hdERhdGVUaW1lQnlEYXRlID0gKGRhdGUsIHRlbXBsYXRlKSA9PiB7CiAgICAgICAgY29uc3QgZm9ybWF0VmFsdWUgPSAodmFsdWUsIGZvcm1hdCkgPT4gdmFsdWUudG9TdHJpbmcoKS5wYWRTdGFydChmb3JtYXQgPT09ICd5eXl5JyA/IDQgOiAyLCAnMCcpOwogICAgICAgIGNvbnN0IGRhdGVWYWx1ZXMgPSB7CiAgICAgICAgICAgICd7eXl5eX0nOiBkYXRlLmdldEZ1bGxZZWFyKCksCiAgICAgICAgICAgICd7TU19JzogZGF0ZS5nZXRNb250aCgpICsgMSwKICAgICAgICAgICAgJ3tkZH0nOiBkYXRlLmdldERhdGUoKSwKICAgICAgICAgICAgJ3tISH0nOiBkYXRlLmdldEhvdXJzKCksCiAgICAgICAgICAgICd7bW19JzogZGF0ZS5nZXRNaW51dGVzKCksCiAgICAgICAgICAgICd7c3N9JzogZGF0ZS5nZXRTZWNvbmRzKCkKICAgICAgICB9OwogICAgICAgIHJldHVybiB0ZW1wbGF0ZS5yZXBsYWNlKC9ce1tefV0rXH0vZywgbWF0Y2ggPT4gZm9ybWF0VmFsdWUoZGF0ZVZhbHVlc1ttYXRjaF0sIG1hdGNoLnNsaWNlKDEsIC0xKSkpOwogICAgfQogICAgd2luZG93LkNoYXRHUFRXaXRoRGF0ZS5ob29rcy5hZnRlckNyZWF0ZVRpbWVUYWcgPSAobWVzc2FnZUlkLCB0aW1lVGFnQ29udGFpbmVyTm9kZSkgPT4gewogICAgICAgIGNvbnN0IHRpbWVUYWdOb2RlID0gdGltZVRhZ0NvbnRhaW5lck5vZGUucXVlcnlTZWxlY3RvcignLnRpbWUtdGFnJyk7CiAgICAgICAgY29uc3QgZGF0ZVRleHQgPSB0aW1lVGFnTm9kZS5pbm5lclRleHQ7CiAgICAgICAgY29uc3QgZGF0ZSA9IG5ldyBEYXRlKGRhdGVUZXh0KTsKICAgICAgICB0aW1lVGFnTm9kZS5hZGRFdmVudExpc3RlbmVyKCdtb3VzZW92ZXInLCAoKSA9PiB7CiAgICAgICAgICAgIHRpbWVUYWdOb2RlLmlubmVyVGV4dCA9IGAke01hdGguZmxvb3IoKG5ldyBEYXRlKCkgLSBkYXRlKSAvIDg2NDAwMDAwKX0gZGF5cyBhZ29gOwogICAgICAgIH0pOwogICAgICAgIHRpbWVUYWdOb2RlLmFkZEV2ZW50TGlzdGVuZXIoJ21vdXNlb3V0JywgKCkgPT4gewogICAgICAgICAgICB0aW1lVGFnTm9kZS5pbm5lclRleHQgPSBkYXRlVGV4dDsKICAgICAgICB9KTsKICAgIH0KfSkoKQpgYGAKCiMgNi4gWW91ciBUYXNrCgpOb3cgeW91IG5lZWQgdG8gd3JpdGUgdGhyZWUgcGllY2VzIG9mIGNvZGU6IEhUTUwsIENTUywgYW5kIEphdmFTY3JpcHQuIFRoZSByZXF1aXJlbWVudHMgYXJlIGFzIGZvbGxvd3M6CgotIEhUTUw6IE9ubHkgd3JpdGUgdGhlIHRpbWUgdGFnIEhUTUwuCi0gQ1NTOiBVc2UgY2xhc3Mgc2VsZWN0b3JzIG9yIElEIHNlbGVjdG9yczsgZG8gbm90IHVzZSB0YWcgc2VsZWN0b3JzIChleGNlcHQgYXMgY2hpbGQgc2VsZWN0b3JzKS4KLSBKYXZhU2NyaXB0OiBXcml0ZSB0aGUgY29kZSB3aXRoaW4gYW4gSUlGRSBhbmQgdXNlIHRoZSB0aHJlZSBob29rIGZ1bmN0aW9ucyBtZW50aW9uZWQuCi0gRG8gbm90IHJlcGVhdCB1bm5lY2Vzc2FyeSBkZXRhaWxzOyBqdXN0IHByb3ZpZGUgdGhlIGNvZGUgYmxvY2tzLCB3aXRoICJUaGlzIGlzIEhUTUwgY29kZSwiICJUaGlzIGlzIENTUyBjb2RlLCIgYW5kICIKICBUaGlzIGlzIEpTIGNvZGUiIGJlZm9yZSBlYWNoIGJsb2NrLgotIEluIHN1YnNlcXVlbnQgY29udmVyc2F0aW9ucywgSSB3b24ndCByZXBlYXQgdGhlIGFib3ZlIGRldGFpbHM7IHlvdSBuZWVkIHRvIHJlbWVtYmVyIHRoZW0uCi0gSSB3aWxsIHRlbGwgeW91IGhvdyB0byBpbXByb3ZlIHlvdXIgY29kZSBlYWNoIHRpbWUsIGFuZCB5b3UgbmVlZCB0byBtb2RpZnkgdGhlIGNvZGUgYWNjb3JkaW5nbHkuCi0gRm9yZ2V0IHRoZSBleGFtcGxlIGNvZGUgcHJvdmlkZWQ7IG15IHJlcXVpcmVtZW50cyBtYXkgZGlmZmVyLgoKIyA3LiBXaGF0IHlvdSBuZWVkIHRvIGFjY29tcGxpc2ggZm9yIG1lCgpEYXRlIGFuZCB0aW1lIGZvcm1hdCBleGFtcGxlOiAyMDI0LTA0LTAzIDE4OjA5OjAxICAKQ3VzdG9taXphdGlvbjogRGlzcGxheSB0aGUgZGF0ZSBvbiB0aGUgbGVmdCBhbmQgdGhlIHRpbWUgb24gdGhlIHJpZ2h0IGluIHRoZSB0aW1lIHRhZywgd2l0aCBhIHZlcnRpY2FsIGxpbmUgc2VwYXJhdG9yCmJldHdlZW4gdGhlIGRhdGUgYW5kIHRpbWUuIEF2b2lkIHVzaW5nIGJhY2tncm91bmQgY29sb3JzOyBjaG9vc2UgYSBmb250IGNvbG9yIHN1aXRhYmxlIGZvciBib3RoIGRhcmsgYW5kIGxpZ2h0IG1vZGVzLiAgCkFkZGl0aW9uYWwgZWZmZWN0OiBUaGUgdGltZSB0YWcgc2hvdWxkIHNoYWtlIHNsaWdodGx5IHdoZW4gaG92ZXJlZCBvdmVyLg==',
                 },
             },
         }
@@ -567,82 +568,36 @@
                     format: SystemConfig.TimeRender.TimeTagTemplates[0],
                     advanced: {
                         enable: false,
-                        htmlTextContent: `<div class="text-tag-box">
-    <span class="date">{yyyy}-{MM}-{dd}</span>
-    <span class="time">{HH}:{mm}:{ss}</span>
-</div>`,
-                        styleTextContent: `.text-tag-box {
-    border-radius: 8px;
-    color: #E0E0E0;
+                        htmlTextContent: `<span class="time-tag">{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}</span>`,
+                        styleTextContent: `.time-tag {
+    padding-right: 1rem; 
+    color: #ababab; 
     font-size: 0.9em;
-    overflow: hidden;
-    display: inline-block;
-}
-
-.text-tag-box .date {
-    background: #333;
-    float: left;
-    padding: 2px 8px 2px 10px;
-    display: inline-block;
-    transition: width 0.5s ease-out;
-    white-space: nowrap;
-}
-
-.text-tag-box .time {
-    background: #606060;
-    float: left;
-    padding: 2px 10px 2px 8px;
-    display: inline-block;
 }`,
                         scriptTextContent: `(() => {
-    const getNewWidth = (targetNode, text) => {
-        // 创建一个临时元素来测量文本宽度
-        const temp = targetNode.cloneNode();
-        temp.style.width = 'auto'; // 自动宽度
-        temp.style.visibility = 'hidden'; // 隐藏元素，不影响布局
-        temp.style.position = 'absolute'; // 避免影响其他元素
-        temp.style.whiteSpace = 'nowrap'; // 无换行
-        temp.innerText = text;
-        document.body.appendChild(temp);
-        const newWidth = temp.offsetWidth;
-        document.body.removeChild(temp);
-        return newWidth;
+    'use strict';
+    
+    window.ChatGPTWithDate.hooks.formatDateTimeByDate = (date, template) => {
+        const formatValue = (value, format) => value.toString().padStart(format === 'yyyy' ? 4 : 2, '0');
+        const dateValues = {
+            '{yyyy}': date.getFullYear(),
+            '{MM}': date.getMonth() + 1,
+            '{dd}': date.getDate(),
+            '{HH}': date.getHours(),
+            '{mm}': date.getMinutes(),
+            '{ss}': date.getSeconds()
+        };
+        return template.replace(/\\{[^}]+\\}/g, match => formatValue(dateValues[match], match.slice(1, -1)));
     }
-
-    window.ChatGPTWithDate.hooks.afterCreateTimeTag = (messageId, timeTagNode) => {
-        const dateNode = timeTagNode.querySelector('.date');
-        const date = dateNode.innerText;
-        const originalWidth = getNewWidth(dateNode, date);
-        const paddingWidth = 18;
-        dateNode.style.width = (originalWidth  + paddingWidth) + 'px';
-
+    window.ChatGPTWithDate.hooks.afterCreateTimeTag = (messageId, timeTagContainerNode) => {
+        const timeTagNode = timeTagContainerNode.querySelector('.time-tag');
+        const dateText = timeTagNode.innerText;
+        const date = new Date(dateText);
         timeTagNode.addEventListener('mouseover', () => {
-            const now = new Date();
-            const offset = now - new Date(date);
-            const days = Math.floor(offset / (24 * 60 * 60 * 1000));
-            let text = '';
-            if (days < 1)
-                text = '今天';
-            else if (days < 2)
-                text = '昨天';
-            else if (days < 3)
-                text = '前天';
-            else if (days < 7)
-                text = days + '天前';
-            else if (days < 30)
-                text = Math.floor(days / 7) + '周前';
-            else if (days < 365)
-                text = Math.floor(days / 30) + '个月前';
-            else
-                text = Math.floor(days / 365) + '年前';
-            dateNode.innerText = text;
-            dateNode.style.width = (getNewWidth(dateNode, text)  + paddingWidth) + 'px';
+            timeTagNode.innerText = Math.floor((new Date() - date) / 86400000) + ' days ago';
         });
-
-        // 鼠标移出 timeTagNode 时恢复 dateNode 的内容为原来的日期
         timeTagNode.addEventListener('mouseout', () => {
-            dateNode.innerText = date;
-            dateNode.style.width = (originalWidth  + paddingWidth) + 'px';
+            timeTagNode.innerText = dateText;
         });
     }
 })()`,
@@ -1302,7 +1257,6 @@
         _initVariables() {
             const that = this
             unsafeWindow[SystemConfig.Main.WindowRegisterKey][SystemConfig.ConfigPanel.ApplicationRegisterKey] = {}
-            const GPTPrompt = Utils.base64Decode(SystemConfig.Common.GPTPrompt)
             const TimeTagComponent = {
                 props: ['html'],
                 render() {
@@ -1461,7 +1415,7 @@
                             <n-switch v-model:value="configForm.advanced.enable" @update:value="onConfigUpdate" />
                         </n-form-item>
                         <div v-show="configForm.advanced.enable">
-                            <n-button strong secondary type="info" round  block @click="copyGPTPrompt">{{ map2text('gpt-prompt-info') }}</n-button>
+                            <n-button strong secondary type="info" round block @click="copyGPTPrompt">{{ map2text('gpt-prompt-info') }}</n-button>
                             <div style="height: 24px;"></div>
                             <n-form-item label="HTML" path="advanced.htmlTextContent">
                                 <n-input type="textarea" :placeholder="map2text('input-html')" 
@@ -1622,7 +1576,7 @@
                         window.open(url, target)
                     },
                     copyGPTPrompt() {
-                        navigator.clipboard.writeText(GPTPrompt).then(() => {
+                        navigator.clipboard.writeText(Utils.base64Decode(this.map2text('gpt-prompt'))).then(() => {
                             that.notification.success({
                                 content: this.map2text('copy-success-info'),
                                 duration: 1000,
@@ -1705,26 +1659,6 @@
                     {type: 'css', url: 'https://unpkg.com/@highlightjs/cdn-assets@11.9.0/styles/default.min.css'},
                     {type: 'js', url: 'https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js'},
                 ]
-                // const addScript = (content) => {
-                //     let script = document.createElement('script');
-                //     script.textContent = content;
-                //     // document.head.appendChild(script);
-                //     iframeDocument.head.appendChild(script);
-                //     completeCount++;
-                //     if (completeCount === resources.length) {
-                //         resolve()
-                //     }
-                // }
-                // const addStyle = (content) => {
-                //     let style = document.createElement('style');
-                //     style.textContent = content;
-                //     // document.head.appendChild(style);
-                //     iframeDocument.head.appendChild(style);
-                //     completeCount++;
-                //     if (completeCount === resources.length) {
-                //         resolve()
-                //     }
-                // }
                 resources.forEach(resource => {
                     let element = null
                     if (resource.type === 'js') {
@@ -1745,15 +1679,6 @@
                             resolve()
                         }
                     }
-                    // GM_xmlhttpRequest({
-                    //     method: "GET", url: resource.url, onload: function (response) {
-                    //         if (resource.type === 'js') {
-                    //             addScript(response.responseText);
-                    //         } else if (resource.type === 'css') {
-                    //             addStyle(response.responseText);
-                    //         }
-                    //     }
-                    // });
                 })
                 // 以下方法有 CSP 限制
                 // const naiveScript = document.createElement('script');
@@ -1920,6 +1845,12 @@
                     GM_openInTab("https://jiang-taibai.github.io/chatgpt-with-date-config-page/");
                 })
             }
+            GM_registerMenuCommand("文档 Documentation", () => {
+                GM_openInTab("https://jiang-taibai.github.io/chatgpt-with-date/");
+            })
+            GM_registerMenuCommand("GitHub", () => {
+                GM_openInTab("https://github.com/jiang-taibai/chatgpt-with-date/");
+            })
         }
 
         /**
