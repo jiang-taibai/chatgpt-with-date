@@ -17,16 +17,16 @@ Edge, Chrome, Firefox, Safari, and Opera, to enable the display of timestamps fo
 This plugin can not only retrieve **historical message timestamps** but also obtain the time of new messages in
 real-time.
 
-![Adding timestamp labels during interaction](res/img/在交互时添加时间标签.gif)
+![Adding timestamp labels during interaction](docs/res/img/在交互时添加时间标签.gif)
 
 Accessing the [Configuration Interface](https://jiang-taibai.github.io/chatgpt-with-date-config-page/) provides a
 variety of configuration options.
 
-![Basic usage of the configuration panel](res/img/配置面板-基本使用.gif)
+![Basic usage of the configuration panel](docs/res/img/配置面板-基本使用.gif)
 
 If you are familiar with the web trifecta (HTML, CSS, JavaScript), you can highly customize the time style.
 
-![Advanced usage of the configuration panel](https://cdn.coderjiang.com/project/chatgpt-with-date/configuration-panel-advanced.gif)
+![Advanced usage of the configuration panel](docs/res/img/配置面板-高级使用.gif)
 
 We will introduce the configurations as shown above and more rules in section three.
 
@@ -47,11 +47,11 @@ and click on `Install this script` to install the script.
 For the first use, please allow Cross-Origin Resource Sharing (CORS) requests. This project will request resources from
 Vue.js and NaiveUI to generate the configuration panel.
 
-![Allowing CORS requests](https://cdn.coderjiang.com/project/chatgpt-with-date/cross-domain-resource-request.jpg)
+![Allowing CORS requests](docs/res/img/跨域资源请求.jpg)
 
 Open the ChatGPT page, and you will see the message timestamps. You can open the configuration panel here.
 
-![Guide to opening the configuration panel](https://cdn.coderjiang.com/project/chatgpt-with-date/how-to-open-the-configuration-panel.png)
+![Guide to opening the configuration panel](docs/res/img/配置面板启动引导.png)
 
 ## 3. Detailed Documentation
 
@@ -85,42 +85,57 @@ CopyRight © 2024~Present [Jiang Liu](https://coderjiang.com)
 
 ## X. Changelog
 
-- v2.0.2 - Unpublished
-    - Optimization: Unified access to resources deployed on GitHub
-    - New Feature: Support for displaying timestamps on shared interfaces
-- v2.0.1 - 2024-06-15 16:33:35
-    - Fix: Resolved the issue where switching between messages would force the timestamp to update to the current time
-- v2.0.0 - 2024-06-13 16:58:05
-    - Fix: Adapted to the new ChatGPT conversational UI
-    - New Feature: Provided a brand-new configuration page (actually because ChatGPT no longer supports unsafe-eval)
-    - Function Adjustment: To adapt to the new UI, the "time badge insertion position" is no longer supported
-- v1.3.0 - 2024-05-06 19:48:01
-    - New Feature: i18n internationalization support
-    - New Feature: Provided functionality to reset scripts
-    - New Feature: Provided tips adapted to this plugin to generate HTML, CSS, JavaScript code
-    - New Feature: Provided tutorial entry
-    - New Feature: Ability to collapse and expand the configuration panel
-    - Optimization: Custom height support for the code input box
-- v1.2.3 - 2024-05-04 20:04:51
-    - Fix: Fixed the issue where custom user code could not run properly
-    - Optimization: Optimized so that errors in user-customized code do not affect the entire script's operation
-    - Optimization: Adjusted the rendering order to prioritize the most recent messages
-- v1.2.2 - 2024-05-04 15:24:44
-    - Fix: Fixed the issue of not finding the target message DOM node after message ID attribute changes
-- v1.2.1 - 2024-05-04 14:33:12
-    - Fix: Updated domain name for ChatGPT
-- v1.2.0 - 2024-05-03 21:26:43
-    - Optimization: Limited the number of times and the total duration of timestamp labeling to prevent page lag
-    - Optimization: Set the timestamp labeling function to run asynchronously to avoid blocking page rendering
-    - Optimization: Modified Fetch hijacking URL match rules to be more precise and to not interfere with other
-      requests, performing specific hijacking actions only when the URL matches successfully
-    - Optimization: Directly displayed the time format example when selecting a template, instead of cold template HTML
-      strings
-    - New Feature: Added more time format elements, such as weekdays, months (in English), etc.
-    - New Feature: Added more time formatting rules, such as 12-hour and 24-hour formats
-    - New Feature: Provided a code editor and injection system for custom HTML, CSS, JavaScript styles
-    - New Feature: Provided lifecycle hook functions for creating time
-      tags `window.beforeCreateTimeTag(messageId, timeTagHTML)` and `window.afterCreateTimeTag(messageId, timeTagNode)`
-- v1.1.0 - 2024-05-02 17:50:04
-    - Added more time format templates
+- **v2.0.2 - Unpublished**
+    - **Optimization**: Unified access to resources hosted on GitHub.
+    - **New Feature**: Support for displaying time on shared interfaces.
+    - **Fix**: Improve the grammatical hints of prompt words, and provide both Chinese and English versions.
+    - **New**: Provide English documentation
+
+- **v2.0.1 - 2024-06-15 16:33:35**
+    - **Fix**: Resolved the issue where switching between messages forces the time to update to the current time.
+
+- **v2.0.0 - 2024-06-13 16:58:05**
+    - **Fix**: Adapted to the new ChatGPT conversational UI.
+    - **New Feature**: Introduced a new configuration page (due to ChatGPT's lack of support for `unsafe-eval`).
+    - **Feature Adjustment**: To accommodate the new UI, support for "time badge insertion position" was removed.
+
+- **v1.3.0 - 2024-05-06 19:48:01**
+    - **New Features**:
+        - Internationalization (i18n) support.
+        - Functionality to reset the script.
+        - Custom prompts to generate HTML, CSS, and JavaScript code suitable for this plugin.
+        - Tutorial access.
+        - Ability to collapse and expand the configuration panel.
+    - **Optimization**: Support for customizing the height of the code input box.
+
+- **v1.2.3 - 2024-05-04 20:04:51**
+    - **Fix**: Resolved an issue preventing custom user code from running properly.
+    - **Optimization**:
+        - Ensured that errors in custom code do not affect the entire script.
+        - Adjusted the rendering order to prioritize the most recent messages.
+
+- **v1.2.2 - 2024-05-04 15:24:44**
+    - **Fix**: Resolved issues with message ID attribute changes leading to failures in locating target message DOM
+      nodes.
+
+- **v1.2.1 - 2024-05-04 14:33:12**
+    - **Fix**: Updated domain names for ChatGPT.
+
+- **v1.2.0 - 2024-05-03 21:26:43**
+    - **Optimizations**:
+        - Limited the number and total duration of time label renderings to prevent page lag.
+        - Set time label rendering functions to execute asynchronously to avoid blocking page rendering.
+        - Enhanced Fetch hijacking URL matching rules for accuracy and minimized interference with other requests.
+          Hijacking operations are now performed only when URL matches are confirmed.
+        - Replaced cold template HTML strings with direct examples of time formats when selecting templates.
+    - **New Features**:
+        - Added more elements for time formats, such as weekdays and months in English.
+        - Added more rules for time formatting, such as 12-hour and 24-hour formats.
+        - Introduced a code editor and injection system for custom HTML, CSS, and JavaScript styles.
+        - Provided lifecycle hook functions `window.beforeCreateTimeTag(messageId, timeTagHTML)`
+          and `window.afterCreateTimeTag(messageId, timeTagNode)`.
+
+- **v1.1.0 - 2024-05-02 17:50:04**
+    - **New Feature**: Added more templates for time formats.
+
 
