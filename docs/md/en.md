@@ -584,11 +584,12 @@ Here's an explanation of some of the classes that can be shared:
 
 ## X. Changelog
 
-- **v2.0.2 - Unpublished**
+- **v2.0.2 - 2024-07-29 02:11:47**
     - **Optimization**: Unified access to resources hosted on GitHub.
     - **New Feature**: Support for displaying time on shared interfaces.
     - **Fix**: Improve the grammatical hints of prompt words, and provide both Chinese and English versions.
     - **New**: Provide English documentation
+    - **Optimization**: provide more menu items for users to view documents, feedback, etc.
 
 - **v2.0.1 - 2024-06-15 16:33:35**
     - **Fix**: Resolved the issue where switching between messages forces the time to update to the current time.
