@@ -1837,7 +1837,7 @@
         _initMenuCommand() {
             let that = this
             if (IsConfigPage) {
-                GM_registerMenuCommand("配置面板", () => {
+                GM_registerMenuCommand("打开配置面板 Open the configuration panel", () => {
                     that.show()
                 })
             } else {
