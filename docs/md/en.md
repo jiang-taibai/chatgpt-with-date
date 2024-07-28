@@ -16,16 +16,16 @@ Chrome, Firefox, Safari, and Opera, to show the timestamp for each ChatGPT messa
 This plugin can not only fetch **timestamps of historical messages** but also obtain the timestamps of new messages in
 real time.
 
-![Adding timestamp during interaction](/res/img/在交互时添加时间标签.gif)
+![Adding timestamp during interaction](../res/img/在交互时添加时间标签.gif)
 
 Visit the [configuration interface](https://jiang-taibai.github.io/chatgpt-with-date-config-page/) for various
 configuration options.
 
-![Basic usage of configuration panel](/res/img/配置面板-基本使用.gif)
+![Basic usage of configuration panel](../res/img/配置面板-基本使用.gif)
 
 If you are familiar with the web trifecta (HTML, CSS, JavaScript), you can fully customize the style of the timestamps.
 
-![Advanced usage of configuration panel](/res/img/配置面板-高级使用.gif)
+![Advanced usage of configuration panel](../res/img/配置面板-高级使用.gif)
 
 We will introduce the configurations shown in the images above and more rules in section three.
 
@@ -46,11 +46,11 @@ Visit the link: [Greasy Fork - ChatGPT with Date](https://greasyfork.org/en/scri
 For the first use, please allow Cross-Origin Resource Sharing (CORS) requests. This project will request resources from
 Vue.js and NaiveUI to generate the configuration panel.
 
-![Allow Cross-Origin Resource Sharing Requests](/res/img/跨域资源请求.jpg)
+![Allow Cross-Origin Resource Sharing Requests](../res/img/跨域资源请求.jpg)
 
 Open the ChatGPT page, and you will see the message timestamps. You can open the configuration panel here.
 
-![Configuration Panel Opening Guide](/res/img/配置面板启动引导.png)
+![Configuration Panel Opening Guide](../res/img/配置面板启动引导.png)
 
 ## 3. Configuration
 
@@ -378,7 +378,7 @@ CopyRight © 2024~Present [Jiang Liu](https://coderjiang.com)
 
 ### 7.1 Project Organization Structure
 
-![Overview of Source Code](/res/img/源代码总览.png)
+![Overview of Source Code](../res/img/源代码总览.png)
 
 This project utilizes Dependency Injection (DI) to organize various components, including the following key parts:
 
