@@ -1,8 +1,12 @@
 // ==UserScript==
 // @name            ChatGPT with Date
+// @name:en         ChatGPT with Date
+// @name:zh-CN      ChatGPT with Date
 // @namespace       https://github.com/jiang-taibai/chatgpt-with-date
 // @version         2.0.2
-// @description     Tampermonkey plugin for displaying ChatGPT historical and real-time conversation time. 显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
+// @description     显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
+// @description:zh-cn   显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
+// @description:en  Tampermonkey plugin for displaying ChatGPT historical and real-time conversation time.
 // @author          CoderJiang
 // @license         MIT
 // @match           *chat.openai.com/*
@@ -20,7 +24,6 @@
 // @grant           GM_openInTab
 // @grant           unsafeWindow
 // @run-at          document-end
-// @noframes
 // ==/UserScript==
 
 (function () {
