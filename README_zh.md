@@ -1,10 +1,14 @@
-# <div>ChatGPT 消息时间</div>
+# <div align="center">ChatGPT 消息时间</div>
 
-<div>
+<div align="center">
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
   <img src="https://img.shields.io/badge/Version-2.0.2-%231081C1" alt="Version-2.0.2"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
+</div>
+
+<div align="center">
+    <a href="README.md">English</a> | <a href="#">中文</a>
 </div>
 
 ## 1. 介绍
@@ -73,6 +77,8 @@
 本项目遵循 [MIT](https://opensource.org/licenses/MIT) 开源协议。
 
 CopyRight © 2024~Present [Jiang Liu](https://coderjiang.com)
+
+## X. Changelog
 
 - **v2.0.2 - 2024-07-29 02:11:47**
     - **优化**：统一访问 GitHub 部署的资源
