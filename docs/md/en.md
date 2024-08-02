@@ -43,14 +43,9 @@ Visit the link: [Greasy Fork - ChatGPT with Date](https://greasyfork.org/en/scri
 
 ### 2.3 Usage
 
-For the first use, please allow Cross-Origin Resource Sharing (CORS) requests. This project will request resources from
-Vue.js and NaiveUI to generate the configuration panel.
-
-![Allow Cross-Origin Resource Sharing Requests](../res/img/跨域资源请求.jpg)
-
 Open the ChatGPT page, and you will see the message timestamps. You can open the configuration panel here.
 
-![Configuration Panel Opening Guide](../res/img/配置面板启动引导.png)
+![Guide to opening the configuration panel](../res/img/配置面板启动引导.png)
 
 ## 3. Configuration
 

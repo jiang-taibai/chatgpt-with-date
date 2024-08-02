@@ -48,11 +48,6 @@ and click on `Install this script` to install the script.
 
 ### 2.3 Usage
 
-For the first use, please allow Cross-Origin Resource Sharing (CORS) requests. This project will request resources from
-Vue.js and NaiveUI to generate the configuration panel.
-
-![Allowing CORS requests](docs/res/img/跨域资源请求.jpg)
-
 Open the ChatGPT page, and you will see the message timestamps. You can open the configuration panel here.
 
 ![Guide to opening the configuration panel](docs/res/img/配置面板启动引导.png)
