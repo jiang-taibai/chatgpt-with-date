@@ -2,7 +2,7 @@
 
 <div>
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-2.0.2-%231081C1" alt="Version-2.0.2"/>
+  <img src="https://img.shields.io/badge/Version-2.0.3-%231081C1" alt="Version-2.0.3"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -578,6 +578,9 @@ Here's an explanation of some of the classes that can be shared:
   update the JavaScript code using this `key` as needed.
 
 ## X. Changelog
+
+- **v2.0.3 - 2024-08-21 00:45:25**
+    - **Optimization**: modify link matching mechanism
 
 - **v2.0.2 - 2024-07-29 02:11:47**
     - **Optimization**: Unified access to resources hosted on GitHub.

@@ -2,7 +2,7 @@
 
 <div>
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-2.0.2-%231081C1" alt="Version-2.0.2"/>
+  <img src="https://img.shields.io/badge/Version-2.0.3-%231081C1" alt="Version-2.0.3"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -597,6 +597,8 @@ function loadScript() {
 
 ## X. Changelog
 
+- **v2.0.3 - 2024-08-21 00:45:25**
+    - **优化**：修改链接匹配机制
 - **v2.0.2 - 2024-07-29 02:11:47**
     - **优化**：统一访问 GitHub 部署的资源
     - **新功能**：支持分享界面的时间显示
