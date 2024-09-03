@@ -3,7 +3,7 @@
 // @name:en         ChatGPT with Date
 // @name:zh-CN      ChatGPT with Date
 // @namespace       https://github.com/jiang-taibai/chatgpt-with-date
-// @version         2.0.3
+// @version         2.0.4
 // @description     显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @description:zh-cn   显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @description:en  Tampermonkey plugin for displaying ChatGPT historical and real-time conversation time.
@@ -720,9 +720,7 @@
          */
         updateStyle(key, styleContent) {
             this.removeStyle(key)
-            const styleNode = document.createElement('style')
-            styleNode.textContent = styleContent
-            document.head.appendChild(styleNode)
+            const styleNode = GM_addStyle(styleContent);
             this.styles.set(key, styleNode)
         }
 
@@ -734,7 +732,7 @@
         removeStyle(key) {
             let styleNode = this.styles.get(key)
             if (styleNode) {
-                document.head.removeChild(styleNode)
+                styleNode.remove()
                 this.styles.delete(key)
             }
         }
@@ -745,10 +743,10 @@
             this.javaScriptNodes = new Map()
         }
 
-        updateJavaScript(key, textContent) {
+        updateJavaScript(key, scriptContent) {
             this.removeJavaScript(key)
             const scriptNode = GM_addElement('script', {
-                textContent: textContent
+                textContent: scriptContent
             });
             this.javaScriptNodes.set(key, scriptNode)
         }
@@ -756,7 +754,7 @@
         removeJavaScript(key) {
             let scriptNode = this.javaScriptNodes.get(key)
             if (scriptNode) {
-                document.head.removeChild(scriptNode)
+                scriptNode.remove()
                 this.javaScriptNodes.delete(key)
             }
         }
