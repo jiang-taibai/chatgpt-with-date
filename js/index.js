@@ -26,6 +26,105 @@
 // @run-at          document-end
 // ==/UserScript==
 
+// 更新日志
+/*
+v2.0.4 - 2024-12-18 10:15:20
+    功能：提供统一的 DEBUG 开关
+    修复：监听全局而不是局部的 main 标签，解决刚开始消息无法被监听到的问题
+    功能：提供取消监听的接口，供未来扩展使用
+v2.0.3 - 2024-08-21 00:45:25
+    优化：修改链接匹配机制
+v2.0.2 - 2024-07-29 02:11:47
+    优化：统一访问 GitHub 部署的资源
+    新功能：支持分享界面的时间显示
+    修复：完善提示词的语法提示，并提供中英双版本
+    新增：提供英文文档
+    优化：提供更多菜单项，方便用户查看文档、反馈等
+v2.0.1 - 2024-06-15 16:33:35
+    修复：解决“切换上下一个消息时时间强制变成当前时间”的问题
+v2.0.0 - 2024-06-13 16:58:05
+    修复：适应新版 ChatGPT 对话型 UI
+    新功能：提供全新的配置页面（其实是 ChatGPT 不支持 unsafe-eval 了）
+    功能调整：为适应新版 UI，不再支持“时间徽标插入位置”
+v1.3.0 - 2024-05-06 19:48:01
+    新功能：i18n 国际化支持
+    新功能：提供重置脚本的功能
+    新功能：提供适应本插件的提示词来生成 HTML、CSS、JavaScript 代码
+    新功能：提供教程入口
+    新功能：可收起、展开配置面板
+    优化：代码输入框支持自定义高度
+v1.2.3 - 2024-05-04 20:04:51
+    修复：修复无法正常运行用户自定义代码的问题
+    优化：优化即使用户自定义代码出错也不会影响整个脚本的运行
+    优化：将渲染顺序调整为最近的消息优先渲染
+v1.2.2 - 2024-05-04 15:24:44
+    修复：修复消息 ID 属性变化后找不到目标消息 DOM 节点的问题
+v1.2.1 - 2024-05-04 14:33:12
+    修复：ChatGPT 更新域名
+v1.2.0 - 2024-05-03 21:26:43
+    优化：限制每次渲染时间标签的次数以及总时长，避免页面卡顿
+    优化：设置时间标签渲染函数异步执行，避免阻塞页面渲染
+    优化：修改 Fetch 劫持 URL 匹配规则，更加精确以免干扰其他请求。并在 URL 匹配成功时才进行具体的劫持操作
+    优化：选择模板时直接显示时间格式的示例，而不是冰冷的模板HTML字符串
+    新功能：添加更多时间格式的元素，例如星期、月份（英文）等
+    新功能：添加更多时间格式化规则，例如 12 小时制、24 小时制等
+    新功能：提供自定义样式的 HTML、CSS、JavaScript 的代码编辑器与注入系统
+    新功能：提供创建时间标签的生命周期钩子函数 window.beforeCreateTimeTag(messageId, timeTagHTML) 和 window.afterCreateTimeTag(messageId, timeTagNode)
+v1.1.0 - 2024-05-02 17:50:04
+    新增：添加更多时间格式的模板
+*/
+// Changelog
+/*
+v2.0.4 - 2024-12-18 10:15:20
+    Feature: Provide a unified DEBUG switch.
+    Fix: Listen to the global main tag instead of a local one to resolve the issue where messages could not be detected initially.
+    Feature: Provide an interface to cancel listeners for future extensibility.
+v2.0.3 - 2024-08-21 00:45:25
+    Optimization: modify link matching mechanism
+v2.0.2 - 2024-07-29 02:11:47
+    Optimization: Unified access to resources hosted on GitHub.
+    New Feature: Support for displaying time on shared interfaces.
+    Fix: Improve the grammatical hints of prompt words, and provide both Chinese and English versions.
+    New: Provide English documentation
+    Optimization: provide more menu items for users to view documents, feedback, etc.
+v2.0.1 - 2024-06-15 16:33:35
+    Fix: Resolved the issue where switching between messages forces the time to update to the current time.
+v2.0.0 - 2024-06-13 16:58:05
+    Fix: Adapted to the new ChatGPT conversational UI.
+    New Feature: Introduced a new configuration page (due to ChatGPT's lack of support for unsafe-eval).
+    Feature Adjustment: To accommodate the new UI, support for "time badge insertion position" was removed.
+v1.3.0 - 2024-05-06 19:48:01
+    New Features:
+        Internationalization (i18n) support.
+        Functionality to reset the script.
+        Custom prompts to generate HTML, CSS, and JavaScript code suitable for this plugin.
+        Tutorial access.
+        Ability to collapse and expand the configuration panel.
+    Optimization: Support for customizing the height of the code input box.
+v1.2.3 - 2024-05-04 20:04:51
+    Fix: Resolved an issue preventing custom user code from running properly.
+    Optimization:
+        Ensured that errors in custom code do not affect the entire script.
+        Adjusted the rendering order to prioritize the most recent messages.
+v1.2.2 - 2024-05-04 15:24:44
+    Fix: Resolved issues with message ID attribute changes leading to failures in locating target message DOM nodes.
+v1.2.1 - 2024-05-04 14:33:12
+    Fix: Updated domain names for ChatGPT.
+v1.2.0 - 2024-05-03 21:26:43
+    Optimizations:
+        Limited the number and total duration of time label renderings to prevent page lag.
+        Set time label rendering functions to execute asynchronously to avoid blocking page rendering.
+        Enhanced Fetch hijacking URL matching rules for accuracy and minimized interference with other requests. Hijacking operations are now performed only when URL matches are confirmed.
+        Replaced cold template HTML strings with direct examples of time formats when selecting templates.
+    New Features:
+        Added more elements for time formats, such as weekdays and months in English.
+        Added more rules for time formatting, such as 12-hour and 24-hour formats.
+        Introduced a code editor and injection system for custom HTML, CSS, and JavaScript styles.
+        Provided lifecycle hook functions window.beforeCreateTimeTag(messageId, timeTagHTML) and window.afterCreateTimeTag(messageId, timeTagNode).
+v1.1.0 - 2024-05-02 17:50:04
+    New Feature: Added more templates for time formats.
+ */
+
 (function () {
     'use strict';
 
