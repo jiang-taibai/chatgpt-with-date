@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-2.0.3-%231081C1" alt="Version-2.0.3"/>
+  <img src="https://img.shields.io/badge/Version-2.0.4-%231081C1" alt="Version-2.0.4"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -83,6 +83,11 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 CopyRight © 2024~Present [Jiang Liu](https://coderjiang.com)
 
 ## X. Changelog
+
+- **v2.0.4 - 2024-12-18 10:15:20**
+  - **Feature**: Provide a unified DEBUG switch. 
+  - **Fix**: Listen to the global main tag instead of a local one to resolve the issue where messages could not be detected initially. 
+  - **Feature**: Provide an interface to cancel listeners for future extensibility.
 
 - **v2.0.3 - 2024-08-21 00:45:25**
     - **Optimization**: modify link matching mechanism

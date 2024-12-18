@@ -30,6 +30,8 @@
     'use strict';
 
     const IsConfigPage = window.location.hostname === 'jiang-taibai.github.io'
+    const DEBUG = false
+
 
     class SystemConfig {
         static Common = {
@@ -405,11 +407,11 @@
 
     class Logger {
         static EnableLog = true
-        static EnableDebug = false
+        static EnableDebug = DEBUG
         static EnableInfo = true
         static EnableWarn = true
         static EnableError = true
-        static EnableTable = false
+        static EnableTable = DEBUG
 
         static prefix(type = 'INFO') {
             const timeFormat = Utils.formatDateTimeByDate(new Date(), SystemConfig.Logger.TimeFormatTemplate);
@@ -938,7 +940,7 @@
          */
         _initMonitorAddedMessageNode() {
             const interval = setInterval(() => {
-                const mainElement = document.querySelector('main');
+                const mainElement = document.body;
                 if (mainElement) {
                     this._setupMonitorAddedMessageNode(mainElement);
                     clearInterval(interval); // 清除定时器，停止进一步检查
@@ -953,36 +955,46 @@
          */
         _setupMonitorAddedMessageNode(supervisedNode) {
             const that = this;
+            const addMessageDiv = (messageDiv) => {
+                if (messageDiv !== null) {
+                    const messageBO = that.messageService.parseMessageDiv(messageDiv);
+                    if (messageBO) {
+                        that.timeRendererService.addMessageToBeRendered(messageBO.messageId);
+                        that.messageService.showMessages()
+                    }
+                }
+            }
             const callback = function (mutationsList, observer) {
-                const start = new Date().getTime();
+                const start = performance.now();
                 for (const mutation of mutationsList) {
-                    let messageDiv = null;
                     if (mutation.type === 'childList') {
                         for (let node of mutation.addedNodes) {
                             if (node.nodeType === Node.ELEMENT_NODE) {
-                                messageDiv = node.querySelector('div[data-message-id]');
-                                if (!messageDiv && node.hasAttribute('data-message-id')) {
-                                    messageDiv = node
-                                    break
+                                const messageDivs = node.querySelectorAll('div[data-message-id]');
+                                Logger.debug('监控到多个消息节点被添加：', messageDivs);
+                                for (let messageDiv of messageDivs) {
+                                    addMessageDiv(messageDiv)
+                                }
+                                if (node.hasAttribute('data-message-id')) {
+                                    addMessageDiv(node)
                                 }
                             }
                         }
-                    } else if (mutation.type === 'attributes' && mutation.attributeName === 'data-message-id') {
-                        messageDiv = mutation.target;
-                    }
-                    if (messageDiv !== null) {
-                        const messageBO = that.messageService.parseMessageDiv(messageDiv);
-                        if (messageBO) {
-                            that.timeRendererService.addMessageToBeRendered(messageBO.messageId);
-                            that.messageService.showMessages()
-                        }
+                    } else if (mutation.type === 'attributes') {
+                        addMessageDiv(mutation.target)
                     }
                 }
-                const end = new Date().getTime();
+                const end = performance.now();
                 that.totalTime += (end - start);
             };
             const observer = new MutationObserver(callback);
-            observer.observe(supervisedNode, {childList: true, subtree: true, attributes: true});
+            observer.observe(supervisedNode, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ["data-message-id"]
+            });
+            this.disconnectObserver = () => observer.disconnect();
         }
 
         /**
@@ -1003,6 +1015,13 @@
                 this.timeRendererService.addMessageArrayToBeRendered(messageIds)
             }
         }
+
+        /**
+         * 断开监控节点变化的观察者
+         */
+        disconnectObserver() {
+            Logger.debug("尚未绑定监控节点变化的观察者。")
+        };
     }
 
     class TimeRendererService extends Component {
@@ -1941,15 +1960,3 @@
     main.start();
 
 })();
-
-
-
-
-
-
-
-
-
-
-
-

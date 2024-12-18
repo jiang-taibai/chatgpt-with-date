@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-2.0.3-%231081C1" alt="Version-2.0.3"/>
+  <img src="https://img.shields.io/badge/Version-2.0.4-%231081C1" alt="Version-2.0.4"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -76,6 +76,10 @@ CopyRight © 2024~Present [Jiang Liu](https://coderjiang.com)
 
 ## X. Changelog
 
+- **v2.0.4 - 2024-12-18 10:15:20**
+    - **功能**：提供统一的 DEBUG 开关
+    - **修复**：监听全局而不是局部的 main 标签，解决刚开始消息无法被监听到的问题
+    - **功能**：提供取消监听的接口，供未来扩展使用
 - **v2.0.3 - 2024-08-21 00:45:25**
     - **优化**：修改链接匹配机制
 - **v2.0.2 - 2024-07-29 02:11:47**
