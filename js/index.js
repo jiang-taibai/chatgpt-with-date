@@ -125,6 +125,179 @@ v1.1.0 - 2024-05-02 17:50:04
     New Feature: Added more templates for time formats.
  */
 
+/**
+ * 通用堆（Heap）实现，支持自定义排序函数，并能自动扩容与缩容
+ */
+class Heap {
+    /**
+     * 构造函数
+     * @param {function(a: any, b: any): number} comparator 排序比较函数：
+     *    返回值 < 0 表示 a 优先级更高（放在前面）
+     *    返回值 > 0 表示 b 优先级更高
+     *    返回值 = 0 表示 a、b 优先级相同
+     * @param {number} initialCapacity 初始容量（可选，默认为 16）
+     */
+    constructor(comparator = (a, b) => a - b, initialCapacity = 16) {
+        if (typeof comparator !== 'function') {
+            throw new Error('比较函数 comparator 必须是函数');
+        }
+        if (!Number.isInteger(initialCapacity) || initialCapacity <= 0) {
+            throw new Error('初始容量 initialCapacity 必须是大于 0 的整数');
+        }
+        this.comparator = comparator;        // 保存用户提供的比较函数
+        this.capacity = initialCapacity;     // 当前内部数组的容量
+        this.size = 0;                       // 当前堆中元素个数
+        this.data = new Array(this.capacity); // 内部存储堆元素的数组
+    }
+
+    /**
+     * 插入一个元素到堆中
+     * @param {any} element 待插入的元素
+     */
+    push(element) {
+        if (element === undefined || element === null) {
+            return;
+        }
+        // 如果当前元素数量达到容量上限，则扩容为原来的 2 倍
+        if (this.size >= this.capacity) {
+            this._resize(this.capacity * 2);
+        }
+        // 将新元素放到数组尾部，然后上滤（heapifyUp）
+        this.data[this.size] = element;
+        this._heapifyUp(this.size);
+        this.size += 1;
+    }
+
+    /**
+     * 返回堆顶元素（优先级最高），不删除
+     * @returns {any|null} 堆顶元素，若堆为空则返回 null
+     */
+    peek() {
+        return this.size > 0 ? this.data[0] : null;
+    }
+
+    /**
+     * 弹出并返回堆顶元素，同时恢复堆性质；若堆为空，返回 null
+     * @returns {any|null} 堆顶元素或 null
+     */
+    pop() {
+        if (this.size === 0) {
+            return null;
+        }
+        const top = this.data[0];
+        // 把最后一个元素放到堆顶位置，然后下滤（heapifyDown）
+        this.size -= 1;
+        this.data[0] = this.data[this.size];
+        this.data[this.size] = undefined; // 可选：清除引用，利于 GC
+        this._heapifyDown(0);
+
+        // 如果 size 小于等于 capacity/4，则缩容到 capacity/2，但最低容量至少为 1
+        if (this.size > 0 && this.size <= Math.floor(this.capacity / 4)) {
+            const newCap = Math.max(Math.floor(this.capacity / 2), 1);
+            this._resize(newCap);
+        }
+        return top;
+    }
+
+    /**
+     * 返回当前堆中元素个数
+     * @returns {number}
+     */
+    getSize() {
+        return this.size;
+    }
+
+    /**
+     * 判断堆是否为空
+     * @returns {boolean} 为空返回 true，否则 false
+     */
+    isEmpty() {
+        return this.size === 0;
+    }
+
+    /**
+     * 私有方法：上滤操作，将索引 index 位置的元素不断向上移动，直到堆性质恢复
+     * @param {number} index 当前待上滤的节点索引
+     */
+    _heapifyUp(index) {
+        let current = index;
+        // 不断比较当前节点与其父节点，若当前优先级更高，则交换
+        while (current > 0) {
+            const parentIdx = Math.floor((current - 1) / 2);
+            const cmp = this.comparator(this.data[current], this.data[parentIdx]);
+            // comparator 返回值 < 0 表示 current 更优先，需要上移
+            if (cmp < 0) {
+                this._swap(current, parentIdx);
+                current = parentIdx;
+            } else {
+                break;
+            }
+        }
+    }
+
+    /**
+     * 私有方法：下滤操作，将索引 index 位置的元素不断向下移动，直到堆性质恢复
+     * @param {number} index 当前待下滤的节点索引
+     */
+    _heapifyDown(index) {
+        let current = index;
+        while (true) {
+            const leftIdx = 2 * current + 1;
+            const rightIdx = 2 * current + 2;
+            let bestIdx = current;
+
+            // 如果左孩子存在且优先级更高，则记录为候选
+            if (
+                leftIdx < this.size &&
+                this.comparator(this.data[leftIdx], this.data[bestIdx]) < 0
+            ) {
+                bestIdx = leftIdx;
+            }
+            // 如果右孩子存在且优先级更高，则更新候选
+            if (
+                rightIdx < this.size &&
+                this.comparator(this.data[rightIdx], this.data[bestIdx]) < 0
+            ) {
+                bestIdx = rightIdx;
+            }
+
+            // 如果当前节点已是最优，则不需要继续下滤
+            if (bestIdx === current) {
+                break;
+            }
+
+            // 否则交换并继续下滤
+            this._swap(current, bestIdx);
+            current = bestIdx;
+        }
+    }
+
+    /**
+     * 私有方法：交换数组中索引 i 和 j 的元素
+     * @param {number} i 索引 i
+     * @param {number} j 索引 j
+     */
+    _swap(i, j) {
+        const tmp = this.data[i];
+        this.data[i] = this.data[j];
+        this.data[j] = tmp;
+    }
+
+    /**
+     * 私有方法：调整内部数组容量，复制元素到新的数组
+     * @param {number} newCapacity 新容量
+     */
+    _resize(newCapacity) {
+        const newData = new Array(newCapacity);
+        // 只复制已有的元素（0 .. size-1）
+        for (let i = 0; i < this.size; i++) {
+            newData[i] = this.data[i];
+        }
+        this.data = newData;
+        this.capacity = newCapacity;
+    }
+}
+
 (function () {
     'use strict';
 
@@ -1179,7 +1352,7 @@ v1.1.0 - 2024-05-02 17:50:04
         }
 
         init() {
-            this.messageToBeRendered = []
+            this.messageToBeRenderedHeap = new Heap((lhs, rhs) => rhs.timestamp - lhs.timestamp);
             this.messageCountOfFailedToRender = new Map()
             this._setStyleAndJavaScript()
             this._initRender()
@@ -1209,8 +1382,8 @@ v1.1.0 - 2024-05-02 17:50:04
             if (typeof messageId !== 'string') {
                 return
             }
-            this.messageToBeRendered.push(messageId)
-            Logger.debug(`添加ID ${messageId} 到待渲染队列，当前队列 ${this.messageToBeRendered}`)
+            this.messageToBeRenderedHeap.push(this.messageService.getMessage(messageId))
+            Logger.debug(`添加ID ${messageId} 到待渲染队列，当前队列大小 ${this.messageToBeRenderedHeap.getSize()}`)
         }
 
         /**
@@ -1221,8 +1394,9 @@ v1.1.0 - 2024-05-02 17:50:04
             if (!messageIdArray || !(messageIdArray instanceof Array)) {
                 return
             }
-            this.messageToBeRendered.push(...messageIdArray)
-            Logger.debug(`添加ID ${messageIdArray} 到待渲染队列，当前队列 ${this.messageToBeRendered}`)
+            for (let messageId of messageIdArray) {
+                this.addMessageToBeRendered(messageId)
+            }
         }
 
         /**
@@ -1243,50 +1417,40 @@ v1.1.0 - 2024-05-02 17:50:04
             async function processTimeRender() {
                 const start = new Date().getTime();
                 let completeCount = 0;
-                let totalCount = that.messageToBeRendered.length;
-                const messageToBeRenderedClone = that.messageToBeRendered.slice()
-                that.messageToBeRendered = []
-                let count = 0;
-
-                for (let messageId of messageToBeRenderedClone) {
-                    count++;
-                    if (count <= SystemConfig.TimeRender.BatchSize && new Date().getTime() - start <= SystemConfig.TimeRender.BatchTimeout) {
-                        const result = await that._renderTime(messageId)
-                        if (!result) {
-                            let countOfFailed = that.messageCountOfFailedToRender.get(messageId)
-                            if (countOfFailed && countOfFailed >= SystemConfig.TimeRender.RenderRetryCount) {
-                                Logger.debug(`ID ${messageId} 渲染失败次数超过 ${SystemConfig.TimeRender.RenderRetryCount} 次，将不再尝试。`)
-                                that.messageCountOfFailedToRender.delete(messageId)
-                            } else {
-                                that.messageToBeRendered.push(messageId);
-                                if (countOfFailed) {
-                                    that.messageCountOfFailedToRender.set(messageId, countOfFailed + 1)
-                                } else {
-                                    that.messageCountOfFailedToRender.set(messageId, 1)
-                                }
-                            }
-                        } else {
-                            completeCount++
-                            that.messageCountOfFailedToRender.delete(messageId)
-                        }
-                        Logger.debug(`ID ${messageId} 渲染${result ? '成功' : '失败'}，当前渲染进度 ${completeCount}/${totalCount}，该批次耗时 ${new Date().getTime() - start}ms`)
-                    } else {
-                        for (let i = count; i < messageToBeRenderedClone.length; i++) {
-                            that.messageToBeRendered.push(messageToBeRenderedClone[i])
-                        }
-                        if (count > SystemConfig.TimeRender.BatchSize) {
-                            Logger.debug(`本批次渲染数量超过 ${SystemConfig.TimeRender.BatchSize}，将继续下一批次渲染。`)
-                            break;
-                        }
-                        if (new Date().getTime() - start > SystemConfig.TimeRender.BatchTimeout) {
-                            Logger.debug(`本批次渲染超时，将继续下一批次渲染。`)
-                            break;
-                        }
+                let totalCount = that.messageToBeRenderedHeap.getSize()
+                for (let i = 0; i < SystemConfig.TimeRender.BatchSize; ++i) {
+                    if (new Date().getTime() - start > SystemConfig.TimeRender.BatchTimeout) {
+                        Logger.debug(`本批次渲染超时，将继续下一批次渲染。`)
+                        break;
                     }
+                    if (that.messageToBeRenderedHeap.isEmpty()) {
+                        Logger.debug(`待渲染队列为空，结束本批次渲染。`)
+                        break;
+                    }
+                    const messageBo = that.messageToBeRenderedHeap.pop();
+                    const messageId = messageBo.messageId;
+                    const result = await that._renderTime(messageId)
+                    if (!result) {
+                        let countOfFailed = that.messageCountOfFailedToRender.get(messageId)
+                        if (countOfFailed && countOfFailed >= SystemConfig.TimeRender.RenderRetryCount) {
+                            Logger.debug(`ID ${messageId} 渲染失败次数超过 ${SystemConfig.TimeRender.RenderRetryCount} 次，将不再尝试。`)
+                            that.messageCountOfFailedToRender.delete(messageId)
+                        } else {
+                            that.messageToBeRenderedHeap.push(messageBo);
+                            if (countOfFailed) {
+                                that.messageCountOfFailedToRender.set(messageId, countOfFailed + 1)
+                            } else {
+                                that.messageCountOfFailedToRender.set(messageId, 1)
+                            }
+                        }
+                    } else {
+                        completeCount++
+                        that.messageCountOfFailedToRender.delete(messageId)
+                    }
+                    Logger.debug(`ID ${messageId} 渲染${result ? '成功' : '失败'}，本批次渲染进度 ${completeCount}/${SystemConfig.TimeRender.BatchSize}，该消息渲染耗时 ${new Date().getTime() - start}ms`)
                 }
-                const end = new Date().getTime();
                 if (totalCount > 0) {
-                    Logger.debug(`处理当前ID队列渲染 ${messageToBeRenderedClone} 耗时 ${end - start}ms`)
+                    Logger.debug(`本批次渲染成功率 ${completeCount}/${SystemConfig.TimeRender.BatchSize}，本批次渲染耗时 ${new Date().getTime() - start}ms`)
                 }
                 setTimeout(processTimeRender, SystemConfig.TimeRender.Interval);
             }
@@ -1305,7 +1469,7 @@ v1.1.0 - 2024-05-02 17:50:04
             return new Promise(resolve => {
                 const messageElementBo = this.messageService.getMessageElement(messageId);
                 const messageBo = this.messageService.getMessage(messageId);
-                if (!messageElementBo || !messageBo) resolve(false)
+                if (!messageElementBo || !messageBo || !messageElementBo.rootEle) resolve(false)
                 const timeElement = messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`);
                 const role = messageElementBo.messageEle.getAttribute('data-message-author-role');
                 const element = this._createTimeElement(messageBo.timestamp, role);
