@@ -310,7 +310,7 @@ class Heap {
     'use strict';
 
     const IsConfigPage = window.location.hostname === 'jiang-taibai.github.io'
-    const DEBUG = true
+    const DEBUG = false
 
     class SystemConfig {
         static Common = {
