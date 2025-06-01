@@ -315,9 +315,10 @@ class Heap {
             TimeFormatTemplate: "{yyyy}-{MM}-{dd} {HH}:{mm}:{ss}.{ms}",
         }
         static TimeRender = {
-            Interval: 1000,
+            Interval: 200,
+            IdleCallbackTimeout: 1000,   // 页面空闲时渲染时间标签，但如果等待空闲超时，则强制渲染；单位毫秒。
             TimeClassName: 'chatgpt-time-container',
-            BatchSize: 100,
+            BatchSize: 200,
             BatchTimeout: 200,
             RenderRetryCount: 3,
             BasicStyle: `
@@ -673,6 +674,36 @@ class Heap {
                     error: e
                 };
             }
+        }
+
+        /**
+         * isMainThreadIdleAsync：
+         *   返回一个 Promise，当浏览器下一个空闲时刻到来时 resolve，
+         *   resolve 的值是一个 boolean，表示“当前这一帧还有多少空闲时间”是否大于 0。
+         *
+         * 示例用法：
+         *    isMainThreadIdleAsync().then(isIdle => {
+         *      if (isIdle) {
+         *        // 真的有空闲，可以做低优先级工作
+         *      } else {
+         *        // 虽然在 idleCallback 里调用，但已经没有剩余空余时间了
+         *      }
+         *    });
+         */
+        static isMainThreadIdleAsync() {
+            return new Promise((resolve) => {
+                if ('requestIdleCallback' in window) {
+                    window.requestIdleCallback((deadline) => {
+                        // timeRemaining() > 0，说明本次空闲窗口还有剩余时间
+                        resolve(deadline.timeRemaining() > 0);
+                    });
+                } else {
+                    // 不支持 requestIdleCallback，就在下一个宏任务中认为“可能空闲”
+                    setTimeout(() => {
+                        resolve(true);
+                    }, 0);
+                }
+            });
         }
     }
 
@@ -1419,6 +1450,11 @@ class Heap {
                 let completeCount = 0;
                 let totalCount = that.messageToBeRenderedHeap.getSize()
                 for (let i = 0; i < SystemConfig.TimeRender.BatchSize; ++i) {
+                    const isIdle = await Utils.isMainThreadIdleAsync();
+                    if (!isIdle) {
+                        Logger.debug(`当前主线程忙碌，结束本次渲染。`)
+                        break;
+                    }
                     if (new Date().getTime() - start > SystemConfig.TimeRender.BatchTimeout) {
                         Logger.debug(`本批次渲染超时，将继续下一批次渲染。`)
                         break;
