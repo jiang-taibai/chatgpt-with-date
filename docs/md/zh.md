@@ -2,7 +2,7 @@
 
 <div>
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-2.0.4-%231081C1" alt="Version-2.0.4"/>
+  <img src="https://img.shields.io/badge/Version-2.1.0-%231081C1" alt="Version-2.1.0"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -597,6 +597,10 @@ function loadScript() {
 
 ## X. Changelog
 
+- **v2.1.0 - 2025-06-02 00:22:54**
+  - **修复**：修复一直是本地时间的问题（#9）
+  - **优化**：优先渲染最近的消息时间标签
+  - **优化**：优化渲染性能，在用户操作页面时停止渲染时间标签，避免页面卡顿
 - **v2.0.4 - 2024-12-18 10:15:20**
     - **功能**：提供统一的 DEBUG 开关
     - **修复**：监听全局而不是局部的 main 标签，解决刚开始消息无法被监听到的问题

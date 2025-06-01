@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-2.0.4-%231081C1" alt="Version-2.0.4"/>
+  <img src="https://img.shields.io/badge/Version-2.1.0-%231081C1" alt="Version-2.1.0"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -83,6 +83,11 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 CopyRight © 2024~Present [Jiang Liu](https://coderjiang.com)
 
 ## X. Changelog
+
+- **v2.1.0 – 2025-06-02 00:22:54**
+  - **Fix**: Corrected the issue where timestamps were always displayed in local time (#9)
+  - **Optimization**: Prioritize rendering the time labels for the most recent messages first
+  - **Optimization**: Improved rendering performance by pausing timestamp updates when the user is interacting with the page to prevent lag
 
 - **v2.0.4 - 2024-12-18 10:15:20**
   - **Feature**: Provide a unified DEBUG switch. 
