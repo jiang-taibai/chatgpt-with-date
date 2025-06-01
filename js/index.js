@@ -23,7 +23,7 @@
 // @grant           GM_addStyle
 // @grant           GM_openInTab
 // @grant           unsafeWindow
-// @run-at          document-end
+// @run-at          document-start
 // ==/UserScript==
 
 // 更新日志
@@ -129,8 +129,7 @@ v1.1.0 - 2024-05-02 17:50:04
     'use strict';
 
     const IsConfigPage = window.location.hostname === 'jiang-taibai.github.io'
-    const DEBUG = false
-
+    const DEBUG = true
 
     class SystemConfig {
         static Common = {
@@ -566,14 +565,50 @@ v1.1.0 - 2024-05-02 17:50:04
          *                  user:       表示用户输入的消息。              从 API 获取
          *                  You:        表示用户输入的消息。              从页面实时获取
          *                  ChatGPT:    表示 ChatGPT 回答的消息。        从页面实时获取
-         * @param timestamp 时间戳，浮点数或整数类型，单位毫秒，例如 1714398759.26881、1714398759
+         * @param timestamp 时间戳，浮点数或整数类型，单位毫秒或秒，能够自适应统一转换为秒级别的小数形式，
+         *                  例如 1714398759.26881(s)、1714398759(s)、1748617891317.3572(ms)
          * @param message   消息内容
          */
         constructor(messageId, role, timestamp, message = '') {
             this.messageId = messageId;
             this.role = role;
-            this.timestamp = timestamp;
+            this.timestamp = this.toMilliseconds(timestamp);
             this.message = message;
+        }
+
+        /**
+         * 将各种格式的时间戳（秒级/毫秒级，整数/小数）统一转换为毫秒级别的小数形式。
+         * 如果传入的时间戳非法，则返回当前时间的毫秒级别小数时间戳。
+         *
+         * @param {string|number} timestamp 要转换的时间戳，支持如下几种形式：
+         *   1. 1714398759.26881   （秒级别的小数）
+         *   2. 1714398759        （秒级别的整数）
+         *   3. 1748617891317.3572 （毫秒级别的小数）
+         *   4. 1748617891317      （毫秒级别的整数）
+         * @returns {number} 返回毫秒级别的小数（Number 类型），若输入无法解析则返回当前时间戳（毫秒级小数）
+         */
+        toMilliseconds(timestamp) {
+            // 将传入的 timestamp 转为数值类型
+            const t = Number(timestamp);
+            // 如果解析后不是合法数字，则返回当前时间戳（毫秒级别小数）兜底
+            if (isNaN(t)) {
+                return Date.now();
+            }
+
+            /**
+             * 判断标准：
+             *   1. 当前一般意义上的秒级 UNIX 时间戳大概在 1e9 ~ 1.7e9（2025 年左右），远小于 1e12。
+             *   2. 当前毫秒级 UNIX 时间戳大概在 1e12 ~ 1e13（2025 年左右，大约 1.7e12）。
+             *   3. 如果传入值小于 1e12，就认为它是秒级别（整数或小数），需要乘以 1000 转为毫秒。
+             *   4. 否则就直接认为它是毫秒级别（整数或小数），无需额外处理。
+             */
+            if (t < 1e10) {
+                // 秒级别，乘以 1000 后变成毫秒级别
+                return t * 1000;
+            } else {
+                // 已经是毫秒级别（整数或小数），直接返回
+                return t;
+            }
         }
     }
 
@@ -962,7 +997,7 @@ v1.1.0 - 2024-05-02 17:50:04
 
         init() {
             this.totalTime = 0;
-            this.originalFetch = window.fetch;
+            this.originalFetch = unsafeWindow.fetch.bind(unsafeWindow);
             this._initMonitorFetch();
             this._initMonitorAddedMessageNode();
             this._initConfigPageNode();
@@ -978,8 +1013,9 @@ v1.1.0 - 2024-05-02 17:50:04
             const that = this;
             const urlRegex = new RegExp("^https://(chat\\.openai|chatgpt)\\.com/backend-api/conversation/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
             unsafeWindow.fetch = (...args) => {
-                return that.originalFetch.apply(this, args)
+                return that.originalFetch(...args)
                     .then(response => {
+                        Logger.debug("修改 fetch 方法，监控到请求：", response.url);
                         if (urlRegex.test(response.url)) {
                             // 克隆响应对象以便独立处理响应体
                             const clonedResponse = response.clone();
@@ -1016,6 +1052,7 @@ v1.1.0 - 2024-05-02 17:50:04
          */
         _parseConversationJsonData(obj) {
             const mapping = obj.mapping
+            Logger.debug('解析从 API 获取到的消息数据：', obj);
             const messageIds = []
             for (let key in mapping) {
                 const message = mapping[key].message
@@ -1023,7 +1060,7 @@ v1.1.0 - 2024-05-02 17:50:04
                     const messageId = message.id
                     const role = message.author.role
                     const createTime = message.create_time
-                    const messageBO = new MessageBO(messageId, role, createTime * 1000)
+                    const messageBO = new MessageBO(messageId, role, createTime)
                     messageIds.push(messageId)
                     this.messageService.addMessage(messageBO, true)
                 }
