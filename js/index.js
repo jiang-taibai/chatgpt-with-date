@@ -5,7 +5,7 @@
 // @namespace       https://github.com/jiang-taibai/chatgpt-with-date
 // @version         2.1.1
 // @description     显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
-// @description:zh-cn   显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
+// @description:zh-CN   显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @description:en  Tampermonkey plugin for displaying ChatGPT historical and real-time conversation time.
 // @author          CoderJiang
 // @license         MIT
