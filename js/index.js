@@ -1223,17 +1223,34 @@ class Heap {
          */
         _initMonitorFetch() {
             const that = this;
-            const urlRegex = new RegExp("^https://(chat\\.openai|chatgpt)\\.com/backend-api/conversation/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+            const isConversationResponse = (url) => {
+                try {
+                    const parsedUrl = new URL(url);
+                    return (parsedUrl.hostname === 'chatgpt.com' || parsedUrl.hostname === 'chat.openai.com') &&
+                        /^\/backend-api\/conversations?\/[^/]+\/?$/.test(parsedUrl.pathname);
+                } catch (error) {
+                    Logger.warn('无法解析 fetch 响应 URL，跳过会话数据处理：', url, error);
+                    return false;
+                }
+            };
             unsafeWindow.fetch = (...args) => {
                 return that.originalFetch(...args)
                     .then(response => {
                         Logger.debug("修改 fetch 方法，监控到请求：", response.url);
-                        if (urlRegex.test(response.url)) {
-                            // 克隆响应对象以便独立处理响应体
-                            const clonedResponse = response.clone();
-                            clonedResponse.json().then(data => {
-                                that._parseConversationJsonData(data);
-                            }).catch(error => Logger.error('解析响应体失败:', error));
+                        if (isConversationResponse(response?.url)) {
+                            try {
+                                // 克隆响应对象以便独立处理响应体
+                                const clonedResponse = response.clone();
+                                clonedResponse.json().then(data => {
+                                    try {
+                                        that._parseConversationJsonData(data);
+                                    } catch (error) {
+                                        Logger.error('解析会话数据失败:', error);
+                                    }
+                                }).catch(error => Logger.error('解析响应体失败:', error));
+                            } catch (error) {
+                                Logger.error('克隆会话响应失败:', error);
+                            }
                         }
                         return response;
                     })
@@ -1263,19 +1280,30 @@ class Heap {
          * @private
          */
         _parseConversationJsonData(obj) {
-            const mapping = obj.mapping
             Logger.debug('解析从 API 获取到的消息数据：', obj);
-            const messageIds = []
-            for (let key in mapping) {
-                const message = mapping[key].message
-                if (message) {
-                    const messageId = message.id
-                    const role = message.author.role
-                    const createTime = message.create_time
-                    const messageBO = new MessageBO(messageId, role, createTime)
-                    messageIds.push(messageId)
-                    this.messageService.addMessage(messageBO, true)
+            let messages;
+            if (Array.isArray(obj?.messages)) {
+                messages = obj.messages;
+            } else if (obj?.mapping && typeof obj.mapping === 'object') {
+                messages = Object.values(obj.mapping).map(entry => entry?.message);
+            } else {
+                Logger.warn('会话数据不包含 messages 或 mapping，跳过处理：', obj);
+                return;
+            }
+
+            const messageIds = [];
+            for (const message of messages) {
+                const messageId = message?.id;
+                const role = message?.author?.role;
+                const createTime = message?.create_time;
+                if (typeof messageId !== 'string' || !messageId || typeof role !== 'string' ||
+                    createTime === null || createTime === undefined || !Number.isFinite(Number(createTime))) {
+                    Logger.debug('跳过格式不完整的会话消息：', message);
+                    continue;
                 }
+                const messageBO = new MessageBO(messageId, role, createTime);
+                messageIds.push(messageId);
+                this.messageService.addMessage(messageBO, true);
             }
             this.timeRendererService.addMessageArrayToBeRendered(messageIds.reverse())
             this.messageService.showMessages()
@@ -1513,7 +1541,10 @@ class Heap {
             return new Promise(resolve => {
                 const messageElementBo = this.messageService.getMessageElement(messageId);
                 const messageBo = this.messageService.getMessage(messageId);
-                if (!messageElementBo || !messageBo || !messageElementBo.rootEle) resolve(false)
+                if (!messageElementBo || !messageBo || !messageElementBo.rootEle) {
+                    resolve(false);
+                    return;
+                }
                 const timeElement = messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`);
                 const role = messageElementBo.messageEle.getAttribute('data-message-author-role');
                 const element = this._createTimeElement(messageBo.timestamp, role);
