@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-2.1.0-%231081C1" alt="Version-2.1.0"/>
+  <img src="https://img.shields.io/badge/Version-2.1.1-%231081C1" alt="Version-2.1.1"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -76,6 +76,8 @@ CopyRight © 2024~Present [Jiang Liu](https://coderjiang.com)
 
 ## X. Changelog
 
+- **v2.1.1 - 2026-08-26 21:13:49**
+  - **修复**：适配当前 ChatGPT 会话 API 的返回结构，修复时间戳全部变成加载时间的问题（#11，感谢 @stelonix）
 - **v2.1.0 - 2025-06-02 00:22:54**
   - **修复**：修复一直是本地时间的问题（#9）
   - **优化**：优先渲染最近的消息时间标签

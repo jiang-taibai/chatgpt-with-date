@@ -3,7 +3,7 @@
 // @name:en         ChatGPT with Date
 // @name:zh-CN      ChatGPT with Date
 // @namespace       https://github.com/jiang-taibai/chatgpt-with-date
-// @version         2.1.0
+// @version         2.1.1
 // @description     显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @description:zh-cn   显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @description:en  Tampermonkey plugin for displaying ChatGPT historical and real-time conversation time.
@@ -28,6 +28,8 @@
 
 // 更新日志
 /*
+v2.1.1 - 2026-08-26 21:13:49
+    修复：适配当前 ChatGPT 会话 API 的返回结构，修复时间戳全部变成加载时间的问题（#11，感谢 @stelonix）
 v2.1.0 - 2025-06-02 00:22:54
     修复：修复一直是本地时间的问题（#9）
     优化：优先渲染最近的消息时间标签
@@ -79,6 +81,8 @@ v1.1.0 - 2024-05-02 17:50:04
 */
 // Changelog
 /*
+v2.1.1 - 2026-08-26 21:13:49
+    Fix: Adapt to the current ChatGPT conversation API response structure, fixing the issue where all timestamps were set to the load time (#11, thanks to @stelonix)
 v2.1.0 – 2025-06-02 00:22:54
     Fix: Corrected the issue where timestamps were always displayed in local time (#9)
     Optimization: Prioritize rendering the time labels for the most recent messages first
