@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-2.1.0-%231081C1" alt="Version-2.1.0"/>
+  <img src="https://img.shields.io/badge/Version-2.1.1-%231081C1" alt="Version-2.1.1"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -83,6 +83,9 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 CopyRight © 2024~Present [Jiang Liu](https://coderjiang.com)
 
 ## X. Changelog
+
+- **v2.1.1 - 2026-08-26 21:13:49**
+  - **Fix**: Adapt to the current ChatGPT conversation API response structure, fixing the issue where all timestamps were set to the load time (#11, thanks to @stelonix)
 
 - **v2.1.0 – 2025-06-02 00:22:54**
   - **Fix**: Corrected the issue where timestamps were always displayed in local time (#9)
