@@ -3,7 +3,7 @@
 // @name:en         ChatGPT with Date
 // @name:zh-CN      ChatGPT with Date
 // @namespace       https://github.com/jiang-taibai/chatgpt-with-date
-// @version         2.1.1
+// @version         2.1.3
 // @description     显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @description:zh-CN   显示 ChatGPT 历史对话时间 与 实时对话时间的 Tampermonkey 插件。
 // @description:en  Tampermonkey plugin for displaying ChatGPT historical and real-time conversation time.
@@ -28,6 +28,8 @@
 
 // 更新日志
 /*
+v2.1.3 - 2026-09-26
+    修复：支持新版消息 DOM 属性、已有消息扫描及虚拟列表重新挂载。
 v2.1.1 - 2026-08-26 21:13:49
     修复：适配当前 ChatGPT 会话 API 的返回结构，修复时间戳全部变成加载时间的问题（#11，感谢 @stelonix）
 v2.1.0 - 2025-06-02 00:22:54
@@ -81,6 +83,8 @@ v1.1.0 - 2024-05-02 17:50:04
 */
 // Changelog
 /*
+v2.1.3 - 2026-09-26
+    Fix: Support the new message DOM attributes, scan existing messages, and restore timestamps when messages remount.
 v2.1.1 - 2026-08-26 21:13:49
     Fix: Adapt to the current ChatGPT conversation API response structure, fixing the issue where all timestamps were set to the load time (#11, thanks to @stelonix)
 v2.1.0 – 2025-06-02 00:22:54
@@ -1113,8 +1117,36 @@ class Heap {
     }
 
     class MessageService extends Component {
+        static MessageSelector = '[data-message-id], [data-chatgpt-selection-message-id], [data-chatgpt-search-message-ids]';
+
         init() {
             this.messages = new Map();
+        }
+
+        /** Read both the original and current ChatGPT message attributes. */
+        getMessageId(messageEle) {
+            if (!messageEle) return;
+            return messageEle.getAttribute('data-message-id') ||
+                messageEle.getAttribute('data-chatgpt-selection-message-id') ||
+                messageEle.querySelector('[data-chatgpt-selection-message-id]')?.getAttribute('data-chatgpt-selection-message-id') ||
+                (messageEle.getAttribute('data-chatgpt-search-message-ids') || '').trim().split(/\s+/)[0] ||
+                undefined;
+        }
+
+        getMessageRole(messageEle, messageId = this.getMessageId(messageEle)) {
+            if (!messageEle) return;
+            const role = messageEle.getAttribute('data-message-author-role') || this.getMessage(messageId)?.role;
+            if (role) return role;
+            if (messageEle.hasAttribute('data-chatgpt-selection-message-id') ||
+                messageEle.querySelector('[data-chatgpt-selection-message-id]')) {
+                return 'assistant';
+            }
+            // File-only user messages also have this class, even without a text bubble.
+            if (messageEle.classList.contains('group/user-message') ||
+                messageEle.hasAttribute('data-user-message-bubble') ||
+                messageEle.querySelector('[data-user-message-bubble]')) {
+                return 'user';
+            }
         }
 
         /**
@@ -1128,8 +1160,9 @@ class Heap {
             if (!messageDiv) {
                 return;
             }
-            const messageId = messageDiv.getAttribute('data-message-id');
-            const role = messageDiv.getAttribute('data-message-author-role');
+            const messageId = this.getMessageId(messageDiv);
+            const role = this.getMessageRole(messageDiv, messageId);
+            if (!messageId || !role) return;
             const messageElementBO = this.getMessageElement(messageId)
             if (!messageElementBO) {
                 return;
@@ -1176,7 +1209,13 @@ class Heap {
          * @returns {MessageElementBO|undefined}  返回消息元素业务对象
          */
         getMessageElement(messageId) {
-            const messageDiv = document.body.querySelector(`div[data-message-id="${messageId}"]`);
+            if (!document.body || typeof messageId !== 'string' || !messageId) return;
+            // Prefer the assistant's inner message node to its search wrapper.
+            // Compare attribute values directly so IDs need no CSS escaping.
+            const nodes = Array.from(document.body.querySelectorAll(MessageService.MessageSelector));
+            const messageDiv = nodes.find(node => node.getAttribute('data-message-id') === messageId) ||
+                nodes.find(node => node.getAttribute('data-chatgpt-selection-message-id') === messageId) ||
+                nodes.find(node => (node.getAttribute('data-chatgpt-search-message-ids') || '').split(/\s+/).includes(messageId));
             if (!messageDiv) {
                 return;
             }
@@ -1231,7 +1270,7 @@ class Heap {
                 try {
                     const parsedUrl = new URL(url);
                     return (parsedUrl.hostname === 'chatgpt.com' || parsedUrl.hostname === 'chat.openai.com') &&
-                        /^\/backend-api\/conversations?\/[^/]+\/?$/.test(parsedUrl.pathname);
+                        /^\/backend-api\/conversations?\/[^/]+(?:\/messages)?\/?$/.test(parsedUrl.pathname);
                 } catch (error) {
                     Logger.warn('无法解析 fetch 响应 URL，跳过会话数据处理：', url, error);
                     return false;
@@ -1350,12 +1389,12 @@ class Heap {
                     if (mutation.type === 'childList') {
                         for (let node of mutation.addedNodes) {
                             if (node.nodeType === Node.ELEMENT_NODE) {
-                                const messageDivs = node.querySelectorAll('div[data-message-id]');
+                                const messageDivs = node.querySelectorAll(MessageService.MessageSelector);
                                 Logger.debug('监控到多个消息节点被添加：', messageDivs);
                                 for (let messageDiv of messageDivs) {
                                     addMessageDiv(messageDiv)
                                 }
-                                if (node.hasAttribute('data-message-id')) {
+                                if (node.matches(MessageService.MessageSelector)) {
                                     addMessageDiv(node)
                                 }
                             }
@@ -1372,9 +1411,14 @@ class Heap {
                 childList: true,
                 subtree: true,
                 attributes: true,
-                attributeFilter: ["data-message-id"]
+                attributeFilter: ["data-message-id", "data-message-author-role", "data-chatgpt-selection-message-id", "data-chatgpt-search-message-ids"]
             });
             this.disconnectObserver = () => observer.disconnect();
+            // MutationObserver only sees future changes. Include messages that
+            // mounted before the observer, as well as future virtualized remounts.
+            for (const messageDiv of supervisedNode.querySelectorAll(MessageService.MessageSelector)) {
+                addMessageDiv(messageDiv);
+            }
         }
 
         /**
@@ -1541,26 +1585,32 @@ class Heap {
          * @returns {Promise}   返回是否渲染成功的 Promise 对象
          * @private
          */
-        _renderTime(messageId) {
-            return new Promise(resolve => {
+        async _renderTime(messageId) {
+            try {
                 const messageElementBo = this.messageService.getMessageElement(messageId);
                 const messageBo = this.messageService.getMessage(messageId);
                 if (!messageElementBo || !messageBo || !messageElementBo.rootEle) {
-                    resolve(false);
-                    return;
+                    return false;
                 }
-                const timeElement = messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`);
-                const role = messageElementBo.messageEle.getAttribute('data-message-author-role');
+                const messageEle = messageElementBo.messageEle;
+                const timeElement = messageEle.previousElementSibling;
+                const role = this.messageService.getMessageRole(messageEle, messageId) || messageBo.role;
                 const element = this._createTimeElement(messageBo.timestamp, role);
-                // 强制移除时间元素，重新渲染。这样才能保证时间正确的同时也能正确执行用户自定义的脚本。
-                if (timeElement) {
-                    messageElementBo.rootEle.removeChild(timeElement)
+                // Keep one tag beside its message, including when a virtualized
+                // node is reused for another ID. Do not remove a nested tag.
+                if (timeElement?.classList.contains(SystemConfig.TimeRender.TimeClassName)) {
+                    timeElement.remove();
                 }
                 this.hookService.invokeHook('beforeCreateTimeTag', messageId, element.timeTagContainer)
-                messageElementBo.rootEle.firstChild.insertAdjacentHTML('beforebegin', element.timeTagContainer);
-                this.hookService.invokeHook('afterCreateTimeTag', messageId, messageElementBo.rootEle.querySelector(`.${SystemConfig.TimeRender.TimeClassName}`))
-                resolve(true)
-            })
+                messageEle.insertAdjacentHTML('beforebegin', element.timeTagContainer);
+                const timeTag = messageEle.previousElementSibling;
+                timeTag.setAttribute('data-chatgpt-with-date-message-id', messageId);
+                this.hookService.invokeHook('afterCreateTimeTag', messageId, timeTag);
+                return true;
+            } catch (error) {
+                Logger.error('渲染消息时间失败：', error);
+                return false;
+            }
         }
 
         /**
