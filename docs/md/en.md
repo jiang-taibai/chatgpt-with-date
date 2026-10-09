@@ -2,7 +2,7 @@
 
 <div>
   <img src="https://img.shields.io/badge/Build-passing-%2396C40F" alt="Build-passing"/>
-  <img src="https://img.shields.io/badge/Version-2.1.0-%231081C1" alt="Version-2.1.0"/>
+  <img src="https://img.shields.io/badge/Version-2.1.2-%231081C1" alt="Version-2.1.2"/>
   <img src="https://img.shields.io/badge/License-MIT-%2396C40F" alt="License-MIT"/>
   <img src="https://img.shields.io/badge/CopyRight-Jiang_Liu-%2396C40F" alt="CopyRight-Jiang_Liu"/>
 </div>
@@ -578,6 +578,13 @@ Here's an explanation of some of the classes that can be shared:
   update the JavaScript code using this `key` as needed.
 
 ## X. Changelog
+
+- **v2.1.2 - 2026-09-26**
+  - **Fix**: Support the new ChatGPT history API, restoring missing timestamps (#14, thanks to @stelonix).
+  - **Fix**: Support the new message DOM attributes, scan existing messages, and restore timestamps when messages remount during scrolling.
+
+- **v2.1.1 - 2026-08-26 21:13:49**
+  - **Fix**: Adapt to the current ChatGPT conversation API response structure, fixing the issue where all timestamps were set to the load time (#11, thanks to @stelonix)
 
 - **v2.1.0 – 2025-06-02 00:22:54**
     - **Fix**: Corrected the issue where timestamps were always displayed in local time (#9)
